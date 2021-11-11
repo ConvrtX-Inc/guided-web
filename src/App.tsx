@@ -11,7 +11,7 @@ function App() {
         <div>
           <div className="content">
             <Switch>
-              <Route exact path="/" component={Home} />
+              <Route exact path="/" component={SignIn} />
               <Route path="/signin" component={SignIn} />
             </Switch>
           </div>

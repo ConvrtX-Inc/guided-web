@@ -3,7 +3,7 @@ import './index.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+//import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './fonts/Gilroy/Gilroy-FREE/Gilroy-Light.otf';
 import Admin from './components/Admin/Dashboard/admin';

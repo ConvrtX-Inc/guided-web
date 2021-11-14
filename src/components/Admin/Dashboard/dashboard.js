@@ -1,3 +1,4 @@
+import './dashboard.scss';
 
 import cardimg from '../../../assets/admin/card-img.png';
 import cardimg0 from '../../../assets/admin/card-img0.png';
@@ -104,7 +105,7 @@ const Dashboard = () => {
                         <Image src={cardimg0} alt="" />
                         <Card.Body>
                             <h5 className="card-title">Article name goes here</h5>
-                            <a href="#" className="btn btn-warning mt-4">Read more</a>
+                            <Link to="/read-more" className="btn btn-warning mt-4">Read more</Link>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -113,7 +114,7 @@ const Dashboard = () => {
                         <Image src={cardimg} alt="" />
                         <Card.Body>
                             <h5 className="card-title">Article name goes here</h5>
-                            <a href="#" className="btn btn-warning mt-4">Read more</a>
+                            <Link to="/read-more" className="btn btn-warning mt-4">Read more</Link>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -122,7 +123,7 @@ const Dashboard = () => {
                     <Image src={cardimg1} alt="" />
                         <Card.Body>
                             <h5 className="card-title">Article name goes here</h5>
-                            <a href="#" className="btn btn-warning mt-4">Read more</a>
+                            <Link to="/read-more" className="btn btn-warning mt-4">Read more</Link>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -131,7 +132,7 @@ const Dashboard = () => {
                     <Image src={cardimg2} alt="" />
                         <Card.Body>
                             <h5 className="card-title">Article name goes here</h5>
-                            <a href="#" className="btn btn-warning mt-4">Read more</a>
+                            <Link to="/read-more" className="btn btn-warning mt-4">Read more</Link>
                         </Card.Body>
                     </Card>
                 </Col>

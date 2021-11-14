@@ -1,0 +1,38 @@
+#content{
+    
+    font-family: Gilroy;
+    font-style: normal;
+    width: 100%;
+    
+    h2 {
+        font-weight: bold;
+        font-size: 36px;
+        line-height: 44px;
+        color: #000000;
+    }
+
+    nav {
+        form {      
+            justify-content: center;
+            display: flex;
+        }
+
+        .btn-guide {
+            background: #FFFFFF;
+            border-radius: 15px;
+            height: 66px;
+            width: 141px;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 21px;
+            text-align: center;
+            text-transform: capitalize;
+            color: #898A8D;
+        }
+
+        .active {
+            border: 1px solid #007749;
+            box-sizing: border-box;
+        }
+    }
+}

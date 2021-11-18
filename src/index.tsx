@@ -6,7 +6,9 @@ import ReactDOM from 'react-dom';
 //import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './fonts/Gilroy/Gilroy-FREE/Gilroy-Light.otf';
-import Admin from './components/Admin/Dashboard/admin';
+import Admin from './components/modules/Admin';
+
+
 //import './fonts/Gilroy/Gilroy-FREE/Gilroy-ExtraBold.otf';
 
 ReactDOM.render(

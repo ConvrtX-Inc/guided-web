@@ -7,13 +7,14 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import './fonts/Gilroy/Gilroy-FREE/Gilroy-Light.otf';
 import Admin from './components/modules/Admin';
+import App from './App';
 
 
 //import './fonts/Gilroy/Gilroy-FREE/Gilroy-ExtraBold.otf';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Admin />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

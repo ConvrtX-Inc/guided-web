@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -14,8 +14,6 @@ import NewPassword from './components/Login/newpassword';
 import PhoneVerification from './components/Login/phoneverification';
 import ContinueWithPhone from './components/Login/continuewithphone';
 import SignInForm from './components/Login/signin';
-
-import NotFound from './components/Error/notfound';
 
 function App() {
   return (
@@ -39,6 +37,7 @@ function App() {
               </Container>
             </div>
           </div>
+      
       </Switch>
     </BrowserRouter>
   );

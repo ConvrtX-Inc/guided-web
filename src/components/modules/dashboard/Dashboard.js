@@ -1,4 +1,4 @@
-import './dashboard.scss';
+import './Dashboard.scss';
 
 import cardimg from '../../../assets/admin/card-img.png';
 import cardimg0 from '../../../assets/admin/card-img0.png';
@@ -21,9 +21,10 @@ import Image from 'react-bootstrap/Image';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
+//Dashboard module
 const Dashboard = () => {
     return (
-        <Container>
+        <Container className="dashboard-container">
             <Row className="mt-5">
                 <Col>
                     <h2>Dashboard</h2>

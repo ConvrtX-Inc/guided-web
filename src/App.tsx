@@ -14,6 +14,8 @@ import NewPassword from './components/Login/newpassword';
 import PhoneVerification from './components/Login/phoneverification';
 import ContinueWithPhone from './components/Login/continuewithphone';
 import SignInForm from './components/Login/signin';
+import ResetPassword from './components/modules/forgot-password/ResetPassword';
+import ConfirmResetPassword from './components/modules/forgot-password/ConfirmPassword';
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
                           <Route path="/newpassword" component={NewPassword} />
                           <Route path="/phoneverification" component={PhoneVerification} />
                           <Route path="/continuewithphone" component={ContinueWithPhone} />
+                          <Route path="/resetpassword" component={ResetPassword} />
+                          <Route path="/confirm-resetpassword" component={ConfirmResetPassword} />
                       </Col>
                   </Row>
               </Container>

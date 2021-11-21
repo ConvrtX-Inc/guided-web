@@ -21,6 +21,94 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
+import MostRecent from './MostRecent';
+import RecentGuides from './RecentGuides';
+import MostActive from './MostActive';
+
+const DUMMY_DATA = [
+  {
+    id: 1,
+    article: 'Article Name Goes Here',
+    img: cardimg
+  },
+  {
+    id: 2,
+    article: 'Article Name Goes Here',
+    img: cardimg0
+  },
+  {
+    id: 3,
+    article: 'Article Name Goes Here',
+    img: cardimg1
+  },
+  {
+    id: 4,
+    article: 'Article Name Goes Here',
+    img: cardimg2
+  }
+]
+
+const DUMMY_DATA2 = [
+  {
+    id: 1,
+    name: 'Mark Chen',
+    email: 'mark@gmail.com',
+    contactnumber: '+1 367 829 3828',
+    img: user
+  },
+  {
+    id: 2,
+    name: 'John Kristen',
+    email: 'john@gmail.com',
+    contactnumber: '+1 347 829 3828',
+    img: user_2
+  },
+  {
+    id: 3,
+    name: 'Rayan Artecona',
+    email: 'rayan@gmail.com',
+    contactnumber: '+1 257 829 3828',
+    img: user_3
+  },
+  { 
+    id: 4,
+    name: 'Smith Jerom',
+    email: 'mark@gmail.com',
+    contactnumber: '+1 113 829 3828',
+    img: user
+  },
+]
+
+const DUMMY_DATA3 = [
+  {
+    id: 1,
+    name: 'John Mark',
+    email: 'john@gmail.com',
+    contactnumber: '+1 367 829 3828',
+    img: user_4
+  },
+  {
+    id: 2,
+    name: 'Matt Bell',
+    email: 'matt@gmail.com',
+    contactnumber: '+1 347 829 3828',
+    img: user_5
+  },
+  {
+    id: 3,
+    name: 'Ann Sasha',
+    email: 'ann@gmail.com',
+    contactnumber: '+1 257 829 3828',
+    img: user_6
+  },
+  { 
+    id: 4,
+    name: 'Parket Wilson',
+    email: 'parker@gmail.com',
+    contactnumber: '+1 113 829 3828',
+    img: user_7
+  },
+]
 
 const DashboardScreen = () => {
   return (
@@ -101,50 +189,7 @@ const DashboardScreen = () => {
         </Col>
       </Row>
       <Row className="mb-5">
-        <Col className="col-sm">
-          <Card className="most-recent p-2">
-            <Image src={cardimg0} alt="" />
-            <Card.Body>
-              <h5 className="card-title">Article name goes here</h5>
-              <Link to="/read-more" className="btn btn-warning mt-4">
-                Read more
-              </Link>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="most-recent p-2">
-            <Image src={cardimg} alt="" />
-            <Card.Body>
-              <h5 className="card-title">Article name goes here</h5>
-              <Link to="/read-more" className="btn btn-warning mt-4">
-                Read more
-              </Link>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="most-recent p-2">
-            <Image src={cardimg1} alt="" />
-            <Card.Body>
-              <h5 className="card-title">Article name goes here</h5>
-              <Link to="/read-more" className="btn btn-warning mt-4">
-                Read more
-              </Link>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="most-recent p-2">
-            <Image src={cardimg2} alt="" />
-            <Card.Body>
-              <h5 className="card-title">Article name goes here</h5>
-              <Link to="/read-more" className="btn btn-warning mt-4">
-                Read more
-              </Link>
-            </Card.Body>
-          </Card>
-        </Col>
+        <MostRecent mostrecent={DUMMY_DATA} />
       </Row>
       <Row>
         <Col className="mt-5 col-sm">
@@ -155,54 +200,7 @@ const DashboardScreen = () => {
         </Col>
       </Row>
       <Row>
-        <Col className="col-sm">
-          <Card className="recent-guides">
-            <Card.Body>
-              <div className="text-center">
-                <Image className="mb-2" src={user} alt="" />
-                <h4>Mark Chen</h4>
-                <p>mark@gmail.com</p>
-                <p>+1 367 829 3828</p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="recent-guides">
-            <Card.Body>
-              <div className="text-center">
-                <Image className="mb-2" src={1} alt="" />
-                <h4>John Kristen</h4>
-                <p>john@gmail.com</p>
-                <p>+1 347 829 3828</p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="recent-guides">
-            <Card.Body>
-              <div className="text-center">
-                <Image className="mb-2" src={user_2} alt="" />
-                <h4>Rayan Artecona</h4>
-                <p>rayan@gmail.com</p>
-                <p>+1 257 829 3828</p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="recent-guides">
-            <Card.Body>
-              <div className="text-center">
-                <Image className="mb-2" src={user_3} alt="" />
-                <h4>Smith Jerom</h4>
-                <p>mark@gmail.com</p>
-                <p>+1 113 829 3828</p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+        <RecentGuides recentguide={DUMMY_DATA2} />
       </Row>
       <Row>
         <Col className="mt-5 col-sm">
@@ -213,54 +211,7 @@ const DashboardScreen = () => {
         </Col>
       </Row>
       <Row>
-        <Col className="col-sm">
-          <Card className="most-active">
-            <Card.Body>
-              <div className="text-center">
-                <Image className="mb-2" src={user_4} alt="" />
-                <h4>Rayan Artecona</h4>
-                <p>rayan@gmail.com</p>
-                <p>+1 257 829 3828</p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="most-active">
-            <Card.Body>
-              <div className="text-center">
-                <Image className="mb-2" src={user_5} alt="" />
-                <h4>Rayan Artecona</h4>
-                <p>rayan@gmail.com</p>
-                <p>+1 257 829 3828</p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="most-active">
-            <Card.Body>
-              <div className="text-center">
-                <Image className="mb-2" src={user_6} alt="" />
-                <h4>Rayan Artecona</h4>
-                <p>rayan@gmail.com</p>
-                <p>+1 257 829 3828</p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm">
-          <Card className="most-active">
-            <Card.Body>
-              <div className="text-center">
-                <Image className="mb-2" src={user_7} alt="" />
-                <h4>Rayan Artecona</h4>
-                <p>rayan@gmail.com</p>
-                <p>+1 257 829 3828</p>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+        <MostActive mostactive={DUMMY_DATA3} />
       </Row>
     </Container>
   );

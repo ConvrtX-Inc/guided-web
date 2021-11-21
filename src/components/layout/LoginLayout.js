@@ -5,6 +5,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ImageSection from "./ImageSection";
 
+
+//Login layout/wrapper
 function LoginLayout(props) {
   return (
     <div className="content">

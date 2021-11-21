@@ -1,5 +1,4 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./fonts/Gilroy/Gilroy-FREE/Gilroy-Light.otf";
 
 import React from "react";
 import ReactDOM from "react-dom";

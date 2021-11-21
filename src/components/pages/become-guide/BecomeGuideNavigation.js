@@ -1,18 +1,19 @@
-import search from '../../../assets/admin/search.png';
-import down from '../../../assets/admin/down.png';
-import filter from '../../../assets/admin/filter.png';
+import search from "../../../assets/admin/search.png";
+import down from "../../../assets/admin/down.png";
+import filter from "../../../assets/admin/filter.png";
 
-import Form from 'react-bootstrap/Form';
-import Image from 'react-bootstrap/Image';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Navbar from 'react-bootstrap/Navbar';
-import { NavLink } from 'react-router-dom';
+import Form from "react-bootstrap/Form";
+import Image from "react-bootstrap/Image";
+import InputGroup from "react-bootstrap/InputGroup";
+import Navbar from "react-bootstrap/Navbar";
+import { NavLink } from "react-router-dom";
 
 const BecomeGuideNavigation = () => {
   return (
     <Navbar>
       <Form className="container-fluid justify-content-start">
         <NavLink
+          exact={true}
           to="/become-guide/all"
           activeClassName="active"
           className="btn btn-light btn-guide me-2"
@@ -20,6 +21,7 @@ const BecomeGuideNavigation = () => {
           See All
         </NavLink>
         <NavLink
+          exact={true}
           to="/become-guide/approved"
           activeClassName="active"
           className="btn btn-light btn-guide me-2"
@@ -27,6 +29,7 @@ const BecomeGuideNavigation = () => {
           Approved
         </NavLink>
         <NavLink
+          exact={true}
           to="/become-guide/pending"
           activeClassName="active"
           className="btn btn-light btn-guide me-2"
@@ -34,6 +37,7 @@ const BecomeGuideNavigation = () => {
           Pending
         </NavLink>
         <NavLink
+          exact={true}
           to="/become-guide/rejected"
           activeClassName="active"
           className="btn btn-light btn-guide me-2"

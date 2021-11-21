@@ -1,6 +1,6 @@
-import check from "../../../assets/admin/check.png";
 import right from "../../../assets/admin/right.png";
 import left from "../../../assets/admin/left2.png";
+import user2 from "../../../assets/admin/user30.png";
 
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
@@ -11,6 +11,67 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import GuideContainer from "./GuideContainer";
 import ViewApplication from "./ViewApplication";
+import ApplicationItem from "./ApplicationItem";
+import PageNotFound from "../PageNotFound";
+
+const DUMMY_DATA = [
+  {
+    id: 1,
+    name: "Mark Chen",
+    email: "mark@gmail.com",
+    contactnumber: " +1 467 474 9303",
+    img: user2,
+  },
+  {
+    id: 2,
+    name: "John Kristen",
+    email: "johngmail.com",
+    contactnumber: "+1 267 474 9323",
+    img: user2,
+  },
+  {
+    id: 3,
+    name: "Rayan Artecona",
+    email: "rayangmail.com",
+    contactnumber: "+1 437 474 9222",
+    img: user2,
+  },
+  {
+    id: 4,
+    name: "Mark Chen",
+    email: "mark@gmail.com",
+    contactnumber: "+1 698 474 9100",
+    img: user2,
+  },
+  {
+    id: 5,
+    name: "Mark Chen",
+    email: "mark@gmail.com",
+    contactnumber: "+1 698 474 9100",
+    img: user2,
+  },
+  {
+    id: 6,
+    name: "Mark Chen",
+    email: "mark@gmail.com",
+    contactnumber: "+1 698 474 9100",
+    img: user2,
+  },
+  {
+    id: 7,
+    name: "Mark Chen",
+    email: "mark@gmail.com",
+    contactnumber: "+1 698 474 9100",
+    img: user2,
+  },
+  {
+    id: 8,
+    name: "Mark Chen",
+    email: "mark@gmail.com",
+    contactnumber: "+1 698 474 9100",
+    img: user2,
+  },
+];
 
 const GuideSeeAll = () => {
   return (
@@ -18,126 +79,15 @@ const GuideSeeAll = () => {
       <Table borderless className="mt-4">
         <thead>
           <tr>
-            <th>Application Name</th>
-            <th>Email</th>
-            <th>Contact Number</th>
-            <th>Application</th>
-            <th>Action</th>
+            <th className="ps-4">Application Name</th>
+            <th className="ps-4">Email</th>
+            <th className="ps-4">Contact Number</th>
+            <th className="ps-4">Application</th>
+            <th className="ps-4">Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Mark Chen</td>
-            <td>mark@gmail.com</td>
-            <td> +1 467 474 9303</td>
-            <td>
-              <Button className="btn-view-application">View Application</Button>
-            </td>
-            <td>
-              <Button className="btn-approve">
-                <Image src={check} alt="" /> Approve
-              </Button>
-              <Button className="m-1 btn-reject">Reject</Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mark Chen</td>
-            <td>mark@gmail.com</td>
-            <td> +1 467 474 9303</td>
-            <td>
-              <Button className="btn-view-application">View Application</Button>
-            </td>
-            <td>
-              <Button className="btn-approve">
-                <Image src={check} alt="" /> Approve
-              </Button>
-              <Button className="m-1 btn-reject">Reject</Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mark Chen</td>
-            <td>mark@gmail.com</td>
-            <td> +1 467 474 9303</td>
-            <td>
-              <Button className="btn-view-application">View Application</Button>
-            </td>
-            <td>
-              <Button className="btn-approve">
-                <Image src={check} alt="" /> Approve
-              </Button>
-              <Button className="m-1 btn-reject">Reject</Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mark Chen</td>
-            <td>mark@gmail.com</td>
-            <td> +1 467 474 9303</td>
-            <td>
-              <Button className="btn-view-application">View Application</Button>
-            </td>
-            <td>
-              <Button className="btn-approve">
-                <Image src={check} alt="" /> Approve
-              </Button>
-              <Button className="m-1 btn-reject">Reject</Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mark Chen</td>
-            <td>mark@gmail.com</td>
-            <td> +1 467 474 9303</td>
-            <td>
-              <Button className="btn-view-application">View Application</Button>
-            </td>
-            <td>
-              <Button className="btn-approve">
-                <Image src={check} alt="" /> Approve
-              </Button>
-              <Button className="m-1 btn-reject">Reject</Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mark Chen</td>
-            <td>mark@gmail.com</td>
-            <td> +1 467 474 9303</td>
-            <td>
-              <Button className="btn-view-application">View Application</Button>
-            </td>
-            <td>
-              <Button className="btn-approve">
-                <Image src={check} alt="" /> Approve
-              </Button>
-              <Button className="m-1 btn-reject">Reject</Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mark Chen</td>
-            <td>mark@gmail.com</td>
-            <td> +1 467 474 9303</td>
-            <td>
-              <Button className="btn-view-application">View Application</Button>
-            </td>
-            <td>
-              <Button className="btn-approve">
-                <Image src={check} alt="" /> Approve
-              </Button>
-              <Button className="m-1 btn-reject">Reject</Button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mark Chen</td>
-            <td>mark@gmail.com</td>
-            <td> +1 467 474 9303</td>
-            <td>
-              <Button className="btn-view-application">View Application</Button>
-            </td>
-            <td>
-              <Button className="btn-approve">
-                <Image src={check} alt="" /> Approve
-              </Button>
-              <Button className="m-1 btn-reject">Reject</Button>
-            </td>
-          </tr>
+          <ApplicationItem application={DUMMY_DATA} />
         </tbody>
       </Table>
       <Navbar className="navigation justify-content-end">
@@ -195,6 +145,8 @@ const BecomeGuide = () => {
       <Route path="/become-guide/viewapplication">
         <ViewApplication />
       </Route>
+
+      <Route component={PageNotFound} />
     </Switch>
   );
 };

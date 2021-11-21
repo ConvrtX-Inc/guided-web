@@ -19,6 +19,8 @@ import SupportScreen from "./components/pages/support/SupportScreen";
 import UserScreen from "./components/pages/users/UserScreen";
 import BadgeScreen from "./components/pages/badge/BadgeScreen";
 import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen";
+import ModalTest from "./components/ui/ModalTest";
+import PageNotFound from "./components/pages/PageNotFound";
 
 function App() {
   return (
@@ -28,42 +30,42 @@ function App() {
           <SignInForm />
         </LoginLayout>
       </Route>
-      <Route path="/signin">
+      <Route  exact={true} path="/signin">
         <LoginLayout>
           <SignInForm />
         </LoginLayout>
       </Route>
-      <Route path="/newpassword">
+      <Route exact={true} path="/newpassword">
         <LoginLayout>
           <NewPassword />
         </LoginLayout>
       </Route>
-      <Route path="/phoneverification">
+      <Route exact={true} path="/phoneverification">
         <LoginLayout>
           <PhoneVerification />
         </LoginLayout>
       </Route>
-      <Route path="/continuewithphone">
+      <Route exact={true} path="/continuewithphone">
         <LoginLayout>
           <ContinueWithPhone />
         </LoginLayout>
       </Route>
-      <Route path="/resetpassword">
+      <Route exact={true} path="/resetpassword">
         <LoginLayout>
           <ResetPassword />
         </LoginLayout>
       </Route>
-      <Route path="/confirm-resetpassword">
+      <Route exact={true} path="/confirm-resetpassword">
         <LoginLayout>
           <ConfirmResetPassword />
         </LoginLayout>
       </Route>
-      <Route path="/dashboard">
+      <Route exact={true} path="/dashboard">
         <AdminLayout>
           <DashboardScreen />
         </AdminLayout>
       </Route>
-      <Route path="/become-guide/">
+      <Route exact={true} path="/become-guide/">
         <AdminLayout>
           <BecomeGuide />
         </AdminLayout>
@@ -73,41 +75,47 @@ function App() {
           <GuidesScreen />
         </AdminLayout>
       </Route>
-      <Route path="/post">
+      <Route exact={true} path="/post">
         <AdminLayout>
           <PostScreen />
         </AdminLayout>
       </Route>
-      <Route path="/payment">
+      <Route exact={true} path="/payment">
         <AdminLayout>
           <PaymentScreen />
         </AdminLayout>
       </Route>
-      <Route path="/transaction">
+      <Route exact={true} path="/transaction">
         <AdminLayout>
           <TransactionScreen />
         </AdminLayout>
       </Route>
-      <Route path="/support">
+      <Route exact={true} path="/support">
         <AdminLayout>
           <SupportScreen />
         </AdminLayout>
       </Route>
-      <Route path="/end-users">
+      <Route exact={true} path="/end-users">
         <AdminLayout>
           <UserScreen />
         </AdminLayout>
       </Route>
-      <Route path="/badge">
+      <Route exact={true} path="/badge">
         <AdminLayout>
           <BadgeScreen />
         </AdminLayout>
       </Route>
-      <Route path="/guidelines">
+      <Route exact={true} path="/guidelines">
         <AdminLayout>
           <GuidelinesScreen />
         </AdminLayout>
       </Route>
+
+      <Route exact={true} path="/modal-test">
+        <ModalTest />
+      </Route>
+
+      <Route exact={true} component={PageNotFound} />
     </Switch>
   );
 }

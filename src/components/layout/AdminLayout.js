@@ -2,6 +2,7 @@ import './AdminLayout.scss';
 
 import AdminNavigation from "./AdminNavigation";
 
+//Admin dashboard layout/wrapper
 const AdminLayout = (props) => {
   return (
     <div className="wrapper">

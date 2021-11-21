@@ -11,6 +11,7 @@ import { NavLink } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Image from "react-bootstrap/Image";
 
+//Admin/dashboard sidebar main navigation
 const AdminNavigation = () => {
   return (
     <Navbar className="sidebar">

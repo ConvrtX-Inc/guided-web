@@ -60,12 +60,12 @@ function App() {
           <ConfirmResetPassword />
         </LoginLayout>
       </Route>
-      <Route exact={true} path="/dashboard">
+      <Route path="/dashboard">
         <AdminLayout>
           <DashboardScreen />
         </AdminLayout>
       </Route>
-      <Route exact={true} path="/become-guide/">
+      <Route path="/become-guide">
         <AdminLayout>
           <BecomeGuide />
         </AdminLayout>
@@ -75,43 +75,43 @@ function App() {
           <GuidesScreen />
         </AdminLayout>
       </Route>
-      <Route exact={true} path="/post">
+      <Route path="/post">
         <AdminLayout>
           <PostScreen />
         </AdminLayout>
       </Route>
-      <Route exact={true} path="/payment">
+      <Route path="/payment">
         <AdminLayout>
           <PaymentScreen />
         </AdminLayout>
       </Route>
-      <Route exact={true} path="/transaction">
+      <Route path="/transaction">
         <AdminLayout>
           <TransactionScreen />
         </AdminLayout>
       </Route>
-      <Route exact={true} path="/support">
+      <Route path="/support">
         <AdminLayout>
           <SupportScreen />
         </AdminLayout>
       </Route>
-      <Route exact={true} path="/end-users">
+      <Route path="/end-users">
         <AdminLayout>
           <UserScreen />
         </AdminLayout>
       </Route>
-      <Route exact={true} path="/badge">
+      <Route path="/badge">
         <AdminLayout>
           <BadgeScreen />
         </AdminLayout>
       </Route>
-      <Route exact={true} path="/guidelines">
+      <Route path="/guidelines">
         <AdminLayout>
           <GuidelinesScreen />
         </AdminLayout>
       </Route>
 
-      <Route exact={true} path="/modal-test">
+      <Route path="/modal-test">
         <ModalTest />
       </Route>
 

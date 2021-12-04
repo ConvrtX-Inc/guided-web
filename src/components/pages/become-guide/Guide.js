@@ -122,7 +122,7 @@ const GuideRejected = () => {
 const BecomeGuide = () => {
   return (
     <Switch>
-      <Route path="/become-guide/all">
+      <Route exact path="/become-guide/all">
         <GuideContainer>
           <GuideSeeAll />
         </GuideContainer>

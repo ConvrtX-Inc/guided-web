@@ -1,4 +1,4 @@
-import "./phoneverification.scss";
+import "./PhoneVerification.scss";
 
 import { Link } from "react-router-dom";
 

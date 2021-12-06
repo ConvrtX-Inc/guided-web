@@ -1,10 +1,7 @@
-import React from "react";
 import { Switch, Route } from "react-router-dom";
 
-import NewPassword from "./components/pages/login/newpassword";
-import PhoneVerification from "./components/pages/login/phoneverification";
-import ContinueWithPhone from "./components/pages/login/contwithphone";
-import SignInForm from "./components/pages/login/signin";
+import PhoneVerification from "./components/pages/login/PhoneVerification";
+import SignInForm from "./components/pages/login/SignIn";
 import ResetPassword from "./components/pages/login/ResetPassword";
 import ConfirmResetPassword from "./components/pages/login/ConfirmResetPassword";
 import LoginLayout from "./components/layout/LoginLayout";
@@ -21,6 +18,8 @@ import BadgeScreen from "./components/pages/badge/BadgeScreen";
 import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen";
 import ModalTest from "./components/ui/ModalTest";
 import PageNotFound from "./components/pages/PageNotFound";
+import ContWithPhone from "./components/pages/login/ContWithPhone";
+import NewPassword from "./components/pages/login/NewPassword";
 
 function App() {
   return (
@@ -47,7 +46,7 @@ function App() {
       </Route>
       <Route exact={true} path="/continuewithphone">
         <LoginLayout>
-          <ContinueWithPhone />
+          <ContWithPhone />
         </LoginLayout>
       </Route>
       <Route exact={true} path="/resetpassword">

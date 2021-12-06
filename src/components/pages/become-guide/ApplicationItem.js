@@ -23,8 +23,8 @@ const ApplicationItem = (props) => {
           to={{
             pathname: "/become-guide/viewapplication",
             state: {
-              app: appItem
-            }
+              app: appItem,
+            },
           }}
           className="btn btn-light btn-view-application"
         >

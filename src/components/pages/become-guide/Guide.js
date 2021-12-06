@@ -76,7 +76,7 @@ const DUMMY_DATA = [
 const GuideSeeAll = () => {
   return (
     <Col>
-      <Table borderless className="mt-4">
+      <Table responsive borderless className="mt-4">
         <thead>
           <tr>
             <th className="ps-4">Application Name</th>

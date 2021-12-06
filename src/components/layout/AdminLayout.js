@@ -1,4 +1,4 @@
-import './AdminLayout.scss';
+import "./AdminLayout.scss";
 
 import AdminNavigation from "./AdminNavigation";
 

@@ -1,11 +1,11 @@
-import "./phoneverification.scss";
+import "./phoneverification.scss"
 
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form"
+import Button from "react-bootstrap/Button"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
 
 const PhoneVerification = () => {
   return (
@@ -43,4 +43,4 @@ const PhoneVerification = () => {
   );
 };
 
-export default PhoneVerification;
+export default PhoneVerification

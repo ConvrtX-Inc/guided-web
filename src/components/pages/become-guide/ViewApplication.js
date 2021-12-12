@@ -19,7 +19,6 @@ import Row from "react-bootstrap/Row";
 import { Col, Image } from "react-bootstrap";
 
 const ViewApplication = () => {
-
   const location = useLocation();
   const { app } = location.state;
 

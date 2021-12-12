@@ -1,26 +1,25 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom"
 
-import NewPassword from "./components/pages/login/newpassword";
-import PhoneVerification from "./components/pages/login/phoneverification";
-import ContinueWithPhone from "./components/pages/login/contwithphone";
-import SignInForm from "./components/pages/login/signin";
-import ResetPassword from "./components/pages/login/ResetPassword";
-import ConfirmResetPassword from "./components/pages/login/ConfirmResetPassword";
-import LoginLayout from "./components/layout/LoginLayout";
-import AdminLayout from "./components/layout/AdminLayout";
-import DashboardScreen from "./components/pages/dashboard/DashboardScreen";
-import BecomeGuide from "./components/pages/become-guide/Guide";
-import GuidesScreen from "./components/pages/guides/GuidesScreen";
-import PostScreen from "./components/pages/post/PostScreen";
-import PaymentScreen from "./components/pages/payments/PaymentScreen";
-import TransactionScreen from "./components/pages/transactions/TransactionScreen";
-import SupportScreen from "./components/pages/support/SupportScreen";
-import UserScreen from "./components/pages/users/UserScreen";
-import BadgeScreen from "./components/pages/badge/BadgeScreen";
-import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen";
-import ModalTest from "./components/ui/ModalTest";
-import PageNotFound from "./components/pages/PageNotFound";
+import PhoneVerification from "./components/pages/login/phoneverification"
+import SignInForm from "./components/pages/login/signin"
+import ResetPassword from "./components/pages/login/ResetPassword"
+import ConfirmResetPassword from "./components/pages/login/ConfirmResetPassword"
+import LoginLayout from "./components/layout/LoginLayout"
+import AdminLayout from "./components/layout/AdminLayout"
+import DashboardScreen from "./components/pages/dashboard/DashboardScreen"
+import BecomeGuide from "./components/pages/become-guide/Guide"
+import GuidesScreen from "./components/pages/guides/GuidesScreen"
+import PostScreen from "./components/pages/post/PostScreen"
+import PaymentScreen from "./components/pages/payments/PaymentScreen"
+import TransactionScreen from "./components/pages/transactions/TransactionScreen"
+import SupportScreen from "./components/pages/support/SupportScreen"
+import UserScreen from "./components/pages/users/UserScreen"
+import BadgeScreen from "./components/pages/badge/BadgeScreen"
+import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen"
+import ModalTest from "./components/ui/ModalTest"
+import PageNotFound from "./components/pages/PageNotFound"
+import ContWithPhone from "./components/pages/login/contwithphone"
+import NewPassword from "./components/pages/login/newpassword"
 
 function App() {
   return (
@@ -47,7 +46,7 @@ function App() {
       </Route>
       <Route exact={true} path="/continuewithphone">
         <LoginLayout>
-          <ContinueWithPhone />
+          <ContWithPhone />
         </LoginLayout>
       </Route>
       <Route exact={true} path="/resetpassword">
@@ -120,4 +119,4 @@ function App() {
   );
 }
 
-export default App;
+export default App

@@ -1,19 +1,19 @@
-import './DashboardScreen.scss';
+import "./DashboardScreen.scss";
 
-import user from '../../../assets/admin/user.png';
-import user_2 from '../../../assets/admin/user-2.png';
-import user_3 from '../../../assets/admin/user-3.png';
-import user_4 from '../../../assets/admin/user-4.png';
-import user_5 from '../../../assets/admin/user-5.png';
-import user_6 from '../../../assets/admin/user-6.png';
-import user_7 from '../../../assets/admin/user-7.png';
-import user1 from '../../../assets/admin/user1.png';
-import user2 from '../../../assets/admin/user2.png';
-import box from '../../../assets/admin/box.png';
-import cardimg from '../../../assets/admin/card-img.png';
-import cardimg0 from '../../../assets/admin/card-img0.png';
-import cardimg1 from '../../../assets/admin/card-img1.png';
-import cardimg2 from '../../../assets/admin/card-img2.png';
+import user from "../../../assets/admin/user.png";
+import user_2 from "../../../assets/admin/user-2.png";
+import user_3 from "../../../assets/admin/user-3.png";
+import user_4 from "../../../assets/admin/user-4.png";
+import user_5 from "../../../assets/admin/user-5.png";
+import user_6 from "../../../assets/admin/user-6.png";
+import user_7 from "../../../assets/admin/user-7.png";
+import user1 from "../../../assets/admin/user1.png";
+import user2 from "../../../assets/admin/user2.png";
+import box from "../../../assets/admin/box.png";
+import cardimg from "../../../assets/admin/card-img.png";
+import cardimg0 from "../../../assets/admin/card-img0.png";
+import cardimg1 from "../../../assets/admin/card-img1.png";
+import cardimg2 from "../../../assets/admin/card-img2.png";
 
 import Image from "react-bootstrap/Image";
 import Card from "react-bootstrap/Card";
@@ -21,94 +21,94 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
-import MostRecent from './MostRecent';
-import RecentGuides from './RecentGuides';
-import MostActive from './MostActive';
+import MostRecent from "./MostRecent";
+import RecentGuides from "./RecentGuides";
+import MostActive from "./MostActive";
 
 const DUMMY_DATA = [
   {
     id: 1,
-    article: 'Article Name Goes Here',
-    img: cardimg
+    article: "Article Name Goes Here",
+    img: cardimg,
   },
   {
     id: 2,
-    article: 'Article Name Goes Here',
-    img: cardimg0
+    article: "Article Name Goes Here",
+    img: cardimg0,
   },
   {
     id: 3,
-    article: 'Article Name Goes Here',
-    img: cardimg1
+    article: "Article Name Goes Here",
+    img: cardimg1,
   },
   {
     id: 4,
-    article: 'Article Name Goes Here',
-    img: cardimg2
-  }
-]
+    article: "Article Name Goes Here",
+    img: cardimg2,
+  },
+];
 
 const DUMMY_DATA2 = [
   {
     id: 1,
-    name: 'Mark Chen',
-    email: 'mark@gmail.com',
-    contactnumber: '+1 367 829 3828',
-    img: user
+    name: "Mark Chen",
+    email: "mark@gmail.com",
+    contactnumber: "+1 367 829 3828",
+    img: user,
   },
   {
     id: 2,
-    name: 'John Kristen',
-    email: 'john@gmail.com',
-    contactnumber: '+1 347 829 3828',
-    img: user_2
+    name: "John Kristen",
+    email: "john@gmail.com",
+    contactnumber: "+1 347 829 3828",
+    img: user_2,
   },
   {
     id: 3,
-    name: 'Rayan Artecona',
-    email: 'rayan@gmail.com',
-    contactnumber: '+1 257 829 3828',
-    img: user_3
+    name: "Rayan Artecona",
+    email: "rayan@gmail.com",
+    contactnumber: "+1 257 829 3828",
+    img: user_3,
   },
-  { 
+  {
     id: 4,
-    name: 'Smith Jerom',
-    email: 'mark@gmail.com',
-    contactnumber: '+1 113 829 3828',
-    img: user
+    name: "Smith Jerom",
+    email: "mark@gmail.com",
+    contactnumber: "+1 113 829 3828",
+    img: user,
   },
-]
+];
 
 const DUMMY_DATA3 = [
   {
     id: 1,
-    name: 'John Mark',
-    email: 'john@gmail.com',
-    contactnumber: '+1 367 829 3828',
-    img: user_4
+    name: "John Mark",
+    email: "john@gmail.com",
+    contactnumber: "+1 367 829 3828",
+    img: user_4,
   },
   {
     id: 2,
-    name: 'Matt Bell',
-    email: 'matt@gmail.com',
-    contactnumber: '+1 347 829 3828',
-    img: user_5
+    name: "Matt Bell",
+    email: "matt@gmail.com",
+    contactnumber: "+1 347 829 3828",
+    img: user_5,
   },
   {
     id: 3,
-    name: 'Ann Sasha',
-    email: 'ann@gmail.com',
-    contactnumber: '+1 257 829 3828',
-    img: user_6
+    name: "Ann Sasha",
+    email: "ann@gmail.com",
+    contactnumber: "+1 257 829 3828",
+    img: user_6,
   },
-  { 
+  {
     id: 4,
-    name: 'Parket Wilson',
-    email: 'parker@gmail.com',
-    contactnumber: '+1 113 829 3828',
-    img: user_7
+    name: "Parket Wilson",
+    email: "parker@gmail.com",
+    contactnumber: "+1 113 829 3828",
+    img: user_7,
   },
-]
+];
 
 const DashboardScreen = () => {
   return (

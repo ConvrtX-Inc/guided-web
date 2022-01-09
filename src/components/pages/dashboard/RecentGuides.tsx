@@ -2,8 +2,8 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Image from "react-bootstrap/Image";
 
-const RecentGuides = (props) => {
-  return props.recentguide.map((recentguideItem) => (
+const RecentGuides = (props: any) => {
+  return props.recentguide.map((recentguideItem: any) => (
     <Col className="col-sm" key={recentguideItem.id}>
       <Card className="recent-guides">
         <Card.Body>

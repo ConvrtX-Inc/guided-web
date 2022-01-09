@@ -1,7 +1,7 @@
-import "./newpassword.scss"
+import "./newpassword.scss";
 
-import Form from "react-bootstrap/Form"
-import Button from "react-bootstrap/Button"
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 const NewPassword = () => {
   return (
@@ -31,4 +31,4 @@ const NewPassword = () => {
   );
 };
 
-export default NewPassword
+export default NewPassword;

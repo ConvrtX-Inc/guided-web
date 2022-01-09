@@ -17,72 +17,52 @@ const AdminNavigation = () => {
     <Navbar className="sidebar">
       <ul className="list-unstyled ms-2">
         <li>
-          <NavLink
-            to="/dashboard"
-            activeClassName="active"
-            className="nav-link"
-          >
+          <NavLink to="/dashboard" className="nav-link">
             <Image src={grid} alt="" /> Dashboard
           </NavLink>
         </li>
         <li>
-          <NavLink to="/guides" activeClassName="active" className="nav-link">
+          <NavLink to="/guides" className="nav-link">
             <Image src={users} alt="" /> Guides & Outfitters
           </NavLink>
         </li>
         <li>
-          <NavLink to="/post" activeClassName="active" className="nav-link">
+          <NavLink to="/post" className="nav-link">
             <Image src={post} alt="" /> Post
           </NavLink>
         </li>
         <li>
-          <NavLink to="/payment" activeClassName="active" className="nav-link">
+          <NavLink to="/payment" className="nav-link">
             <Image src={card} alt="" /> Pending Payments
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/transaction"
-            activeClassName="active"
-            className="nav-link"
-          >
+          <NavLink to="/transaction" className="nav-link">
             <Image src={clock} alt="" /> Transaction History
           </NavLink>
         </li>
         <li>
-          <NavLink to="/support" activeClassName="active" className="nav-link">
+          <NavLink to="/support" className="nav-link">
             <Image src={support} alt="" /> Support
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/end-users"
-            activeClassName="active"
-            className="nav-link"
-          >
+          <NavLink to="/end-users" className="nav-link">
             <Image src={users} alt="" /> End Users
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/become-guide/all"
-            activeClassName="active"
-            className="nav-link"
-          >
+          <NavLink to="/become-guide/all" className="nav-link">
             <Image src={users} alt="" /> Become a Guide
           </NavLink>
         </li>
         <li>
-          <NavLink to="/badge" activeClassName="active" className="nav-link">
+          <NavLink to="/badge" className="nav-link">
             <Image src={camera} alt="" /> Badge Management
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/guidelines"
-            activeClassName="active"
-            className="nav-link"
-          >
+          <NavLink to="/guidelines/faq" className="nav-link">
             <Image src={file} alt="" /> Guidelines
           </NavLink>
         </li>

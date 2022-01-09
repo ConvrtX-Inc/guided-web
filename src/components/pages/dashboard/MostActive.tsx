@@ -2,8 +2,8 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Image from "react-bootstrap/Image";
 
-const MostActive = (props) => {
-  return props.mostactive.map((mostactive) => (
+const MostActive = (props: any) => {
+  return props.mostactive.map((mostactive: any) => (
     <Col className="col-sm" key={mostactive.id}>
       <Card className="most-active">
         <Card.Body>

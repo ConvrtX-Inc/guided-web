@@ -13,33 +13,33 @@ const BecomeGuideNavigation = () => {
     <Navbar>
       <Form className="container-fluid justify-content-start">
         <NavLink
-          exact={true}
+          //exact={true}
           to="/become-guide/all"
-          activeClassName="active"
+          //activeClassName="active"
           className="btn btn-light btn-guide me-2"
         >
           See All
         </NavLink>
         <NavLink
-          exact={true}
+          //exact={true}
           to="/become-guide/approved"
-          activeClassName="active"
+          //activeClassName="active"
           className="btn btn-light btn-guide me-2"
         >
           Approved
         </NavLink>
         <NavLink
-          exact={true}
+          //exact={true}
           to="/become-guide/pending"
-          activeClassName="active"
+          //activeClassName="active"
           className="btn btn-light btn-guide me-2"
         >
           Pending
         </NavLink>
         <NavLink
-          exact={true}
+          //exact={true}
           to="/become-guide/rejected"
-          activeClassName="active"
+          //activeClassName="active"
           className="btn btn-light btn-guide me-2"
         >
           Rejected
@@ -64,7 +64,7 @@ const BecomeGuideNavigation = () => {
         </InputGroup>
         <NavLink
           to="/become-guide/filter"
-          activeClassName="active"
+          //activeClassName="active"
           className="btn btn-light btn-filter"
         >
           <Image src={filter} alt="" /> Filter

@@ -1,9 +1,9 @@
-import "./signin.scss"
+import "./signin.scss";
 
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
-import Button from "react-bootstrap/Button"
-import Form from "react-bootstrap/Form"
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
 const SignInForm = () => {
   return (
@@ -31,4 +31,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm
+export default SignInForm;

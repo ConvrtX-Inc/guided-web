@@ -1,18 +1,15 @@
+import Navbar from "react-bootstrap/Navbar";
+import Col from "react-bootstrap/Col";
+import Table from "react-bootstrap/Table";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Image from "react-bootstrap/Image";
+
+import ApplicationItem from "./ApplicationItem";
+
 import right from "../../../assets/admin/right.png";
 import left from "../../../assets/admin/left2.png";
 import user2 from "../../../assets/admin/user30.png";
-
-import Form from "react-bootstrap/Form";
-import Image from "react-bootstrap/Image";
-import Navbar from "react-bootstrap/Navbar";
-import Col from "react-bootstrap/Col";
-import { Route, Switch } from "react-router-dom";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
-import GuideContainer from "./GuideContainer";
-import ViewApplication from "./ViewApplication";
-import ApplicationItem from "./ApplicationItem";
-import PageNotFound from "../PageNotFound";
 
 const DUMMY_DATA = [
   {
@@ -107,48 +104,4 @@ const GuideSeeAll = () => {
   );
 };
 
-const GuideApproved = () => {
-  return <div>Hello Approved</div>;
-};
-
-const GuidePending = () => {
-  return <div>Hello Pending</div>;
-};
-
-const GuideRejected = () => {
-  return <div>Hello Rejected</div>;
-};
-
-const BecomeGuide = () => {
-  return (
-    <Switch>
-      <Route exact path="/become-guide/all">
-        <GuideContainer>
-          <GuideSeeAll />
-        </GuideContainer>
-      </Route>
-      <Route path="/become-guide/approved">
-        <GuideContainer>
-          <GuideApproved />
-        </GuideContainer>
-      </Route>
-      <Route path="/become-guide/pending">
-        <GuideContainer>
-          <GuidePending />
-        </GuideContainer>
-      </Route>
-      <Route path="/become-guide/rejected">
-        <GuideContainer>
-          <GuideRejected />
-        </GuideContainer>
-      </Route>
-      <Route path="/become-guide/viewapplication">
-        <ViewApplication />
-      </Route>
-
-      <Route component={PageNotFound} />
-    </Switch>
-  );
-};
-
-export default BecomeGuide;
+export default GuideSeeAll;

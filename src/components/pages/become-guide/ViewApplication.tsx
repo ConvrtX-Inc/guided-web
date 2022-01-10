@@ -13,14 +13,15 @@ import cert2 from "../../../assets/admin/cert2.png";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Navbar from "react-bootstrap/Navbar";
-import { NavLink, useLocation } from "react-router-dom";
-import Button from "@restart/ui/esm/Button";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
-import { Col, Image } from "react-bootstrap";
+import { NavLink, useLocation } from "react-router-dom";
 
 const ViewApplication = () => {
   const location = useLocation();
-  const { app } = location.state;
+  const { app }: any = location.state;
 
   return (
     <Container className="viewapp-container">
@@ -71,14 +72,14 @@ const ViewApplication = () => {
               <Col>
                 <Form.Label>Contact Number</Form.Label>
                 <Form.Control
-                  defaultValue="+1 2467 9323"
+                  defaultValue={app.contactnumber}
                   type="text"
                 ></Form.Control>
               </Col>
               <Col>
                 <Form.Label>Email</Form.Label>
                 <Form.Control
-                  defaultValue="Mark23@gmail.com"
+                  defaultValue={app.email}
                   type="text"
                 ></Form.Control>
               </Col>

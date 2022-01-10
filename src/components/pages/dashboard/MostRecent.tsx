@@ -3,8 +3,8 @@ import Card from "react-bootstrap/Card";
 import Image from "react-bootstrap/Image";
 import { Link } from "react-router-dom";
 
-const MostRecent = (props) => {
-  return props.mostrecent.map((mostrecentItem) => (
+const MostRecent = (props: any) => {
+  return props.mostrecent.map((mostrecentItem: any) => (
     <Col className="col-sm" key={mostrecentItem.id}>
       <Card className="most-recent p-2">
         <Image src={mostrecentItem.img} alt="" />

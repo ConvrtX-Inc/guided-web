@@ -1,0 +1,136 @@
+.badge-container {
+  h2 {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 44px;
+  }
+  nav {
+    form {
+      justify-content: center;
+      display: flex;
+    }
+
+    .btn-create-badge {
+      background: #007749;
+      border-radius: 16px;
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 28px;
+      /* identical to box height, or 143% */
+
+      color: #ffffff;
+      width: 178px;
+      height: 48px;
+    }
+
+    .active {
+      border: 1px solid #007749;
+      box-sizing: border-box;
+      color: #007749;
+    }
+
+    input,
+    select {
+      background: #ffffff;
+      font-weight: 600;
+      font-size: 14px;
+      font-style: normal;
+      height: 42px;
+    }
+
+    .input-group-1 {
+      width: 160px;
+      border-left: none;
+    }
+
+    .input-group-2 {
+      width: 142px;
+    }
+
+    .input-group-text {
+      background: #ffffff;
+      border: 1px solid #e4e4e4;
+      border-radius: 20px;
+    }
+
+    .input-search {
+      border: 1px solid #e4e4e4;
+      border-radius: 20px;
+
+      .input-group-text {
+        border-right: none;
+      }
+    }
+
+    select {
+      border: 1px solid #e3e3e3;
+      box-sizing: border-box;
+      border-radius: 14px;
+      color: rgba(9, 17, 14, 0.5);
+    }
+
+    .btn-filter {
+      width: 99px;
+      height: 42px;
+      padding-top: 10px;
+      background: #ffffff;
+      border: 1px solid #e3e3e3;
+      box-sizing: border-box;
+      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.06);
+      border-radius: 14px;
+      color: #007749;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 20px;
+
+      letter-spacing: 0.2px;
+
+      color: #007749;
+    }
+  }
+  table {
+    th {
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      /* identical to box height, or 129% */
+
+      text-transform: capitalize;
+
+      color: #898a8d;
+    }
+    tbody {
+      .badge-name {
+        font-family: Gilroy;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 24px;
+        /* identical to box height, or 171% */
+
+        color: #000000;
+      }
+    }
+    .btn-edit {
+      background: #ffffff;
+      border: 1px solid #adb1b1;
+      border-radius: 16px;
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 20px;
+      /* identical to box height, or 167% */
+
+      color: #007749;
+      width: 80px;
+      height: 34px;
+    }
+  }
+}

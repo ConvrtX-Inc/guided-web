@@ -1,9 +1,9 @@
-import "./contwithphone.scss"
+import "./contwithphone.scss";
 
-import Form from "react-bootstrap/Form"
-import Button from "react-bootstrap/Button"
-import IntlTelInput from "react-intl-tel-input"
-import "react-intl-tel-input/dist/main.css"
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import IntlTelInput from "react-intl-tel-input";
+import "react-intl-tel-input/dist/main.css";
 
 const ContWithPhone = () => {
   return (
@@ -23,4 +23,4 @@ const ContWithPhone = () => {
   );
 };
 
-export default ContWithPhone
+export default ContWithPhone;

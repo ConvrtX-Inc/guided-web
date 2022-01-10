@@ -5,8 +5,9 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
 import BecomeGuideNavigation from "./BecomeGuideNavigation";
+import { Outlet } from "react-router-dom";
 
-const GuideContainer = (props) => {
+const GuideContainer = () => {
   return (
     <Container className="guide-container">
       <Row className="mt-5">
@@ -17,7 +18,9 @@ const GuideContainer = (props) => {
       <Row>
         <BecomeGuideNavigation />
       </Row>
-      <Row>{props.children}</Row>
+      <Row>
+        <Outlet />
+      </Row>
     </Container>
   );
 };

@@ -5,8 +5,8 @@ import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import { Link } from "react-router-dom";
 
-const ApplicationItem = (props) => {
-  return props.application.map((appItem) => (
+const ApplicationItem = (props: any) => {
+  return props.application.map((appItem: any) => (
     <tr key={appItem.id}>
       <td className="app-name p-4">
         <Image
@@ -22,10 +22,8 @@ const ApplicationItem = (props) => {
         <Link
           to={{
             pathname: "/become-guide/viewapplication",
-            state: {
-              app: appItem,
-            },
           }}
+          state={{ app: appItem }}
           className="btn btn-light btn-view-application"
         >
           View Application

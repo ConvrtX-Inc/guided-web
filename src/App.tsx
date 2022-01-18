@@ -14,8 +14,8 @@ import SupportScreen from "./components/pages/support/SupportScreen";
 import UserScreen from "./components/pages/users/UserScreen";
 import BadgeScreen from "./components/pages/badge/BadgeScreen";
 import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen";
-import ModalTest from "./components/ui/ModalTest";
-import PageNotFound from "./components/pages/PageNotFound";
+//import ModalTest from "./components/ui/ModalTest";
+//import PageNotFound from "./components/pages/PageNotFound";
 import ContWithPhone from "./components/pages/login/contwithphone";
 import NewPassword from "./components/pages/login/newpassword";
 import { Route, Routes } from "react-router-dom";
@@ -33,6 +33,7 @@ import GuidePending from "./components/pages/become-guide/GuidePending";
 import GuideRejected from "./components/pages/become-guide/GuideRejected";
 import GuideContainer from "./components/pages/become-guide/GuideContainer";
 import CreateBadge from "./components/pages/badge/CreateBadge";
+import EditBadge from "./components/pages/badge/EditBadge";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
           <Route path="/badge">
             <Route index element={<BadgeScreen />} />
             <Route path="/badge/create" element={<CreateBadge />} />
+            <Route path="/badge/:id" element={<EditBadge />} />
           </Route>
 
           <Route path="/guidelines/" element={<GuidelinesScreen />}>

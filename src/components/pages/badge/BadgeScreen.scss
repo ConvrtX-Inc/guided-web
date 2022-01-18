@@ -92,45 +92,4 @@
       color: #007749;
     }
   }
-  table {
-    th {
-      font-family: Gilroy;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 18px;
-      /* identical to box height, or 129% */
-
-      text-transform: capitalize;
-
-      color: #898a8d;
-    }
-    tbody {
-      .badge-name {
-        font-family: Gilroy;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 14px;
-        line-height: 24px;
-        /* identical to box height, or 171% */
-
-        color: #000000;
-      }
-    }
-    .btn-edit {
-      background: #ffffff;
-      border: 1px solid #adb1b1;
-      border-radius: 16px;
-      font-family: Gilroy;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 12px;
-      line-height: 20px;
-      /* identical to box height, or 167% */
-
-      color: #007749;
-      width: 80px;
-      height: 34px;
-    }
-  }
 }

@@ -10,9 +10,10 @@ import { useEffect, useState } from "react";
 
 import left from "../../../assets/admin/left.png";
 
-import "./CreateBadge.scss";
 
-import api from "./api/Badge";
+import api from "../../config/Api";
+
+import "./CreateBadge.scss";
 
 const EditBadge = () => {
   const { id } = useParams();
@@ -45,8 +46,8 @@ const EditBadge = () => {
 
     //console.log(data);
 
-    await api.patch(`badges/${id}`, data);
-    history("/badge");
+    await api.patch(`api/v1/badges/${id}`, data);
+    history("api/v1/badge");
   };
 
   useEffect(() => {

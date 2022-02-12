@@ -8,16 +8,16 @@ import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
+import BadgeItems from "./BadgeItems";
 
 import search from "../../../assets/admin/search.png";
 import down from "../../../assets/admin/down.png";
 import filter from "../../../assets/admin/filter.png";
 import create_badge from "../../../assets/admin/create-badge.png";
 
-import "./BadgeScreen.scss";
-import BadgeItems from "./BadgeItems";
+import api from "../../config/Api";
 
-import api from "./api/Badge";
+import "./BadgeScreen.scss";
 
 interface Badge {
   id: string;
@@ -32,7 +32,7 @@ const BadgeScreen = () => {
 
   const loadData = async () => {
     return await api
-      .get("/badges")
+      .get("api/v1/badges")
       .then((res) => {
         //setData(res.data);
 

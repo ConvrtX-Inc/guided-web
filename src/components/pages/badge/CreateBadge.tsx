@@ -10,9 +10,9 @@ import { useState } from "react";
 
 import left from "../../../assets/admin/left.png";
 
-import "./CreateBadge.scss";
+import api from "../../config/Api";
 
-import api from "./api/Badge";
+import "./CreateBadge.scss";
 
 const CreateBadge = () => {
   const history = useNavigate();
@@ -32,7 +32,7 @@ const CreateBadge = () => {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    await api.post(`badges`, {
+    await api.post(`api/v1/badges`, {
       badge_name: badge_name,
       badge_description: badge_description,
     });

@@ -1,10 +1,7 @@
-//import { Switch, Route } from "react-router-dom";
-
 import PhoneVerification from "./components/pages/login/phoneverification";
 import SignInForm from "./components/pages/login/signin";
 import ResetPassword from "./components/pages/login/ResetPassword";
 import ConfirmResetPassword from "./components/pages/login/ConfirmResetPassword";
-import AdminLayout from "./components/layout/AdminLayout";
 import DashboardScreen from "./components/pages/dashboard/DashboardScreen";
 import GuidesScreen from "./components/pages/guides/GuidesScreen";
 import PostScreen from "./components/pages/post/PostScreen";
@@ -34,6 +31,7 @@ import GuideRejected from "./components/pages/become-guide/GuideRejected";
 import GuideContainer from "./components/pages/become-guide/GuideContainer";
 import CreateBadge from "./components/pages/badge/CreateBadge";
 import EditBadge from "./components/pages/badge/EditBadge";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 function App() {
   return (
@@ -53,7 +51,8 @@ function App() {
         </Route>
       </Routes>
       <Routes>
-        <Route path="/" element={<AdminLayout />}>
+        {/*<Route element={<AdminLayout />}>*/}
+        <Route element={<ProtectedRoutes />}>
           <Route path="/dashboard" element={<DashboardScreen />} />
           <Route path="/guides" element={<GuidesScreen />} />
           <Route path="/post" element={<PostScreen />} />

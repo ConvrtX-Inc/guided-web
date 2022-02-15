@@ -6,13 +6,12 @@ import { useEffect, useState } from "react";
 import Logs from "./Logs";
 import Spinner from "../../ui/Spinner";
 
-import api from "../../config/Api";
-
 import "./Locallaws.scss";
+import GuidelinesService from "../../../services/guidelines/Guidelines.Service";
 
 const LocalLaws = () => {
   const [isExist, setisExist] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPending, setisPending] = useState(false);
   const [data, setData] = useState({
     id: "",
     type_name: "",
@@ -27,28 +26,67 @@ const LocalLaws = () => {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
+    setisPending(true);
     if (isExist === true) {
-      await api.patch(`api/v1/guidelines/${id}`, data);
+      try {
+        await GuidelinesService.patchLocalLaws(id, data).then(
+          (res) => {
+            console.log(res);
+            setisPending(false);
+          },
+          (err) => {
+            console.log(err);
+            setisPending(false);
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        setisPending(false);
+      }
     } else {
-      await api.post(`api/v1/guidelines/${id}`, {
-        type_name: "Local Laws",
-        text_content: text_content,
-      });
+      try {
+        await GuidelinesService.postLocalLaws(id, {
+          type_name: "Local Laws",
+          text_content: text_content,
+        }).then(
+          (res) => {
+            console.log(res);
+            setisPending(false);
+          },
+          (err) => {
+            console.log(err);
+            setisPending(false);
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        setisPending(false);
+      }
     }
     loadData();
   };
 
   const loadData = async () => {
-    const result = await api.get(
-      "api/v1/guidelines?filter=type_name%7C%7C%24eq%7C%7CLocal%20Laws&limit=1"
-    );
-    if (result.data.length > 0) {
-      setData(result.data[0]);
-      setisExist(true);
-    } else {
-      setisExist(false);
+    try {
+      setisPending(true);
+      await GuidelinesService.loadLocalLaws().then(
+        (res) => {
+          if (res.length > 0) {
+            setData(res[0]);
+            setisExist(true);
+          } else {
+            setisExist(false);
+          }
+          setisPending(false);
+        },
+        (error) => {
+          setisPending(false);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      setisPending(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -60,7 +98,7 @@ const LocalLaws = () => {
       <Col className="ms-4 me-4 locallaws-content">
         <Row>
           <Col className="col-8 left-col">
-            {!isLoading && (
+            {!isPending && (
               <Form onSubmit={(e) => onSubmit(e)}>
                 <Row className="ms-3 me-2 mt-5">
                   <Form.Group
@@ -85,7 +123,7 @@ const LocalLaws = () => {
                 </Row>
               </Form>
             )}
-            {isLoading && <Spinner />}
+            {isPending && <Spinner />}
           </Col>
 
           <Logs />

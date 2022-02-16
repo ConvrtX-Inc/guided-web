@@ -10,7 +10,7 @@ const BadgeItems = (props: any) => {
   const displayData = props.items.map((badgeItem: any) => (
     <tr key={badgeItem.id}>
       <td>
-        <Image src={badgeItem.imgBase64} alt="alt text here" />
+        <Image className="table-row-img" src={badgeItem.imgBase64} alt="alt text here" />
       </td>
       <td className="badge-name">{badgeItem.badge_name}</td>
       <td>{badgeItem.badge_description}</td>

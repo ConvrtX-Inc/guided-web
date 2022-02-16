@@ -29,7 +29,7 @@ const LocalLaws = () => {
     setisPending(true);
     if (isExist === true) {
       try {
-        await GuidelinesService.patchLocalLaws(id, data).then(
+        await GuidelinesService.patchData(id, data).then(
           (res) => {
             console.log(res);
             setisPending(false);
@@ -45,7 +45,7 @@ const LocalLaws = () => {
       }
     } else {
       try {
-        await GuidelinesService.postLocalLaws(id, {
+        await GuidelinesService.postData(id, {
           type_name: "Local Laws",
           text_content: text_content,
         }).then(

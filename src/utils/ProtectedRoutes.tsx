@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+//import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import AdminNavigation from "../components/layout/AdminNavigation";
 import SignInForm from "../components/pages/login/signin";
 import "../components/layout/AdminLayout.scss";
@@ -9,8 +9,8 @@ const useAuth = () => {
   return user.token;
 };
 const ProtectedRoutes = () => {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+  //const [user, setUser] = useState(null);
+  //const navigate = useNavigate();
 
   const isAuth = useAuth();
 

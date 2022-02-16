@@ -6,8 +6,9 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
+import Button from "react-bootstrap/Button";
 import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import BadgeItems from "./BadgeItems";
 
 import search from "../../../assets/admin/search.png";
@@ -15,9 +16,9 @@ import down from "../../../assets/admin/down.png";
 import filter from "../../../assets/admin/filter.png";
 import create_badge from "../../../assets/admin/create-badge.png";
 
-import api from "../../config/Api";
-
 import "./BadgeScreen.scss";
+import Spinner from "../../ui/Spinner";
+import BadgeService from "../../../services/badge/Badge.Service";
 
 interface Badge {
   id: string;
@@ -28,20 +29,48 @@ interface Badge {
 
 const BadgeScreen = () => {
   const [data, setData] = useState([] as any[]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPending, setisPending] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const loadData = async () => {
-    return await api
-      .get("api/v1/badges")
-      .then((res) => {
-        //setData(res.data);
-
-        setDataWithImg(res.data);
-      })
-      .catch((err) => console.log(err));
+  const onSearchChange = (e: any) => {
+    setSearchTerm(e.target.value);
   };
 
-  const setDataWithImg = async (badges: Badge[]) => {
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+  };
+
+  const onClickFilter = async (e: any) => {
+    e.preventDefault();
+    if (!searchTerm) {
+      loadData();
+    } else {
+      try {
+        setisPending(true);
+        await BadgeService.filterData({
+          badge_name: searchTerm,
+        }).then(
+          (res) => {
+            setDataWithImg(res.data);
+            setisPending(false);
+          },
+          (error) => {
+            setisPending(false);
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        setisPending(false);
+      }
+    }
+  };
+
+  const bufferToBase64 = (buffer: any) => {
+    const b64 = Buffer.from(buffer, "base64");
+    return b64;
+  };
+
+  const setDataWithImg = useCallback(async (badges: Badge[]) => {
     let badgeWithImg: Badge[] = [];
 
     const base64Flag = "data:image/png;base64,";
@@ -73,17 +102,29 @@ const BadgeScreen = () => {
     );
 
     setData(badgeWithImg);
-    setIsLoading(false);
-  };
+  }, []);
 
-  const bufferToBase64 = (buffer: any) => {
-    const b64 = Buffer.from(buffer, "base64");
-    return b64;
-  };
+  const loadData = useCallback(async () => {
+    try {
+      setisPending(true);
+      await BadgeService.loadData().then(
+        (res) => {
+          setDataWithImg(res.data);
+          setisPending(false);
+        },
+        (error) => {
+          setisPending(false);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      setisPending(false);
+    }
+  }, [setDataWithImg]);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   return (
     <Container className="badge-container">
@@ -105,7 +146,7 @@ const BadgeScreen = () => {
                   Create Badge
                 </NavLink>
               </Nav>
-              <Form className="d-flex">
+              <Form className="d-flex" onSubmit={(e) => onSubmit(e)}>
                 <InputGroup className="input-group-1 me-2">
                   <InputGroup.Text>
                     <Image src={search} alt="" />
@@ -114,6 +155,7 @@ const BadgeScreen = () => {
                     className="input-search"
                     type="text"
                     placeholder="Search"
+                    onChange={(e) => onSearchChange(e)}
                   />
                 </InputGroup>
                 <InputGroup className="input-group-2 me-2">
@@ -124,19 +166,20 @@ const BadgeScreen = () => {
                     <Image src={down} alt="" />
                   </InputGroup.Text>
                 </InputGroup>
-                <NavLink
-                  to="/become-guide/filter"
+                <Button
+                  //to="/become-guide/filter"
                   className="btn btn-light btn-filter"
+                  onClick={(e) => onClickFilter(e)}
                 >
                   <Image src={filter} alt="" /> Filter
-                </NavLink>
+                </Button>
               </Form>
             </Container>
           </Navbar>
         </Col>
       </Row>
-      {!isLoading && <BadgeItems items={data} />}
-      {isLoading && <p>Loading data..</p>}
+      {!isPending && <BadgeItems items={data} />}
+      {isPending && <Spinner />}
     </Container>
   );
 };

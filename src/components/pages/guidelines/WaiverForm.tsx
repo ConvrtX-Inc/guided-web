@@ -2,16 +2,17 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { useEffect, useState } from "react";
+import Logs from "./Logs";
+import Spinner from "../../ui/Spinner";
 
 import "./WaiverForm.scss";
 
-import api from "./api/Guidelines";
-
-import { useEffect, useState } from "react";
-import Logs from "./Logs";
+import api from "../../config/Api";
 
 const WaiverForm = () => {
   const [isExist, setisExist] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState({
     id: "",
     type_name: "",
@@ -27,9 +28,9 @@ const WaiverForm = () => {
   const onSubmit = async (e: any) => {
     e.preventDefault();
     if (isExist === true) {
-      await api.patch(`guidelines/${id}`, data);
+      await api.patch(`api/v1/guidelines/${id}`, data);
     } else {
-      await api.post(`guidelines/${id}`, {
+      await api.post(`api/v1/guidelines/${id}`, {
         type_name: "Traveler Release & Waiver Form",
         text_content: text_content,
       });
@@ -39,7 +40,7 @@ const WaiverForm = () => {
 
   const loadData = async () => {
     const result = await api.get(
-      "guidelines?filter=type_name%7C%7C%24eq%7C%7CTraveler%20Release%20%26%20Waiver%20Form&limit=1"
+      "api/v1/guidelines?filter=type_name%7C%7C%24eq%7C%7CTraveler%20Release%20%26%20Waiver%20Form&limit=1"
     );
     if (result.data.length > 0) {
       setData(result.data[0]);
@@ -47,6 +48,7 @@ const WaiverForm = () => {
     } else {
       setisExist(false);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -58,29 +60,32 @@ const WaiverForm = () => {
       <Col className="ms-4 me-4 waiver-content">
         <Row>
           <Col className="col-8 left-col">
-            <Form onSubmit={(e) => onSubmit(e)}>
-              <Row className="ms-3 me-2 mt-5">
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlTextarea1"
-                >
-                  <Form.Control
-                    as="textarea"
-                    rows={12}
-                    name="text_content"
-                    value={text_content}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                </Form.Group>
-              </Row>
-              <Row>
-                <Col className="ms-4 mt-4 col-4">
-                  <Button type="submit" className="btn btn-save">
-                    Save
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
+            {!isLoading && (
+              <Form onSubmit={(e) => onSubmit(e)}>
+                <Row className="ms-3 me-2 mt-5">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Control
+                      as="textarea"
+                      rows={12}
+                      name="text_content"
+                      value={text_content}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row>
+                  <Col className="ms-4 mt-4 col-4">
+                    <Button type="submit" className="btn btn-save">
+                      Save
+                    </Button>
+                  </Col>
+                </Row>
+              </Form>
+            )}
+            {isLoading && <Spinner />}
           </Col>
 
           <Logs />

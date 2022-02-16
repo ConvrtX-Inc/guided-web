@@ -5,14 +5,40 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import left from "../../../assets/admin/left.png";
-import img_preview from "../../../assets/admin/img-preview.png";
+
+import api from "../../config/Api";
 
 import "./CreateBadge.scss";
 
 const CreateBadge = () => {
+  const history = useNavigate();
+  const [data, setData] = useState({
+    id: "",
+    badge_name: "",
+    badge_description: "",
+    imgBase64: "",
+    img_icon: "",
+  });
+
+  const { badge_name, badge_description, imgBase64 } = data;
+
+  const onInputChange = (e: any) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    await api.post(`api/v1/badges`, {
+      badge_name: badge_name,
+      badge_description: badge_description,
+    });
+    history("/badge");
+  };
+
   return (
     <Container className="create-badge-container">
       <Navbar>
@@ -36,13 +62,13 @@ const CreateBadge = () => {
         <Row>
           <Col>
             <div className="img-container text-center pt-4">
-              <Image src={img_preview} alt="" />
+              <Image src={imgBase64} alt="" />
             </div>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Form className="create-badge-form">
+            <Form className="create-badge-form" onSubmit={(e) => onSubmit(e)}>
               <Row className="pt-4">
                 <Col className="col-4">
                   <input
@@ -50,6 +76,9 @@ const CreateBadge = () => {
                     className="form-control"
                     placeholder="Badge Name"
                     aria-label="Badge Name"
+                    name="badge_name"
+                    value={badge_name}
+                    onChange={(e) => onInputChange(e)}
                   />
                 </Col>
                 <Col className="col-4">
@@ -62,7 +91,7 @@ const CreateBadge = () => {
                     className="form-select"
                     aria-label="Default select example"
                   >
-                    <option selected>Select Color</option>
+                    <option>Select Color</option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
                     <option value="3">Three</option>
@@ -76,12 +105,17 @@ const CreateBadge = () => {
                     id="exampleFormControlTextarea1"
                     placeholder="Description"
                     rows={3}
+                    name="badge_description"
+                    value={badge_description}
+                    onChange={(e) => onInputChange(e)}
                   ></textarea>
                 </Col>
               </Row>
               <Row className="pt-5">
                 <Col className="col-4">
-                  <Button className="btn-create">Create</Button>
+                  <Button type="submit" className="btn-create">
+                    Create
+                  </Button>
                 </Col>
               </Row>
             </Form>

@@ -2,16 +2,16 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { useEffect, useState } from "react";
+import Logs from "./Logs";
+import Spinner from "../../ui/Spinner";
 
 import "./Locallaws.scss";
-
-import { useEffect, useState } from "react";
-
-import api from "./api/Guidelines";
-import Logs from "./Logs";
+import GuidelinesService from "../../../services/guidelines/Guidelines.Service";
 
 const LocalLaws = () => {
   const [isExist, setisExist] = useState(false);
+  const [isPending, setisPending] = useState(false);
   const [data, setData] = useState({
     id: "",
     type_name: "",
@@ -26,62 +26,106 @@ const LocalLaws = () => {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
+    setisPending(true);
     if (isExist === true) {
-      await api.patch(`guidelines/${id}`, data);
+      try {
+        await GuidelinesService.patchLocalLaws(id, data).then(
+          (res) => {
+            console.log(res);
+            setisPending(false);
+          },
+          (err) => {
+            console.log(err);
+            setisPending(false);
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        setisPending(false);
+      }
     } else {
-      await api.post(`guidelines/${id}`, {
-        type_name: "Local Laws",
-        text_content: text_content,
-      });
+      try {
+        await GuidelinesService.postLocalLaws(id, {
+          type_name: "Local Laws",
+          text_content: text_content,
+        }).then(
+          (res) => {
+            console.log(res);
+            setisPending(false);
+          },
+          (err) => {
+            console.log(err);
+            setisPending(false);
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        setisPending(false);
+      }
     }
     loadData();
   };
 
   const loadData = async () => {
-    const result = await api.get(
-      "guidelines?filter=type_name%7C%7C%24eq%7C%7CLocal%20Laws&limit=1"
-    );
-    if (result.data.length > 0) {
-      setData(result.data[0]);
-      setisExist(true);
-    } else {
-      setisExist(false);
+    try {
+      setisPending(true);
+      await GuidelinesService.loadLocalLaws().then(
+        (res) => {
+          if (res.length > 0) {
+            setData(res[0]);
+            setisExist(true);
+          } else {
+            setisExist(false);
+          }
+          setisPending(false);
+        },
+        (error) => {
+          setisPending(false);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      setisPending(false);
     }
   };
 
   useEffect(() => {
     loadData();
   }, []);
+
   return (
     <Row className="mt-3">
       <Col className="ms-4 me-4 locallaws-content">
         <Row>
           <Col className="col-8 left-col">
-            <Form onSubmit={(e) => onSubmit(e)}>
-              <Row className="ms-3 me-2 mt-5">
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlTextarea1"
-                >
-                  <Form.Control
-                    as="textarea"
-                    rows={12}
-                    name="text_content"
-                    value={text_content}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                </Form.Group>
-              </Row>
-              <Row>
-                <Col className="ms-4 mt-4 col-4">
-                  <Button type="submit" className="btn btn-save">
-                    Save
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
+            {!isPending && (
+              <Form onSubmit={(e) => onSubmit(e)}>
+                <Row className="ms-3 me-2 mt-5">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Control
+                      as="textarea"
+                      rows={12}
+                      name="text_content"
+                      value={text_content}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </Form.Group>
+                </Row>
+                <Row>
+                  <Col className="ms-4 mt-4 col-4">
+                    <Button type="submit" className="btn btn-save">
+                      Save
+                    </Button>
+                  </Col>
+                </Row>
+              </Form>
+            )}
+            {isPending && <Spinner />}
           </Col>
-          
+
           <Logs />
         </Row>
       </Col>

@@ -6,19 +6,85 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import BadgeItems from "./BadgeItems";
 
 import search from "../../../assets/admin/search.png";
 import down from "../../../assets/admin/down.png";
 import filter from "../../../assets/admin/filter.png";
-import hunt from "../../../assets/admin/Hunt.png";
 import create_badge from "../../../assets/admin/create-badge.png";
+
+import api from "../../config/Api";
 
 import "./BadgeScreen.scss";
 
+interface Badge {
+  id: string;
+  badge_name: string;
+  badge_description: string;
+  img64: string;
+}
+
 const BadgeScreen = () => {
+  const [data, setData] = useState([] as any[]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadData = async () => {
+    return await api
+      .get("api/v1/badges")
+      .then((res) => {
+        //setData(res.data);
+
+        setDataWithImg(res.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const setDataWithImg = async (badges: Badge[]) => {
+    let badgeWithImg: Badge[] = [];
+
+    const base64Flag = "data:image/png;base64,";
+
+    await Promise.all(
+      badges.map(async (badge: any) => {
+        //console.log(badge);
+        //console.log(badge.img_icon.data);
+
+        //const img64 = bufferToBase64(badge.img_icon.data);
+        //console.log(img64)
+
+        //badge.img64 = `${base64Flag}${img64}`;
+        //console.log(badge.img64);
+
+        const imgBuffer = badge.img_icon.data;
+        //console.log(imgBuffer);
+
+        //const base64Flag = "data:image/png;base64,";
+        const imgBase64 = bufferToBase64(imgBuffer);
+        //console.log(imgBase64);
+
+        badge.imgBase64 = `${base64Flag}${imgBase64}`;
+        //console.log(badge.imgBase64);
+
+        badgeWithImg.push(badge);
+        //console.log(badgeWithImg);
+      })
+    );
+
+    setData(badgeWithImg);
+    setIsLoading(false);
+  };
+
+  const bufferToBase64 = (buffer: any) => {
+    const b64 = Buffer.from(buffer, "base64");
+    return b64;
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
   return (
     <Container className="badge-container">
       <Row className="mt-5">
@@ -69,35 +135,8 @@ const BadgeScreen = () => {
           </Navbar>
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <Table responsive borderless className="mt-4">
-            <thead>
-              <tr>
-                <th>Icon</th>
-                <th>Badge Name</th>
-                <th>Description</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <Image src={hunt} alt="alt text here" />
-                </td>
-                <td className="badge-name">Hunting</td>
-                <td>
-                  Sample description goes here to explain about the badge.
-                  Sample description goes here to explain about the badge{" "}
-                </td>
-                <td>
-                  <Button className="btn-edit">Edit</Button>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </Col>
-      </Row>
+      {!isLoading && <BadgeItems items={data} />}
+      {isLoading && <p>Loading data..</p>}
     </Container>
   );
 };

@@ -2,12 +2,11 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-
+import { useEffect, useState } from "react";
 import Logs from "./Logs";
 import FAQItems from "./FAQItems";
 
-import api from "./api/Guidelines";
-import { useEffect, useState } from "react";
+import api from "../../config/Api";
 
 import "./FAQ.scss";
 
@@ -16,7 +15,7 @@ const FAQ = () => {
 
   const loadData = async () => {
     const result = await api.get(
-      "http://localhost:3000/api/v1/guidelines?filter=type_name%7C%7C%24eq%7C%7CFAQ"
+      "api/v1/guidelines?filter=type_name%7C%7C%24eq%7C%7CFAQ"
     );
     setData(result.data);
   };

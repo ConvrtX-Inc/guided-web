@@ -15,7 +15,7 @@ import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen";
 //import PageNotFound from "./components/pages/PageNotFound";
 import ContWithPhone from "./components/pages/login/contwithphone";
 import NewPassword from "./components/pages/login/newpassword";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import GuideSeeAll from "./components/pages/become-guide/GuideSeeAll";
 import ViewApplication from "./components/pages/become-guide/ViewApplication";
 import FAQ from "./components/pages/guidelines/FAQ";
@@ -31,11 +31,11 @@ import GuideRejected from "./components/pages/become-guide/GuideRejected";
 import GuideContainer from "./components/pages/become-guide/GuideContainer";
 import CreateBadge from "./components/pages/badge/CreateBadge";
 import EditBadge from "./components/pages/badge/EditBadge";
-import ProtectedRoutes from "./utils/ProtectedRoutes";
+import AdminLayout from "./components/layout/AdminLayout";
 
 function App() {
   return (
-    <>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginLayout />}>
           <Route index element={<SignInForm />} />
@@ -51,16 +51,16 @@ function App() {
         </Route>
       </Routes>
       <Routes>
-        {/*<Route element={<AdminLayout />}>*/}
-        <Route element={<ProtectedRoutes />}>
-          <Route path="/dashboard" element={<DashboardScreen />} />
-          <Route path="/guides" element={<GuidesScreen />} />
-          <Route path="/post" element={<PostScreen />} />
-          <Route path="/payment" element={<PaymentScreen />} />
-          <Route path="/transaction" element={<TransactionScreen />} />
-          <Route path="/support" element={<SupportScreen />} />
-          <Route path="/end-users" element={<UserScreen />} />
-          <Route path="/badge">
+        <Route path="/" element={<AdminLayout />}>
+          {/*<Route path="/" element={<ProtectedRoutes />}>*/}
+          <Route path="dashboard" element={<DashboardScreen />} />
+          <Route path="guides" element={<GuidesScreen />} />
+          <Route path="post" element={<PostScreen />} />
+          <Route path="payment" element={<PaymentScreen />} />
+          <Route path="transaction" element={<TransactionScreen />} />
+          <Route path="support" element={<SupportScreen />} />
+          <Route path="end-users" element={<UserScreen />} />
+          <Route path="badge">
             <Route index element={<BadgeScreen />} />
             <Route path="/badge/create" element={<CreateBadge />} />
             <Route path="/badge/:id" element={<EditBadge />} />
@@ -92,7 +92,7 @@ function App() {
           />
         </Route>
       </Routes>
-    </>
+    </BrowserRouter>
   );
 }
 

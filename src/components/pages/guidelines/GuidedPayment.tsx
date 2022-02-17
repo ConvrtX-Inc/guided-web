@@ -29,7 +29,7 @@ const GuidedPayment = () => {
     setisPending(true);
     if (isExist === true) {
       try {
-        await GuidelinesService.patchPayoutTerms(id, data).then(
+        await GuidelinesService.patchData(id, data).then(
           (res) => {
             console.log(res);
             setisPending(false);
@@ -45,7 +45,7 @@ const GuidedPayment = () => {
       }
     } else {
       try {
-        await GuidelinesService.postPayoutTerms(id, {
+        await GuidelinesService.postData(id, {
           type_name: "Guided Payment",
           text_content: text_content,
         }).then(

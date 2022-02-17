@@ -2,6 +2,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import "./Logs.scss";
+//import { useEffect, useState } from "react";
 
 const Logs = () => {
   return (

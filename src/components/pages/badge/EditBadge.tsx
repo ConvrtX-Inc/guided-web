@@ -5,15 +5,14 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
-import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
+import { NavLink, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import left from "../../../assets/admin/left.png";
 
-
-import api from "../../config/Api";
-
 import "./CreateBadge.scss";
+import BadgeService from "../../../services/badge/Badge.Service";
 
 const EditBadge = () => {
   const { id } = useParams();
@@ -21,7 +20,7 @@ const EditBadge = () => {
   const location = useLocation();
   const { badge }: any = location.state;
 
-  const history = useNavigate();
+  //const history = useNavigate();
   const [data, setData] = useState({
     id: "",
     badge_name: "",
@@ -31,7 +30,11 @@ const EditBadge = () => {
   });
 
   //const [baseImage, setBaseImage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPending, setisPending] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { badge_name, badge_description, imgBase64 } = data;
 
@@ -42,17 +45,44 @@ const EditBadge = () => {
   const onSubmit = async (e: any) => {
     e.preventDefault();
 
+    setisPending(true);
+    setIsSuccess(false);
+    setIsError(false);
+
     data.img_icon = data.imgBase64.replace("data:image/png;base64,", "");
 
     //console.log(data);
 
-    await api.patch(`api/v1/badges/${id}`, data);
-    history("api/v1/badge");
+    //await api.patch(`api/v1/badges/${id}`, data);
+    try {
+      await BadgeService.patchData(id ?? "", data).then(
+        (res) => {
+          //console.log(res);
+          if (res.status === 200) {
+            //alert("The record was successfully saved.");
+            setIsSuccess(true);
+            setSuccessMessage("The record was successfully saved.");
+          }
+          setisPending(false);
+          //history("/badge");
+        },
+        (err) => {
+          //console.log(err.response);
+          if (err.response.status === 413) {
+            setIsError(true);
+            setErrorMessage(err.response.statusText);
+          }
+          setisPending(false);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      setisPending(false);
+    }
   };
 
   useEffect(() => {
     setData(badge);
-    setIsLoading(false);
   }, [badge]);
 
   const uploadImage = async (e: any) => {
@@ -90,95 +120,129 @@ const EditBadge = () => {
         </div>
       </Navbar>
       <Container className="create-badge-content">
-        <Row>
-          {!isLoading && (
-            <Col className="mt-5">
-              <div className="title">
-                <h3>Preview</h3>
-              </div>
-            </Col>
-          )}
-        </Row>
-        <Row>
-          {!isLoading && (
+        {isSuccess && (
+          <Row>
             <Col>
-              <div className="img-container text-center">
-                <Image
-                  className="p-2"
-                  src={imgBase64}
-                  alt=""
-                  width={198}
-                  height={219}
-                />
-              </div>
+              <Alert
+                className=""
+                variant="success"
+                onClose={() => setIsSuccess(false)}
+                dismissible
+              >
+                <p>{successMessage}</p>
+              </Alert>
             </Col>
-          )}
+          </Row>
+        )}
+        {isError && (
+          <Row>
+            <Col>
+              <Alert
+                className=""
+                variant="danger"
+                onClose={() => setIsError(false)}
+                dismissible
+              >
+                <p>{errorMessage}</p>
+              </Alert>
+            </Col>
+          </Row>
+        )}
+
+        <Row>
+          <Col className="mt-5">
+            <div className="title">
+              <h3>Preview</h3>
+            </div>
+          </Col>
         </Row>
         <Row>
           <Col>
-            {!isLoading && (
-              <Form className="create-badge-form" onSubmit={(e) => onSubmit(e)}>
-                <Row className="pt-4">
-                  <Col className="col-4">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Badge Name"
-                      aria-label="Badge Name"
-                      name="badge_name"
-                      value={badge_name}
-                      onChange={(e) => onInputChange(e)}
-                    />
-                  </Col>
-                  <Col className="col-4">
-                    <input
-                      className="form-control"
-                      type="file"
-                      id="file"
-                      accept=".jpeg, .png, .jpg"
-                      name="imgBase64"
-                      onChange={(e) => {
-                        uploadImage(e);
-                      }}
-                    />
-                  </Col>
-                </Row>
-                <Row className="pt-4">
-                  <Col className="col-4">
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                    >
-                      <option>Select Color</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select>
-                  </Col>
-                </Row>
-                <Row className="pt-4">
-                  <Col className="col-8">
-                    <textarea
-                      className="form-control"
-                      id="exampleFormControlTextarea1"
-                      placeholder="Description"
-                      rows={3}
-                      name="badge_description"
-                      value={badge_description}
-                      onChange={(e) => onInputChange(e)}
-                    ></textarea>
-                  </Col>
-                </Row>
-                <Row className="pt-5">
-                  <Col className="col-4">
+            <div className="img-container text-center">
+              <Image
+                className="p-2"
+                src={imgBase64}
+                alt=""
+                width={198}
+                height={219}
+              />
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Form className="create-badge-form" onSubmit={(e) => onSubmit(e)}>
+              <Row className="pt-4">
+                <Col className="col-4">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Badge Name"
+                    aria-label="Badge Name"
+                    name="badge_name"
+                    value={badge_name}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </Col>
+                <Col className="col-4">
+                  <input
+                    className="form-control"
+                    type="file"
+                    id="file"
+                    accept=".jpeg, .png, .jpg"
+                    name="imgBase64"
+                    onChange={(e) => {
+                      uploadImage(e);
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row className="pt-4">
+                <Col className="col-4">
+                  <select
+                    className="form-select"
+                    aria-label="Default select example"
+                  >
+                    <option>Select Color</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </Col>
+              </Row>
+              <Row className="pt-4">
+                <Col className="col-8">
+                  <textarea
+                    className="form-control"
+                    id="exampleFormControlTextarea1"
+                    placeholder="Description"
+                    rows={3}
+                    name="badge_description"
+                    value={badge_description}
+                    onChange={(e) => onInputChange(e)}
+                  ></textarea>
+                </Col>
+              </Row>
+              <Row className="pt-5">
+                <Col className="col-4">
+                  {!isPending && (
                     <Button type="submit" className="btn-create">
                       Update
                     </Button>
-                  </Col>
-                </Row>
-              </Form>
-            )}
-            {isLoading && <p>Loading data..</p>}
+                  )}
+                  {isPending && (
+                    <Button className="btn-create" type="button" disabled>
+                      <span
+                        className="spinner-border spinner-border-sm me-1"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Updating...
+                    </Button>
+                  )}
+                </Col>
+              </Row>
+            </Form>
           </Col>
         </Row>
       </Container>

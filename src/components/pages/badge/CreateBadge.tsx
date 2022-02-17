@@ -5,26 +5,32 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import left from "../../../assets/admin/left.png";
 
-import api from "../../config/Api";
-
 import "./CreateBadge.scss";
+import BadgeService from "../../../services/badge/Badge.Service";
 
 const CreateBadge = () => {
   const history = useNavigate();
   const [data, setData] = useState({
-    id: "",
     badge_name: "",
     badge_description: "",
     imgBase64: "",
     img_icon: "",
+    is_main_activity: true,
+    is_sub_activity: true,
   });
 
   const { badge_name, badge_description, imgBase64 } = data;
+  const [isPending, setisPending] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onInputChange = (e: any) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -32,11 +38,55 @@ const CreateBadge = () => {
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    await api.post(`api/v1/badges`, {
-      badge_name: badge_name,
-      badge_description: badge_description,
+    setisPending(true);
+    data.img_icon = data.imgBase64.replace("data:image/png;base64,", "");
+    try {
+      await BadgeService.postData(data).then(
+        (res) => {
+          //console.log(res);
+          if (res.status === 200) {
+            //alert("The record was successfully saved.");
+            setIsSuccess(true);
+            setSuccessMessage("The record was successfully saved.");
+          }
+          setisPending(false);
+          history("/badge");
+        },
+        (err) => {
+          //console.log(err.response);
+          if (err.response.status === 413) {
+            setIsError(true);
+            setErrorMessage(err.response.statusText);
+          }
+          setisPending(false);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      setisPending(false);
+    }
+  };
+
+  const uploadImage = async (e: any) => {
+    const file = e.target.files[0];
+    const base64 = await convertBase64(file);
+    //setBaseImage(String(base64));
+    setData({ ...data, [e.target.name]: String(base64) });
+  };
+
+  const convertBase64 = (file: any) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
     });
-    history("/badge");
   };
 
   return (
@@ -52,6 +102,34 @@ const CreateBadge = () => {
         </div>
       </Navbar>
       <Container className="create-badge-content">
+        {isSuccess && (
+          <Row>
+            <Col>
+              <Alert
+                className=""
+                variant="success"
+                onClose={() => setIsSuccess(false)}
+                dismissible
+              >
+                <p>{successMessage}</p>
+              </Alert>
+            </Col>
+          </Row>
+        )}
+        {isError && (
+          <Row>
+            <Col>
+              <Alert
+                className=""
+                variant="danger"
+                onClose={() => setIsError(false)}
+                dismissible
+              >
+                <p>{errorMessage}</p>
+              </Alert>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col className="mt-5">
             <div className="title">
@@ -61,8 +139,14 @@ const CreateBadge = () => {
         </Row>
         <Row>
           <Col>
-            <div className="img-container text-center pt-4">
-              <Image src={imgBase64} alt="" />
+            <div className="img-container text-center">
+              <Image
+                className=""
+                src={imgBase64}
+                alt=""
+                width={198}
+                height={219}
+              />
             </div>
           </Col>
         </Row>
@@ -77,12 +161,22 @@ const CreateBadge = () => {
                     placeholder="Badge Name"
                     aria-label="Badge Name"
                     name="badge_name"
+                    required
                     value={badge_name}
                     onChange={(e) => onInputChange(e)}
                   />
                 </Col>
                 <Col className="col-4">
-                  <input className="form-control" type="file" id="formFile" />
+                  <input
+                    className="form-control"
+                    type="file"
+                    id="file"
+                    accept=".jpeg, .png, .jpg"
+                    name="imgBase64"
+                    onChange={(e) => {
+                      uploadImage(e);
+                    }}
+                  />
                 </Col>
               </Row>
               <Row className="pt-4">
@@ -105,6 +199,7 @@ const CreateBadge = () => {
                     id="exampleFormControlTextarea1"
                     placeholder="Description"
                     rows={3}
+                    required
                     name="badge_description"
                     value={badge_description}
                     onChange={(e) => onInputChange(e)}
@@ -113,9 +208,21 @@ const CreateBadge = () => {
               </Row>
               <Row className="pt-5">
                 <Col className="col-4">
-                  <Button type="submit" className="btn-create">
-                    Create
-                  </Button>
+                  {!isPending && (
+                    <Button type="submit" className="btn-create">
+                      Create
+                    </Button>
+                  )}
+                  {isPending && (
+                    <Button className="btn-create" type="button" disabled>
+                      <span
+                        className="spinner-border spinner-border-sm me-1"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Creating...
+                    </Button>
+                  )}
                 </Col>
               </Row>
             </Form>

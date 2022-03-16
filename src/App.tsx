@@ -15,7 +15,7 @@ import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen";
 //import PageNotFound from "./components/pages/PageNotFound";
 import ContWithPhone from "./components/pages/login/contwithphone";
 import NewPassword from "./components/pages/login/newpassword";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import GuideSeeAll from "./components/pages/become-guide/GuideSeeAll";
 import ViewApplication from "./components/pages/become-guide/ViewApplication";
 import FAQ from "./components/pages/guidelines/FAQ";
@@ -32,12 +32,15 @@ import GuideContainer from "./components/pages/become-guide/GuideContainer";
 import CreateBadge from "./components/pages/badge/CreateBadge";
 import EditBadge from "./components/pages/badge/EditBadge";
 import AdminLayout from "./components/layout/AdminLayout";
+import { useContext } from "react";
+import AuthContext from "./context/AuthContext";
 
 function App() {
+  const authCtx = useContext(AuthContext);
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginLayout />}>
+        <Route element={<LoginLayout />}>
           <Route index element={<SignInForm />} />
           <Route path="/signin" element={<SignInForm />} />
           <Route path="/newpassword" element={<NewPassword />} />
@@ -49,48 +52,56 @@ function App() {
             element={<ConfirmResetPassword />}
           />
         </Route>
-      </Routes>
-      <Routes>
-        <Route path="/" element={<AdminLayout />}>
-          {/*<Route path="/" element={<ProtectedRoutes />}>*/}
-          <Route path="dashboard" element={<DashboardScreen />} />
-          <Route path="guides" element={<GuidesScreen />} />
-          <Route path="post" element={<PostScreen />} />
-          <Route path="payment" element={<PaymentScreen />} />
-          <Route path="transaction" element={<TransactionScreen />} />
-          <Route path="support" element={<SupportScreen />} />
-          <Route path="end-users" element={<UserScreen />} />
-          <Route path="badge">
-            <Route index element={<BadgeScreen />} />
-            <Route path="/badge/create" element={<CreateBadge />} />
-            <Route path="/badge/:id" element={<EditBadge />} />
-          </Route>
+        {authCtx.isLoggedIn && (
+          <Route element={<AdminLayout />}>
+            <Route path="dashboard" element={<DashboardScreen />} />
+            <Route path="guides" element={<GuidesScreen />} />
+            <Route path="post" element={<PostScreen />} />
+            <Route path="payment" element={<PaymentScreen />} />
+            <Route path="transaction" element={<TransactionScreen />} />
+            <Route path="support" element={<SupportScreen />} />
+            <Route path="end-users" element={<UserScreen />} />
+            <Route path="badge">
+              <Route index element={<BadgeScreen />} />
+              <Route path="/badge/create" element={<CreateBadge />} />
+              <Route path="/badge/:id" element={<EditBadge />} />
+            </Route>
 
-          <Route path="/guidelines/" element={<GuidelinesScreen />}>
-            <Route path="/guidelines/faq" element={<FAQ />} />
-            <Route path="/guidelines/tncs" element={<Tncs />} />
-            <Route path="/guidelines/waiver-form" element={<WaiverForm />} />
+            <Route path="/guidelines/" element={<GuidelinesScreen />}>
+              <Route path="/guidelines/faq" element={<FAQ />} />
+              <Route path="/guidelines/tncs" element={<Tncs />} />
+              <Route path="/guidelines/waiver-form" element={<WaiverForm />} />
+              <Route
+                path="/guidelines/cancellation"
+                element={<CancellationPolicy />}
+              />
+              <Route
+                path="/guidelines/guided-payment"
+                element={<GuidedPayment />}
+              />
+              <Route path="/guidelines/taxes" element={<LocalLaws />} />
+            </Route>
+            <Route path="/become-guide" element={<GuideContainer />}>
+              <Route path="/become-guide/all" element={<GuideSeeAll />} />
+              <Route
+                path="/become-guide/approved"
+                element={<GuideApproved />}
+              />
+              <Route path="/become-guide/pending" element={<GuidePending />} />
+              <Route
+                path="/become-guide/rejected"
+                element={<GuideRejected />}
+              />
+            </Route>
             <Route
-              path="/guidelines/cancellation"
-              element={<CancellationPolicy />}
+              path="/become-guide/viewapplication"
+              element={<ViewApplication />}
             />
-            <Route
-              path="/guidelines/guided-payment"
-              element={<GuidedPayment />}
-            />
-            <Route path="/guidelines/taxes" element={<LocalLaws />} />
           </Route>
-          <Route path="/become-guide" element={<GuideContainer />}>
-            <Route path="/become-guide/all" element={<GuideSeeAll />} />
-            <Route path="/become-guide/approved" element={<GuideApproved />} />
-            <Route path="/become-guide/pending" element={<GuidePending />} />
-            <Route path="/become-guide/rejected" element={<GuideRejected />} />
-          </Route>
-          <Route
-            path="/become-guide/viewapplication"
-            element={<ViewApplication />}
-          />
-        </Route>
+        )}
+        {!authCtx.isLoggedIn && (
+            <Route path="*" element={<Navigate to="/signin" />} />
+          )}
       </Routes>
     </BrowserRouter>
   );

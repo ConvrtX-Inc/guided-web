@@ -5,8 +5,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AuthService from "../../../services/Auth.Service";
+import AuthContext from "../../../context/AuthContext";
 
 interface LocationState {
   status: boolean;
@@ -24,6 +25,8 @@ const SignInForm = () => {
   const location = useLocation();
   const locationState = location.state as LocationState;
 
+  const authCtx = useContext(AuthContext);
+
   const handleLogin = async (e: any) => {
     e.preventDefault();
 
@@ -34,6 +37,7 @@ const SignInForm = () => {
       await AuthService.login(email, password).then(
         (res) => {
           setIsPending(false);
+          authCtx.login(res, "0");
           navigate("../dashboard", { replace: true });
         },
         (error) => {

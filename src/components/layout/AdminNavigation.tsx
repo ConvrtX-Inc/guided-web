@@ -8,11 +8,18 @@ import support from "../../assets/admin/Vector.png";
 import file from "../../assets/admin/file-text.png";
 
 import { NavLink } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 import Navbar from "react-bootstrap/Navbar";
 import Image from "react-bootstrap/Image";
+import { useContext } from "react";
+import AuthContext from "../../context/AuthContext";
 
 //Admin/dashboard sidebar main navigation
 const AdminNavigation = () => {
+  const authCtx = useContext(AuthContext);
+  const logoutHandler = () => {
+    authCtx.logout();
+  };
   return (
     <Navbar className="sidebar">
       <ul className="list-unstyled ms-2">
@@ -65,6 +72,11 @@ const AdminNavigation = () => {
           <NavLink to="/guidelines/faq" className="nav-link">
             <Image src={file} alt="" /> Guidelines
           </NavLink>
+        </li>
+        <li>
+          <Button variant="link" type="button" onClick={logoutHandler}>
+            Log-out -test
+          </Button>
         </li>
       </ul>
     </Navbar>

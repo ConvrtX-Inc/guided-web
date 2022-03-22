@@ -36,5 +36,4 @@ yarn-error.log*
 .settings/
 *.sublime-workspace
 .env
-yarn.lock
 package-lock.json

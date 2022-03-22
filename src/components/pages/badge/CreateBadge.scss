@@ -1,0 +1,89 @@
+.create-badge-container {
+  .navbar a img {
+    width: 6.03px;
+    height: 12px;
+  }
+
+  .btn-bck {
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 37px;
+    height: 37px;
+  }
+  .h1 {
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 44px;
+
+    color: #000000;
+  }
+  .create-badge-content {
+    h3 {
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 19px;
+      text-align: center;
+      text-transform: capitalize;
+
+      color: #adb1b1;
+    }
+    img {
+    }
+    .title {
+      width: 198px;
+    }
+    .img-container {
+      border: 1px dashed #c4c4c4;
+      box-sizing: border-box;
+      border-radius: 15px;
+      width: 198px;
+      height: 219px;
+    }
+    .create-badge-form {
+      input,
+      select,
+      textarea {
+        background: #ffffff;
+        border: 1px solid #c4c4c4;
+        box-sizing: border-box;
+        border-radius: 18px;
+        font-family: Gilroy;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 19px;
+        text-transform: capitalize;
+
+        color: #adb1b1;
+        height: 66px;
+      }
+      textarea {
+        height: 142px;
+      }
+      .btn-create {
+        font-family: Gilroy;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 20px;
+        /* or 143% */
+
+        text-align: center;
+
+        color: #ffffff;
+        background: #007749;
+        border-radius: 16px;
+        width: 184px;
+        height: 60px;
+        border: none;
+      }
+    }
+  }
+}

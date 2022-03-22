@@ -1,0 +1,144 @@
+#content {
+  font-family: Gilroy;
+  font-style: normal;
+  width: 100%;
+
+  h2 {
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 44px;
+    color: #000000;
+  }
+  .card {
+    height: 100px;
+    background: #ffffff;
+    border-radius: 20px;
+    font-weight: 600;
+
+    h4 {
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 29px;
+      font-size: 24px;
+      color: #181b1b;
+    }
+
+    h5 {
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 29px;
+    }
+
+    .card-body {
+      .d-board {
+        font-weight: 600;
+        opacity: 0.5;
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+  }
+
+  .most-recent {
+    height: 263px;
+    background: #ffffff;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.09);
+    border-radius: 15px;
+
+    img {
+      background: #181b1b;
+      border-radius: 8px;
+      //width: 230px;
+    }
+
+    a {
+      width: 93px;
+      height: 34px;
+      background: #ffc74a;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    h5 {
+      font-size: 18px;
+      line-height: 21px;
+      text-transform: capitalize;
+      color: #181b1b;
+      width: 159px;
+    }
+  }
+
+  .recent-guides {
+    height: 219px;
+    background: #ffffff;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.09);
+    border-radius: 15px;
+
+    img {
+      width: 76px;
+      height: 76px;
+    }
+
+    p {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 24px;
+      text-align: center;
+      color: #898a8d;
+    }
+
+    h4 {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 21px;
+      text-align: center;
+      color: #181b1b;
+    }
+  }
+
+  .most-active {
+    height: 219px;
+    background: #ffffff;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.09);
+    border-radius: 15px;
+
+    img {
+      width: 76px;
+      height: 76px;
+    }
+
+    p {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 24px;
+      text-align: center;
+      color: #898a8d;
+    }
+
+    h4 {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 21px;
+      text-align: center;
+      color: #181b1b;
+    }
+  }
+
+  .see-all {
+    a {
+      float: right;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 17px;
+      text-align: right;
+      text-decoration-line: underline;
+      text-transform: capitalize;
+      color: #007749;
+    }
+  }
+}

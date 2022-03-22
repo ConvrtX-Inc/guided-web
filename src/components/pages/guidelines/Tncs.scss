@@ -1,0 +1,38 @@
+.guidelines-container {
+  .tncs-content {
+    background: #ffffff;
+    border-radius: 15.7123px;
+    height: 654px;
+    textarea {
+      background: #ffffff;
+      border: 1px solid #e4e4e4;
+      box-sizing: border-box;
+      border-radius: 15px;
+      height: 404px;
+    }
+    .left-col {
+      border-right: 1px dashed rgba(0, 0, 0, 0.2);
+      //transform: rotate(90deg);
+    }
+    .btn-save {
+      background: #007749;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-sizing: border-box;
+      border-radius: 16px;
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 16px;
+      /* identical to box height, or 114% */
+
+      text-align: center;
+      letter-spacing: 0.5px;
+      text-transform: capitalize;
+
+      color: #ffffff;
+      width: 177.1px;
+      height: 50px;
+    }
+  }
+}

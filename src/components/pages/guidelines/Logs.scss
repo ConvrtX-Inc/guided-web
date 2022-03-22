@@ -1,0 +1,51 @@
+.guidelines-container {
+  .tncs-content,
+  .faq-content,
+  .waiver-content,
+  .cancellation-content,
+  .guidedpayment-content,
+  .locallaws-content {
+    h2 {
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 30px;
+      line-height: 36px;
+      letter-spacing: -0.02em;
+
+      color: #18243c !important;
+    }
+    h6 {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 21px;
+      /* identical to box height */
+
+      color: #021f3d;
+
+      opacity: 0.2;
+    }
+    .p-dates {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 21px;
+      /* identical to box height */
+
+      color: #979797;
+    }
+    .p-desc {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 21px;
+      /* identical to box height */
+
+      color: #979797;
+    }
+  }
+}

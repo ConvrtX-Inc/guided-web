@@ -1,0 +1,37 @@
+body {
+  background-color: #007749;
+}
+
+.signin-wrapper {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+}
+
+.img-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.img-wrapper div {
+  margin-bottom: 20px;
+}
+
+.img-wrapper div img {
+  height: 80px;
+}
+
+.left-pane {
+  height: 200px;
+  background-color: blue;
+}
+
+.right-pane {
+  height: 200px;
+  background-color: red;
+}

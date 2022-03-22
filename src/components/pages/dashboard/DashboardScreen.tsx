@@ -24,6 +24,8 @@ import { Link } from "react-router-dom";
 import MostRecent from "./MostRecent";
 import RecentGuides from "./RecentGuides";
 import MostActive from "./MostActive";
+import { useEffect, useState } from "react";
+import DashboardService from "../../../services/dashboard/Dashboard.Service";
 
 const DUMMY_DATA = [
   {
@@ -111,6 +113,82 @@ const DUMMY_DATA3 = [
 ];
 
 const DashboardScreen = () => {
+  const [cntAllUsers, setCntAllUsers] = useState([]);
+  const [cntActiveUsers, setCntActiveUsers] = useState([]);
+  const [cntOnlineUsers, setCntOnlineUsers] = useState([]);
+  const [cntTotalDownloads, setCntTotalDownloads] = useState([]);
+  const [recentPost, setRecentPost] = useState([]);
+
+  const loadCountAllUsers = async () => {
+    try {
+      await DashboardService.loadCountAllUsers().then(
+        (res) => {
+          setCntAllUsers(res.count);
+        },
+        (error) => {}
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const loadCountActiveUsers = async () => {
+    try {
+      await DashboardService.loadCountActiveUsers().then(
+        (res) => {
+          setCntActiveUsers(res.count);
+        },
+        (error) => {}
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const loadCountOnlineUsers = async () => {
+    try {
+      await DashboardService.loadCountOnlineUsers().then(
+        (res) => {
+          setCntOnlineUsers(res.count);
+        },
+        (error) => {}
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const loadCountTotalDownloads = async () => {
+    try {
+      await DashboardService.loadCountTotalDownloads().then(
+        (res) => {
+          setCntTotalDownloads(res.downloads);
+        },
+        (error) => {}
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const loadRecentPosts = async () => {
+    try {
+      await DashboardService.loadRecentPosts().then(
+        (res) => {
+          console.log(res);
+          setRecentPost(res);
+        },
+        (error) => {}
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    loadRecentPosts();
+    loadCountOnlineUsers();
+    loadCountTotalDownloads();
+    loadCountAllUsers();
+    loadCountActiveUsers();
+  }, []);
+
   return (
     <Container className="dashboard-container">
       <Row className="mt-5">
@@ -127,7 +205,7 @@ const DashboardScreen = () => {
                   <Image src={user1} alt="" />
                 </Col>
                 <Col>
-                  <h5>732</h5>
+                  <h5>{cntAllUsers}</h5>
                   <p className="d-board">All Users</p>
                 </Col>
               </Row>
@@ -142,7 +220,7 @@ const DashboardScreen = () => {
                   <Image src={user1} alt="" />
                 </Col>
                 <Col>
-                  <h5>443</h5>
+                  <h5>{cntActiveUsers}</h5>
                   <p className="d-board">Total Active Users</p>
                 </Col>
               </Row>
@@ -157,7 +235,7 @@ const DashboardScreen = () => {
                   <Image src={user2} alt="" />
                 </Col>
                 <Col>
-                  <h5>172</h5>
+                  <h5>{cntOnlineUsers}</h5>
                   <p className="d-board">Online Users</p>
                 </Col>
               </Row>
@@ -172,7 +250,7 @@ const DashboardScreen = () => {
                   <Image src={box} alt="" />
                 </Col>
                 <Col>
-                  <h5>532</h5>
+                  <h5>{cntTotalDownloads}</h5>
                   <p className="d-board">Total Downloads</p>
                 </Col>
               </Row>
@@ -189,6 +267,7 @@ const DashboardScreen = () => {
         </Col>
       </Row>
       <Row className="mb-5">
+        {/*<MostRecent mostrecent={recentPost} />*/}
         <MostRecent mostrecent={DUMMY_DATA} />
       </Row>
       <Row>

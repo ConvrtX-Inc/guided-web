@@ -90,10 +90,10 @@ const BadgeScreen = () => {
         //console.log(imgBuffer);
 
         //const base64Flag = "data:image/png;base64,";
-        const imgBase64 = bufferToBase64(imgBuffer);
+        //const imgBase64 = bufferToBase64(imgBuffer);
         //console.log(imgBase64);
 
-        badge.imgBase64 = `${base64Flag}${imgBase64}`;
+        //badge.imgBase64 = `${base64Flag}${imgBase64}`;
         //console.log(badge.imgBase64);
 
         badgeWithImg.push(badge);

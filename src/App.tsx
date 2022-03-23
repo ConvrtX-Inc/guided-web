@@ -34,6 +34,8 @@ import EditBadge from "./components/pages/badge/EditBadge";
 import AdminLayout from "./components/layout/AdminLayout";
 import { useContext } from "react";
 import AuthContext from "./context/AuthContext";
+import SubAdminLayout from "./components/layout/sub-admin/SubAdminLayout";
+import SubDashboardScreen from "./components/pages/sub-admin/dashboard/SubDashboardScreen";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -51,6 +53,9 @@ function App() {
             path="/confirm-resetpassword"
             element={<ConfirmResetPassword />}
           />
+        </Route>
+        <Route path="sub-admin" element={<SubAdminLayout />}>
+          <Route path="dashboard" element={<SubDashboardScreen />} />
         </Route>
         {authCtx.isLoggedIn && (
           <Route element={<AdminLayout />}>
@@ -100,8 +105,8 @@ function App() {
           </Route>
         )}
         {!authCtx.isLoggedIn && (
-            <Route path="*" element={<Navigate to="/signin" />} />
-          )}
+          <Route path="*" element={<Navigate to="/signin" />} />
+        )}
       </Routes>
     </BrowserRouter>
   );

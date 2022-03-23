@@ -86,16 +86,17 @@ const BadgeScreen = () => {
         //badge.img64 = `${base64Flag}${img64}`;
         //console.log(badge.img64);
 
-        const imgBuffer = badge.img_icon.data;
+        //const imgBuffer = badge.img_icon.data;
         //console.log(imgBuffer);
 
-        //const base64Flag = "data:image/png;base64,";
+        const base64Flag = "data:image/png;base64,";
         //const imgBase64 = bufferToBase64(imgBuffer);
         //console.log(imgBase64);
 
         //badge.imgBase64 = `${base64Flag}${imgBase64}`;
         //console.log(badge.imgBase64);
 
+        badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
         badgeWithImg.push(badge);
         //console.log(badgeWithImg);
       })

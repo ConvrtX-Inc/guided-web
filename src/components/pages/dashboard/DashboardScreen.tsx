@@ -196,7 +196,7 @@ const DashboardScreen = () => {
           <h2>Dashboard</h2>
         </Col>
       </Row>
-      <Row>
+      <Row className="mt-4">
         <Col className="col-sm">
           <Card>
             <Card.Body>
@@ -204,7 +204,7 @@ const DashboardScreen = () => {
                 <Col className="col-sm-2">
                   <Image src={user1} alt="" />
                 </Col>
-                <Col>
+                <Col className="ms-2">
                   <h5>{cntAllUsers}</h5>
                   <p className="d-board">All Users</p>
                 </Col>
@@ -219,7 +219,7 @@ const DashboardScreen = () => {
                 <Col className="col-sm-2">
                   <Image src={user1} alt="" />
                 </Col>
-                <Col>
+                <Col className="ms-2">
                   <h5>{cntActiveUsers}</h5>
                   <p className="d-board">Total Active Users</p>
                 </Col>
@@ -234,7 +234,7 @@ const DashboardScreen = () => {
                 <Col className="col-sm-2">
                   <Image src={user2} alt="" />
                 </Col>
-                <Col>
+                <Col className="ms-2">
                   <h5>{cntOnlineUsers}</h5>
                   <p className="d-board">Online Users</p>
                 </Col>
@@ -249,7 +249,7 @@ const DashboardScreen = () => {
                 <Col className="col-sm-2">
                   <Image src={box} alt="" />
                 </Col>
-                <Col>
+                <Col className="ms-2">
                   <h5>{cntTotalDownloads}</h5>
                   <p className="d-board">Total Downloads</p>
                 </Col>

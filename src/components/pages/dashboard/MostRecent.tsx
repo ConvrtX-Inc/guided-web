@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const MostRecent = (props: any) => {
   return props.mostrecent.map((mostrecentItem: any) => (
-    <Col key={mostrecentItem.ActivityPost_id}>
+    <Col key={mostrecentItem.id}>
       <Card className="most-recent pb-3">
         <Image className="ms-2 mt-2 me-2" src={mostrecentItem.img} alt="" />
         <Card.Body>

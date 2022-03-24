@@ -6,6 +6,7 @@ import grid from "../../assets/admin/grid.png";
 import clock from "../../assets/admin/clock.png";
 import support from "../../assets/admin/Vector.png";
 import file from "../../assets/admin/file-text.png";
+import help from "../../assets/admin/help.png";
 
 import { NavLink } from "react-router-dom";
 import Button from "react-bootstrap/Button";
@@ -126,15 +127,23 @@ const AdminNavigation = () => {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/help" className="nav-link">
+            <Row className="mt-2 ms-2">
+              <Col className="col-2">
+                <Image src={help} alt="" />
+              </Col>
+              <Col>Help</Col>
+            </Row>
+          </NavLink>
+        </li>
+        <li>
           <Row>
-            <Col className="col-2">
-              <Button
-                variant="link"
-                type="button"
-                onClick={logoutHandler}
-              ></Button>
+            <Col className="col-2"></Col>
+            <Col>
+              <Button variant="link" type="button" onClick={logoutHandler}>
+                Log-out
+              </Button>
             </Col>
-            <Col>Log-out -test</Col>
           </Row>
         </li>
       </ul>

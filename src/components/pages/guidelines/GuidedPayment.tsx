@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Logs from "./Logs";
 import Spinner from "../../ui/Spinner";
 
-import "./GuidedPayment.scss";
+//import "./GuidedPayment.scss";
 import GuidelinesService from "../../../services/guidelines/Guidelines.Service";
 
 const GuidedPayment = () => {

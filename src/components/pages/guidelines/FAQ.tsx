@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Logs from "./Logs";
 import FAQItems from "./FAQItems";
 
-import "./FAQ.scss";
+//import "./FAQ.scss";
 import GuidelinesService from "../../../services/guidelines/Guidelines.Service";
 import Spinner from "../../ui/Spinner";
 

@@ -26,7 +26,7 @@ const AdminNavigation = () => {
   return (
     <Navbar className="sidebar">
       <ul className="list-unstyled ps-5">
-        <li className="mb-3">
+        <li className="mb-1">
           <NavLink to="/dashboard" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -36,7 +36,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li className="mb-3">
+        <li className="mb-1">
           <NavLink to="/guides" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -46,7 +46,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/post" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -56,7 +56,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/payment" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -66,7 +66,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/transaction" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -76,7 +76,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/support" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -86,7 +86,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/end-users" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -96,7 +96,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/become-guide/all" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -106,7 +106,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/badge" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -116,7 +116,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/guidelines/faq" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -126,7 +126,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="/help" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -136,7 +136,7 @@ const AdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-3">
           <Row>
             <Col className="col-2"></Col>
             <Col>

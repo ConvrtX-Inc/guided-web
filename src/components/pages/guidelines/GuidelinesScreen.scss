@@ -1,0 +1,201 @@
+.guidelines-container {
+  .guidelines-navbar {
+    .btn-nav {
+      background: #ffffff;
+      border-radius: 15px;
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 19px;
+      /* identical to box height */
+
+      text-align: center;
+      text-transform: capitalize;
+
+      color: #898a8d;
+      height: 66px;
+    }
+    .btn-faq {
+      width: 105px;
+      //padding-top: 20px;
+    }
+    .btn-tncs {
+      width: 175px;
+      //padding-top: 20px;
+    }
+    .btn-waiver {
+      width: 196px;
+      //padding-top: 12px;
+    }
+    .btn-cancellation {
+      width: 191px;
+      //padding-top: 20px;
+    }
+    .btn-payment {
+      width: 211px;
+      //padding-top: 12px;
+    }
+    .btn-taxes {
+      width: 187px;
+      //padding-top: 20px;
+    }
+    .active {
+      background: #ffffff;
+      border: 2px solid #007749;
+      box-sizing: border-box;
+      border-radius: 15px;
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 19px;
+      /* identical to box height */
+
+      text-align: center;
+      text-transform: capitalize;
+
+      color: #007749;
+    }
+  }
+  .faq-content {
+    background: #ffffff;
+    border-radius: 15.7123px;
+    height: 654px;
+    textarea {
+      background: #ffffff;
+      border: 1px solid #e4e4e4;
+      box-sizing: border-box;
+      border-radius: 15px;
+      height: 404px;
+    }
+    .left-col {
+      border-right: 1px dashed rgba(0, 0, 0, 0.2);
+      //transform: rotate(90deg);
+    }
+    .btn-save {
+      background: #007749;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-sizing: border-box;
+      border-radius: 16px;
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 16px;
+      /* identical to box height, or 114% */
+
+      text-align: center;
+      letter-spacing: 0.5px;
+      text-transform: capitalize;
+
+      color: #ffffff;
+      width: 177.1px;
+      height: 50px;
+    }
+    .btn-collapse {
+      border: none;
+    }
+    h3 {
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 21px;
+      text-transform: capitalize;
+
+      color: #000000;
+    }
+    .faq-desc-textarea {
+      background: #ffffff;
+      border: 1px solid #e4e4e4;
+      box-sizing: border-box;
+      border-radius: 15px;
+      height: 167px;
+    }
+  }
+  .tncs-content,
+  .waiver-content,
+  .cancellation-content,
+  .guidedpayment-content,
+  .locallaws-content {
+    background: #ffffff;
+    border-radius: 15.7123px;
+    height: 654px;
+    textarea {
+      background: #ffffff;
+      border: 1px solid #e4e4e4;
+      box-sizing: border-box;
+      border-radius: 15px;
+      height: 404px;
+    }
+    .left-col {
+      border-right: 1px dashed rgba(0, 0, 0, 0.2);
+      //transform: rotate(90deg);
+    }
+    .btn-save {
+      background: #007749;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-sizing: border-box;
+      border-radius: 16px;
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 16px;
+      /* identical to box height, or 114% */
+
+      text-align: center;
+      letter-spacing: 0.5px;
+      text-transform: capitalize;
+
+      color: #ffffff;
+      width: 177.1px;
+      height: 50px;
+    }
+  }
+  .col-logs {
+    h2 {
+      font-family: Gilroy;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 30px;
+      line-height: 36px;
+      letter-spacing: -0.02em;
+
+      color: #18243c !important;
+    }
+    h6 {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 21px;
+      /* identical to box height */
+
+      color: #021f3d;
+
+      opacity: 0.2;
+    }
+    .p-dates {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 21px;
+      /* identical to box height */
+
+      color: #979797;
+    }
+    .p-desc {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 21px;
+      /* identical to box height */
+
+      color: #979797;
+    }
+  }
+}

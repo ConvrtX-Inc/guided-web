@@ -1,0 +1,160 @@
+.sub-dashboard-container {
+  /*
+  h2 {
+    font-family: "Gilroy";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+  }
+  .card {
+    height: 100px;
+    background: #ffffff;
+    border-radius: 12px;
+    font-weight: 600;
+
+    h4 {
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 29px;
+      font-size: 24px;
+      color: #181b1b;
+    }
+
+    h5 {
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 29px;
+    }
+
+    .card-body {
+      .d-board {
+        font-weight: 600;
+        opacity: 0.5;
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+  }
+
+  .most-recent {
+    height: 263px;
+    background: #ffffff;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.09);
+    border-radius: 15px;
+
+    img {
+      background: #181b1b;
+      border-radius: 8px;
+      //width: 230px;
+    }
+
+    a {
+      width: 93px;
+      height: 34px;
+      background: #ffc74a;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    h5 {
+      font-size: 18px;
+      line-height: 21px;
+      text-transform: capitalize;
+      color: #181b1b;
+      width: 159px;
+    }
+  }
+
+  .see-all {
+    a {
+      float: right;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 17px;
+      text-align: right;
+      text-decoration-line: underline;
+      text-transform: capitalize;
+      color: #007749;
+    }
+  }
+  */
+  .most-recent {
+    background: #ffffff;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.09);
+    border-radius: 15px;
+    .btn-read-more {
+      background: #ffc74a;
+      border-radius: 10px;
+      font-family: "Gilroy";
+      font-style: normal;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 18px;
+      /* identical to box height, or 150% */
+
+      color: #000000;
+    }
+  }
+  .card-count-info {
+    .card {
+      height: 154px;
+      border-radius: 12px;
+      border: none;
+      h5 {
+        font-family: "Gilroy";
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 24px;
+        /* or 151% */
+
+        text-align: center;
+        letter-spacing: 0.530972px;
+
+        color: #333333;
+      }
+      p {
+        font-family: "Gilroy";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 24px;
+        /* or 201% */
+
+        letter-spacing: 0.530972px;
+
+        color: #333333;
+        span {
+          font-family: "Gilroy";
+          font-style: normal;
+          font-weight: 700;
+          font-size: 12px;
+          line-height: 24px;
+          /* or 201% */
+
+          letter-spacing: 0.530972px;
+
+          color: #007749;
+        }
+      }
+    }
+  }
+  .see-all {
+    a {
+      font-family: "Gilroy";
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 17px;
+      /* identical to box height */
+
+      text-align: right;
+      text-decoration-line: underline;
+      text-transform: capitalize;
+
+      color: #007749 !important;
+    }
+  }
+}

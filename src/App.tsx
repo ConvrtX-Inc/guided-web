@@ -36,6 +36,9 @@ import { useContext } from "react";
 import AuthContext from "./context/AuthContext";
 import SubAdminLayout from "./components/layout/sub-admin/SubAdminLayout";
 import SubDashboardScreen from "./components/pages/sub-admin/dashboard/SubDashboardScreen";
+import SubPostScreen from "./components/pages/sub-admin/post/SubPostScreen";
+import SubPaymentScreen from "./components/pages/sub-admin/payments/SubPaymentScreen";
+import SubSupportScreen from "./components/pages/sub-admin/support/SubSupportScreen";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -54,8 +57,14 @@ function App() {
             element={<ConfirmResetPassword />}
           />
         </Route>
-        <Route path="sub-admin" element={<SubAdminLayout />}>
-          <Route path="dashboard" element={<SubDashboardScreen />} />
+        <Route element={<SubAdminLayout />}>
+          <Route path="sub-admin">
+            <Route index element={<SubDashboardScreen />} />
+            <Route path="dashboard" element={<SubDashboardScreen />} />
+            <Route path="post" element={<SubPostScreen />} />
+            <Route path="payment" element={<SubPaymentScreen />} />
+            <Route path="support" element={<SubSupportScreen />} />
+          </Route>
         </Route>
         {authCtx.isLoggedIn && (
           <Route element={<AdminLayout />}>

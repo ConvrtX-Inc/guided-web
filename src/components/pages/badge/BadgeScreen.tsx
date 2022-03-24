@@ -65,10 +65,10 @@ const BadgeScreen = () => {
     }
   };
 
-  const bufferToBase64 = (buffer: any) => {
+  /*const bufferToBase64 = (buffer: any) => {
     const b64 = Buffer.from(buffer, "base64");
     return b64;
-  };
+  };*/
 
   const setDataWithImg = useCallback(async (badges: Badge[]) => {
     let badgeWithImg: Badge[] = [];
@@ -86,6 +86,7 @@ const BadgeScreen = () => {
         //badge.img64 = `${base64Flag}${img64}`;
         //console.log(badge.img64);
 
+        /*comment conversion
         //const imgBuffer = badge.img_icon.data;
         //console.log(imgBuffer);
 
@@ -94,7 +95,7 @@ const BadgeScreen = () => {
         //console.log(imgBase64);
 
         //badge.imgBase64 = `${base64Flag}${imgBase64}`;
-        //console.log(badge.imgBase64);
+        //console.log(badge.imgBase64); end comment conversion*/
 
         badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
         badgeWithImg.push(badge);

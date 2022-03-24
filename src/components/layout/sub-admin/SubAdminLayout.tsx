@@ -1,11 +1,12 @@
 import { Outlet } from "react-router-dom";
 import SubAdminNavigation from "./SubAdminNavigation";
+import "./SubAdminLayout.scss";
 
 const SubAdminLayout = () => {
   return (
-    <div className="wrapper">
+    <div className="sub-admin-wrapper">
       <SubAdminNavigation />
-      <div id="subadmin-content" className="">
+      <div id="sub-admin-content" className="m-4">
         <Outlet />
       </div>
     </div>

@@ -117,7 +117,7 @@ const DashboardScreen = () => {
   const [cntActiveUsers, setCntActiveUsers] = useState([]);
   const [cntOnlineUsers, setCntOnlineUsers] = useState([]);
   const [cntTotalDownloads, setCntTotalDownloads] = useState([]);
-  const [recentPost, setRecentPost] = useState([]);
+  //const [recentPost, setRecentPost] = useState([]);
 
   const loadCountAllUsers = async () => {
     try {
@@ -167,7 +167,7 @@ const DashboardScreen = () => {
       console.log(err);
     }
   };
-  const loadRecentPosts = async () => {
+  /*const loadRecentPosts = async () => {
     try {
       await DashboardService.loadRecentPosts().then(
         (res) => {
@@ -179,10 +179,10 @@ const DashboardScreen = () => {
     } catch (err) {
       console.log(err);
     }
-  };
+  };*/
 
   useEffect(() => {
-    loadRecentPosts();
+    //loadRecentPosts();
     loadCountOnlineUsers();
     loadCountTotalDownloads();
     loadCountAllUsers();

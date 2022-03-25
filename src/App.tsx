@@ -45,18 +45,23 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<LoginLayout />}>
-          <Route index element={<SignInForm />} />
-          <Route path="/signin" element={<SignInForm />} />
-          <Route path="/newpassword" element={<NewPassword />} />
-          <Route path="/phoneverification" element={<PhoneVerification />} />
-          <Route path="/continuewithphone" element={<ContWithPhone />} />
-          <Route path="/resetpassword" element={<ResetPassword />} />
-          <Route
-            path="/confirm-resetpassword"
-            element={<ConfirmResetPassword />}
-          />
-        </Route>
+        {!authCtx.isLoggedIn && (
+          <Route element={<LoginLayout />}>
+            <Route index element={<SignInForm />} />
+            <Route path="/signin" element={<SignInForm />} />
+            <Route path="/newpassword" element={<NewPassword />} />
+            <Route path="/phoneverification" element={<PhoneVerification />} />
+            <Route path="/continuewithphone" element={<ContWithPhone />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
+            <Route
+              path="/confirm-resetpassword"
+              element={<ConfirmResetPassword />}
+            />
+          </Route>
+        )}
+        {authCtx.isLoggedIn && (
+          <Route path="*" element={<Navigate to="dashboard" />} />
+        )}
         <Route element={<SubAdminLayout />}>
           <Route path="sub-admin">
             <Route index element={<SubDashboardScreen />} />

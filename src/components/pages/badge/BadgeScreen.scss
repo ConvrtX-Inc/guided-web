@@ -94,6 +94,8 @@
   }
   .badge-items {
     table {
+      background: #ffffff;
+      border-radius: 20px;
       th {
         font-family: Gilroy;
         font-style: normal;
@@ -110,7 +112,7 @@
         .badge-name {
           font-family: Gilroy;
           font-style: normal;
-          font-weight: normal;
+          font-weight: 400;
           font-size: 14px;
           line-height: 24px;
           /* identical to box height, or 171% */
@@ -118,8 +120,8 @@
           color: #000000;
         }
         .table-row-img {
-          width: 60.33px;
-          height: 60.98px;
+          width: 38.16px;
+          height: 38.84px;
         }
       }
       .btn-edit {

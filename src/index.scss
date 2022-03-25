@@ -16,9 +16,33 @@ code {
     monospace;
 }
 
-@font-face {
+/*@font-face {
   font-family: "Gilroy-Light";
   src: local("Gilroy-Light"),
     url("./fonts/Gilroy/Gilroy-FREE/Gilroy-Light.otf") format("opentype");
   font-weight: bold;
+}*/
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/fonts/Gilroy/GilroyMedium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/fonts/Gilroy/GilroySemibold.ttf") format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/fonts/Gilroy/GilroyBold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/fonts/Gilroy/GilroyExtraBold.ttf") format("truetype");
+  font-weight: 800;
 }

@@ -3,12 +3,8 @@ import Collapse from "react-bootstrap/Collapse";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import Image from "react-bootstrap/Image";
 
 //import "./FAQItems.scss";
-
-import plus from "../../../assets/admin/plus.png";
-import minus from "../../../assets/admin/minus.png";
 
 const FAQItems = (props: any) => {
   const [open, setOpen] = useState(false);

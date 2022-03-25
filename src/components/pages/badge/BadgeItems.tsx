@@ -6,16 +6,16 @@ import { Link } from "react-router-dom";
 const BadgeItems = (props: any) => {
   const displayData = props.items.map((badgeItem: any) => (
     <tr key={badgeItem.id}>
-      <td>
+      <td className="p-4">
         <Image
           className="table-row-img"
           src={badgeItem.imgBase64}
           alt="alt text here"
         />
       </td>
-      <td className="badge-name">{badgeItem.badge_name}</td>
-      <td>{badgeItem.badge_description}</td>
-      <td>
+      <td className="badge-name p-4">{badgeItem.badge_name}</td>
+      <td className="p-4">{badgeItem.badge_description}</td>
+      <td className="p-4">
         <Link
           to={`/badge/${badgeItem.id}`}
           state={{
@@ -34,10 +34,10 @@ const BadgeItems = (props: any) => {
       <Table responsive borderless className="mt-4">
         <thead>
           <tr>
-            <th>Icon</th>
-            <th>Badge Name</th>
-            <th>Description</th>
-            <th>Action</th>
+            <th className="col-2 p-4">Icon</th>
+            <th className="col-2 p-4">Badge Name</th>
+            <th className=" p-4">Description</th>
+            <th className="col-2 p-4">Action</th>
           </tr>
         </thead>
         <tbody>{displayData}</tbody>

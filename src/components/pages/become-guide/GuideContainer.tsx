@@ -15,7 +15,7 @@ const GuideContainer = () => {
           <h2>Become a Guide</h2>
         </Col>
       </Row>
-      <Row>
+      <Row className="mt-4">
         <BecomeGuideNavigation />
       </Row>
       <Row>

@@ -39,6 +39,7 @@ import SubDashboardScreen from "./components/pages/sub-admin/dashboard/SubDashbo
 import SubPostScreen from "./components/pages/sub-admin/post/SubPostScreen";
 import SubPaymentScreen from "./components/pages/sub-admin/payments/SubPaymentScreen";
 import SubSupportScreen from "./components/pages/sub-admin/support/SubSupportScreen";
+import PageNotFound from "./components/layout/PageNotFound";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -62,15 +63,6 @@ function App() {
         {authCtx.isLoggedIn && (
           <Route path="*" element={<Navigate to="dashboard" />} />
         )}
-        <Route element={<SubAdminLayout />}>
-          <Route path="sub-admin">
-            <Route index element={<SubDashboardScreen />} />
-            <Route path="dashboard" element={<SubDashboardScreen />} />
-            <Route path="post" element={<SubPostScreen />} />
-            <Route path="payment" element={<SubPaymentScreen />} />
-            <Route path="support" element={<SubSupportScreen />} />
-          </Route>
-        </Route>
         {authCtx.isLoggedIn && (
           <Route element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardScreen />} />
@@ -116,11 +108,23 @@ function App() {
               path="/become-guide/viewapplication"
               element={<ViewApplication />}
             />
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         )}
         {!authCtx.isLoggedIn && (
           <Route path="*" element={<Navigate to="/signin" />} />
         )}
+
+        <Route element={<SubAdminLayout />}>
+          <Route path="sub-admin">
+            <Route index element={<SubDashboardScreen />} />
+            <Route path="dashboard" element={<SubDashboardScreen />} />
+            <Route path="post" element={<SubPostScreen />} />
+            <Route path="payment" element={<SubPaymentScreen />} />
+            <Route path="support" element={<SubSupportScreen />} />
+          </Route>
+        </Route>
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   );

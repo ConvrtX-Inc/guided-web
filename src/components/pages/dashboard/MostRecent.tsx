@@ -9,7 +9,7 @@ const MostRecent = (props: any) => {
       <Card className="most-recent pb-3">
         <Image className="ms-2 mt-2 me-2" src={mostrecentItem.img} alt="" />
         <Card.Body>
-          <h5 className="card-title">{mostrecentItem.ActivityPost_title}</h5>
+          <h5 className="card-title">{mostrecentItem.article}</h5>
           <Link to="/read-more" className="btn btn-warning">
             Read more
           </Link>

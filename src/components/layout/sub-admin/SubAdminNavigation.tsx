@@ -12,8 +12,8 @@ import card from "../../../assets/admin/credit-card.png";
 const SubAdminNavigation = () => {
   return (
     <Navbar className="sidebar">
-      <ul className="list-unstyled ps-5">
-        <li className="mb-3">
+      <ul className="list-unstyled ps-3">
+        <li className="mb-1">
           <NavLink to="sub-admin/dashboard" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -23,7 +23,7 @@ const SubAdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li className="mb-3">
+        <li className="mb-1">
           <NavLink to="sub-admin/post" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">
@@ -46,7 +46,7 @@ const SubAdminNavigation = () => {
             </Row>
           </NavLink>
         </li>
-        <li>
+        <li className="mb-1">
           <NavLink to="sub-admin/support" className="nav-link">
             <Row className="mt-2 ms-2">
               <Col className="col-2">

@@ -135,7 +135,7 @@ const BadgeScreen = () => {
           <h2>Badge Management</h2>
         </Col>
       </Row>
-      <Row>
+      <Row className="mt-4">
         <Col>
           <Navbar expand="lg">
             <Container fluid>
@@ -180,8 +180,10 @@ const BadgeScreen = () => {
           </Navbar>
         </Col>
       </Row>
-      {!isPending && <BadgeItems items={data} />}
-      {isPending && <Spinner />}
+      <Row className="badge-items">
+        {!isPending && <BadgeItems items={data} />}
+        {isPending && <Spinner />}
+      </Row>
     </Container>
   );
 };

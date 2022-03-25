@@ -1,4 +1,11 @@
 .guidelines-container {
+  h2 {
+    font-family: "Gilroy";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+  }
   .guidelines-navbar {
     .btn-nav {
       background: #ffffff;
@@ -95,6 +102,7 @@
     }
     .btn-collapse {
       border: none;
+      background-color: transparent;
     }
     h3 {
       font-family: Gilroy;
@@ -112,6 +120,23 @@
       box-sizing: border-box;
       border-radius: 15px;
       height: 167px;
+      font-family: "Gilroy";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 140%;
+      /* or 22px */
+
+      color: #898a8d;
+    }
+    p {
+      font-family: "Gilroy";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
+
+      color: #696d6d;
     }
   }
   .tncs-content,
@@ -128,6 +153,16 @@
       box-sizing: border-box;
       border-radius: 15px;
       height: 404px;
+      font-family: "Gilroy";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 30px;
+      /* or 188% */
+
+      /* Shade/Paragraph */
+
+      color: #696d6d;
     }
     .left-col {
       border-right: 1px dashed rgba(0, 0, 0, 0.2);

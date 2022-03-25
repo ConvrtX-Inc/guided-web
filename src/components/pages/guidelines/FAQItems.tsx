@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
@@ -25,15 +24,15 @@ const FAQItems = (props: any) => {
           <h3>Sample question {props.seq + 1}</h3>
         </Col>
         <Col>
-          <Button
+          <button
             onClick={() => setOpen(!open)}
             aria-controls="example-collapse-text"
             aria-expanded={open}
-            className="btn-collapse float-end btn-light bg-white"
+            className="btn-collapse float-end"
           >
-            {!open && <Image src={minus} alt="minus img" />}
-            {open && <Image src={plus} alt="plus img" />}
-          </Button>
+            {!open && "-"}
+            {open && "+"}
+          </button>
         </Col>
       </Row>
       <Row>

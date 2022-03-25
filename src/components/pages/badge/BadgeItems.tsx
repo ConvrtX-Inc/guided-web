@@ -1,16 +1,17 @@
 import Table from "react-bootstrap/Table";
-import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import { Link } from "react-router-dom";
-
-import "./BadgeItems.scss";
 
 const BadgeItems = (props: any) => {
   const displayData = props.items.map((badgeItem: any) => (
     <tr key={badgeItem.id}>
       <td>
-        <Image className="table-row-img" src={badgeItem.imgBase64} alt="alt text here" />
+        <Image
+          className="table-row-img"
+          src={badgeItem.imgBase64}
+          alt="alt text here"
+        />
       </td>
       <td className="badge-name">{badgeItem.badge_name}</td>
       <td>{badgeItem.badge_description}</td>
@@ -29,21 +30,19 @@ const BadgeItems = (props: any) => {
   ));
 
   return (
-    <Row>
-      <Col>
-        <Table responsive borderless className="mt-4">
-          <thead>
-            <tr>
-              <th>Icon</th>
-              <th>Badge Name</th>
-              <th>Description</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>{displayData}</tbody>
-        </Table>
-      </Col>
-    </Row>
+    <Col>
+      <Table responsive borderless className="mt-4">
+        <thead>
+          <tr>
+            <th>Icon</th>
+            <th>Badge Name</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>{displayData}</tbody>
+      </Table>
+    </Col>
   );
 };
 

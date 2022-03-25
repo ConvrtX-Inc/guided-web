@@ -25,7 +25,7 @@ const AdminNavigation = () => {
   };
   return (
     <Navbar className="sidebar">
-      <ul className="list-unstyled ps-5">
+      <ul className="list-unstyled ps-3">
         <li className="mb-1">
           <NavLink to="/dashboard" className="nav-link">
             <Row className="mt-2 ms-2">

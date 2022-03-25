@@ -2,15 +2,13 @@ import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import { NavLink } from "react-router-dom";
 
-import "./GuidelinesNav.scss";
-
 const GuidelinesNav = () => {
   return (
-    <Navbar>
+    <Navbar className="guidelines-navbar">
       <Form className="container-fluid justify-content-start">
         <NavLink
           to="/guidelines/faq"
-          className="btn btn-light me-2 btn-nav btn-faq"
+          className="btn btn-light btn-nav btn-faq me-2"
           //</Form>className={({ isActive }) =>
           //  (isActive ? "active" : "inactive") + " btn btn-light me-2"
           //}
@@ -19,7 +17,7 @@ const GuidelinesNav = () => {
         </NavLink>
         <NavLink
           to="/guidelines/tncs"
-          className="btn btn-light me-2 btn-nav btn-tncs"
+          className="btn btn-light btn-nav btn-tncs"
           //</Form>className={({ isActive }) =>
           //  (isActive ? "active" : "inactive") + " btn btn-light me-2"
           //}
@@ -28,7 +26,7 @@ const GuidelinesNav = () => {
         </NavLink>
         <NavLink
           to="/guidelines/waiver-form"
-          className="btn btn-light me-2 btn-nav btn-waiver"
+          className="btn btn-light btn-nav btn-waiver me-2"
           //</Form>className={({ isActive }) =>
           //  (isActive ? "active" : "inactive") + " btn btn-light me-2"
           //}
@@ -37,7 +35,7 @@ const GuidelinesNav = () => {
         </NavLink>
         <NavLink
           to="/guidelines/cancellation"
-          className="btn btn-light me-2 btn-nav btn-cancellation"
+          className="btn btn-light btn-nav btn-cancellation me-2"
           //</Form>className={({ isActive }) =>
           //  (isActive ? "active" : "inactive") + " btn btn-light me-2"
           //}
@@ -46,7 +44,7 @@ const GuidelinesNav = () => {
         </NavLink>
         <NavLink
           to="/guidelines/guided-payment"
-          className="btn btn-light me-2 btn-nav btn-payment"
+          className="btn btn-light btn-nav btn-payment me-2"
           //</Form>className={({ isActive }) =>
           //  (isActive ? "active" : "inactive") + " btn btn-light me-2"
           //}
@@ -55,7 +53,7 @@ const GuidelinesNav = () => {
         </NavLink>
         <NavLink
           to="/guidelines/taxes"
-          className="btn btn-light me-2 btn-nav btn-taxes"
+          className="btn btn-light btn-nav btn-taxes"
           //</Form>className={({ isActive }) =>
           //  (isActive ? "active" : "inactive") + " btn btn-light me-2"
           //}

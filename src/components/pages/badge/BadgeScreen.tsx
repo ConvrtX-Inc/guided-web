@@ -65,10 +65,10 @@ const BadgeScreen = () => {
     }
   };
 
-  const bufferToBase64 = (buffer: any) => {
+  /*const bufferToBase64 = (buffer: any) => {
     const b64 = Buffer.from(buffer, "base64");
     return b64;
-  };
+  };*/
 
   const setDataWithImg = useCallback(async (badges: Badge[]) => {
     let badgeWithImg: Badge[] = [];
@@ -86,16 +86,18 @@ const BadgeScreen = () => {
         //badge.img64 = `${base64Flag}${img64}`;
         //console.log(badge.img64);
 
-        const imgBuffer = badge.img_icon.data;
+        /*comment conversion
+        //const imgBuffer = badge.img_icon.data;
         //console.log(imgBuffer);
 
-        //const base64Flag = "data:image/png;base64,";
+        const base64Flag = "data:image/png;base64,";
         //const imgBase64 = bufferToBase64(imgBuffer);
         //console.log(imgBase64);
 
         //badge.imgBase64 = `${base64Flag}${imgBase64}`;
-        //console.log(badge.imgBase64);
+        //console.log(badge.imgBase64); end comment conversion*/
 
+        badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
         badgeWithImg.push(badge);
         //console.log(badgeWithImg);
       })
@@ -133,7 +135,7 @@ const BadgeScreen = () => {
           <h2>Badge Management</h2>
         </Col>
       </Row>
-      <Row>
+      <Row className="mt-4">
         <Col>
           <Navbar expand="lg">
             <Container fluid>
@@ -178,8 +180,10 @@ const BadgeScreen = () => {
           </Navbar>
         </Col>
       </Row>
-      {!isPending && <BadgeItems items={data} />}
-      {isPending && <Spinner />}
+      <Row className="badge-items">
+        {!isPending && <BadgeItems items={data} />}
+        {isPending && <Spinner />}
+      </Row>
     </Container>
   );
 };

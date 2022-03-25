@@ -1,12 +1,12 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import "./Logs.scss";
+//import "./Logs.scss";
 //import { useEffect, useState } from "react";
 
 const Logs = () => {
   return (
-    <Col className="ps-4 pe-4">
+    <Col className="ps-4 pe-4 col-logs">
       <Row className="mt-5">
         <Col>
           <h2>September 12, 2021</h2>

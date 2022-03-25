@@ -34,24 +34,35 @@ import EditBadge from "./components/pages/badge/EditBadge";
 import AdminLayout from "./components/layout/AdminLayout";
 import { useContext } from "react";
 import AuthContext from "./context/AuthContext";
+import SubAdminLayout from "./components/layout/sub-admin/SubAdminLayout";
+import SubDashboardScreen from "./components/pages/sub-admin/dashboard/SubDashboardScreen";
+import SubPostScreen from "./components/pages/sub-admin/post/SubPostScreen";
+import SubPaymentScreen from "./components/pages/sub-admin/payments/SubPaymentScreen";
+import SubSupportScreen from "./components/pages/sub-admin/support/SubSupportScreen";
+import PageNotFound from "./components/layout/PageNotFound";
 
 function App() {
   const authCtx = useContext(AuthContext);
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<LoginLayout />}>
-          <Route index element={<SignInForm />} />
-          <Route path="/signin" element={<SignInForm />} />
-          <Route path="/newpassword" element={<NewPassword />} />
-          <Route path="/phoneverification" element={<PhoneVerification />} />
-          <Route path="/continuewithphone" element={<ContWithPhone />} />
-          <Route path="/resetpassword" element={<ResetPassword />} />
-          <Route
-            path="/confirm-resetpassword"
-            element={<ConfirmResetPassword />}
-          />
-        </Route>
+        {!authCtx.isLoggedIn && (
+          <Route element={<LoginLayout />}>
+            <Route index element={<SignInForm />} />
+            <Route path="/signin" element={<SignInForm />} />
+            <Route path="/newpassword" element={<NewPassword />} />
+            <Route path="/phoneverification" element={<PhoneVerification />} />
+            <Route path="/continuewithphone" element={<ContWithPhone />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
+            <Route
+              path="/confirm-resetpassword"
+              element={<ConfirmResetPassword />}
+            />
+          </Route>
+        )}
+        {authCtx.isLoggedIn && (
+          <Route path="*" element={<Navigate to="dashboard" />} />
+        )}
         {authCtx.isLoggedIn && (
           <Route element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardScreen />} />
@@ -97,11 +108,23 @@ function App() {
               path="/become-guide/viewapplication"
               element={<ViewApplication />}
             />
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         )}
         {!authCtx.isLoggedIn && (
-            <Route path="*" element={<Navigate to="/signin" />} />
-          )}
+          <Route path="*" element={<Navigate to="/signin" />} />
+        )}
+
+        <Route element={<SubAdminLayout />}>
+          <Route path="sub-admin">
+            <Route index element={<SubDashboardScreen />} />
+            <Route path="dashboard" element={<SubDashboardScreen />} />
+            <Route path="post" element={<SubPostScreen />} />
+            <Route path="payment" element={<SubPaymentScreen />} />
+            <Route path="support" element={<SubSupportScreen />} />
+          </Route>
+        </Route>
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,13 +1,14 @@
-#content {
-  font-family: Gilroy;
+.dashboard-container {
+  /*font-family: Gilroy;
   font-style: normal;
-  width: 100%;
+  width: 100%;*/
 
   h2 {
-    font-weight: bold;
+    font-family: "Gilroy";
+    font-style: normal;
+    font-weight: 700;
     font-size: 36px;
     line-height: 44px;
-    color: #000000;
   }
   .card {
     height: 100px;

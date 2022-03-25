@@ -26,6 +26,7 @@ import RecentGuides from "./RecentGuides";
 import MostActive from "./MostActive";
 import { useEffect, useState } from "react";
 import DashboardService from "../../../services/dashboard/Dashboard.Service";
+import SpinnerSmall from "../../ui/SpinnerSmall";
 
 const DUMMY_DATA = [
   {
@@ -117,18 +118,27 @@ const DashboardScreen = () => {
   const [cntActiveUsers, setCntActiveUsers] = useState([]);
   const [cntOnlineUsers, setCntOnlineUsers] = useState([]);
   const [cntTotalDownloads, setCntTotalDownloads] = useState([]);
-  const [recentPost, setRecentPost] = useState([]);
+  //const [recentPost, setRecentPost] = useState([]);
+
+  const [flagCntAllUsers, setflagCntAllUsers] = useState(true);
+  const [flagActiveUsers, setflagActiveUsers] = useState(true);
+  const [flagOnlineUsers, setflagOnlineUsers] = useState(true);
+  const [flagTotalDownloads, setflagTotalDownloads] = useState(true);
 
   const loadCountAllUsers = async () => {
     try {
       await DashboardService.loadCountAllUsers().then(
         (res) => {
           setCntAllUsers(res.count);
+          setflagCntAllUsers(false);
         },
-        (error) => {}
+        (error) => {
+          setflagCntAllUsers(false);
+        }
       );
     } catch (err) {
       console.log(err);
+      setflagCntAllUsers(false);
     }
   };
   const loadCountActiveUsers = async () => {
@@ -136,11 +146,15 @@ const DashboardScreen = () => {
       await DashboardService.loadCountActiveUsers().then(
         (res) => {
           setCntActiveUsers(res.count);
+          setflagActiveUsers(false);
         },
-        (error) => {}
+        (error) => {
+          setflagActiveUsers(false);
+        }
       );
     } catch (err) {
       console.log(err);
+      setflagActiveUsers(false);
     }
   };
   const loadCountOnlineUsers = async () => {
@@ -148,11 +162,15 @@ const DashboardScreen = () => {
       await DashboardService.loadCountOnlineUsers().then(
         (res) => {
           setCntOnlineUsers(res.count);
+          setflagOnlineUsers(false);
         },
-        (error) => {}
+        (error) => {
+          setflagOnlineUsers(false);
+        }
       );
     } catch (err) {
       console.log(err);
+      setflagOnlineUsers(false);
     }
   };
   const loadCountTotalDownloads = async () => {
@@ -160,14 +178,18 @@ const DashboardScreen = () => {
       await DashboardService.loadCountTotalDownloads().then(
         (res) => {
           setCntTotalDownloads(res.downloads);
+          setflagTotalDownloads(false);
         },
-        (error) => {}
+        (error) => {
+          setflagTotalDownloads(false);
+        }
       );
     } catch (err) {
       console.log(err);
+      setflagTotalDownloads(false);
     }
   };
-  const loadRecentPosts = async () => {
+  /*const loadRecentPosts = async () => {
     try {
       await DashboardService.loadRecentPosts().then(
         (res) => {
@@ -179,10 +201,10 @@ const DashboardScreen = () => {
     } catch (err) {
       console.log(err);
     }
-  };
+  };*/
 
   useEffect(() => {
-    loadRecentPosts();
+    //loadRecentPosts();
     loadCountOnlineUsers();
     loadCountTotalDownloads();
     loadCountAllUsers();
@@ -196,7 +218,7 @@ const DashboardScreen = () => {
           <h2>Dashboard</h2>
         </Col>
       </Row>
-      <Row>
+      <Row className="mt-4">
         <Col className="col-sm">
           <Card>
             <Card.Body>
@@ -204,8 +226,9 @@ const DashboardScreen = () => {
                 <Col className="col-sm-2">
                   <Image src={user1} alt="" />
                 </Col>
-                <Col>
-                  <h5>{cntAllUsers}</h5>
+                <Col className="ms-2">
+                  {!flagCntAllUsers && <h5>{cntAllUsers}</h5>}
+                  {flagCntAllUsers && <SpinnerSmall />}
                   <p className="d-board">All Users</p>
                 </Col>
               </Row>
@@ -219,8 +242,9 @@ const DashboardScreen = () => {
                 <Col className="col-sm-2">
                   <Image src={user1} alt="" />
                 </Col>
-                <Col>
-                  <h5>{cntActiveUsers}</h5>
+                <Col className="ms-2">
+                  {!flagActiveUsers && <h5>{cntActiveUsers}</h5>}
+                  {flagActiveUsers && <SpinnerSmall />}
                   <p className="d-board">Total Active Users</p>
                 </Col>
               </Row>
@@ -234,8 +258,9 @@ const DashboardScreen = () => {
                 <Col className="col-sm-2">
                   <Image src={user2} alt="" />
                 </Col>
-                <Col>
-                  <h5>{cntOnlineUsers}</h5>
+                <Col className="ms-2">
+                  {!flagOnlineUsers && <h5>{cntOnlineUsers}</h5>}
+                  {flagOnlineUsers && <SpinnerSmall />}
                   <p className="d-board">Online Users</p>
                 </Col>
               </Row>
@@ -249,8 +274,9 @@ const DashboardScreen = () => {
                 <Col className="col-sm-2">
                   <Image src={box} alt="" />
                 </Col>
-                <Col>
-                  <h5>{cntTotalDownloads}</h5>
+                <Col className="ms-2">
+                  {!flagTotalDownloads && <h5>{cntTotalDownloads}</h5>}
+                  {flagTotalDownloads && <SpinnerSmall />}
                   <p className="d-board">Total Downloads</p>
                 </Col>
               </Row>

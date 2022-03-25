@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Logs from "./Logs";
 import FAQItems from "./FAQItems";
 
-import "./FAQ.scss";
+//import "./FAQ.scss";
 import GuidelinesService from "../../../services/guidelines/Guidelines.Service";
 import Spinner from "../../ui/Spinner";
 
@@ -49,10 +49,13 @@ const FAQ = () => {
       <Col className="ms-4 me-4 faq-content">
         <Row>
           <Col className="col-8 left-col">
+            <p className="mt-4 ms-4">
+              How can we help you to improve your service
+            </p>
             {!isPending && (
               <Form className="mt-5" onSubmit={(e) => onSubmit(e)}>
                 {data.map((faqItem: any, index) => (
-                  <Row key={faqItem.id}>
+                  <Row key={faqItem.id} className="mb-3">
                     <Col>
                       <FAQItems
                         inputChange={onInputChange}

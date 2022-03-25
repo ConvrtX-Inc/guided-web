@@ -1,0 +1,18 @@
+.div-404 {
+  background: #1f2628;
+  height: 1908px;
+  font-family: Lora;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 50px;
+  color: #ffffff;
+  .btn-bck-2home {
+    background-color: transparent !important;
+    border: none;
+  }
+  .btn-bck-2home:hover,
+  .btn-bck-2home:active,
+  .btn-bck-2home:focus {
+    border: none;
+  }
+}

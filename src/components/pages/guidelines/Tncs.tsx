@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Spinner from "../../ui/Spinner";
 import Logs from "./Logs";
 
-import "./Tncs.scss";
+//import "./Tncs.scss";
 
 import GuidelinesService from "../../../services/guidelines/Guidelines.Service";
 

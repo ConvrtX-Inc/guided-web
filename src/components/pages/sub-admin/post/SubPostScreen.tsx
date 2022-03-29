@@ -31,6 +31,7 @@ import PostItems from "./PostItems";
 import { useCallback, useEffect, useState } from "react";
 import BadgeService from "../../../../services/badge/Badge.Service";
 import Select from "react-select";
+import { Link } from "react-router-dom";
 
 const DUMMY_DATA = [
   {
@@ -164,9 +165,15 @@ const SubPostScreen = () => {
           <p>Filter by category</p>
         </Col>
         <Col className="d-flex flex-row-reverse">
-          <button type="button" className="btn me-5 btn-create-post">
+          {/*<button type="button" className="btn me-5 btn-create-post">
             <Image className="me-2" src={create_badge} alt="" /> Create Post
-          </button>
+  </button>*/}
+          <Link
+            to={`/sub-admin/post/create`}
+            className="btn btn-create-post me-5"
+          >
+            <Image className="me-1" src={create_badge} alt="" /> Create post
+          </Link>
         </Col>
       </Row>
       <Row>

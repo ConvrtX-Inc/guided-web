@@ -15,7 +15,7 @@ const SubAdminNavigation = () => {
       <ul className="list-unstyled ps-3">
         <li className="mb-1">
           <NavLink to="sub-admin/dashboard" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={grid} alt="" />
               </Col>
@@ -25,7 +25,7 @@ const SubAdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="sub-admin/post" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={post} alt="" />
               </Col>
@@ -38,7 +38,7 @@ const SubAdminNavigation = () => {
             to="sub-admin/payment"
             className="nav-link transaction-history"
           >
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={card} alt="" />
               </Col>
@@ -48,7 +48,7 @@ const SubAdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="sub-admin/support" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={support} alt="" />
               </Col>

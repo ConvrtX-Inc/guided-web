@@ -1,10 +1,17 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import "./index.scss";
 import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import { AuthContextProvider } from "./context/AuthContext";
+
+import "./fonts/Gilroy/GilroyBold.ttf";
+import "./fonts/Gilroy/GilroyExtraBold.ttf";
+import "./fonts/Gilroy/GilroyMedium.ttf";
+import "./fonts/Gilroy/GilroyRegular.ttf";
+import "./fonts/Gilroy/GilroySemibold.ttf";
 
 ReactDOM.render(
   <AuthContextProvider>

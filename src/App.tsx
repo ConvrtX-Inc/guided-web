@@ -40,6 +40,8 @@ import SubPostScreen from "./components/pages/sub-admin/post/SubPostScreen";
 import SubPaymentScreen from "./components/pages/sub-admin/payments/SubPaymentScreen";
 import SubSupportScreen from "./components/pages/sub-admin/support/SubSupportScreen";
 import PageNotFound from "./components/layout/PageNotFound";
+import ViewPost from "./components/pages/sub-admin/post/ViewPost";
+import CreatePost from "./components/pages/sub-admin/post/CreatePost";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -119,7 +121,11 @@ function App() {
           <Route path="sub-admin">
             <Route index element={<SubDashboardScreen />} />
             <Route path="dashboard" element={<SubDashboardScreen />} />
-            <Route path="post" element={<SubPostScreen />} />
+            <Route path="post">
+              <Route index element={<SubPostScreen />} />
+              <Route path="/sub-admin/post/:id" element={<ViewPost />} />
+              <Route path="/sub-admin/post/create" element={<CreatePost />} />
+            </Route>
             <Route path="payment" element={<SubPaymentScreen />} />
             <Route path="support" element={<SubSupportScreen />} />
           </Route>

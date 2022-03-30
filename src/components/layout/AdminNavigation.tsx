@@ -28,9 +28,9 @@ const AdminNavigation = () => {
       <ul className="list-unstyled ps-3">
         <li className="mb-1">
           <NavLink to="/dashboard" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
-                <Image src={grid} alt="" />{" "}
+                <Image src={grid} alt="" />
               </Col>
               <Col>Dashboard</Col>
             </Row>
@@ -38,9 +38,9 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/guides" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
-                <Image src={users} alt="" />{" "}
+                <Image src={users} alt="" />
               </Col>
               <Col>Guides & Outfitters</Col>
             </Row>
@@ -48,9 +48,9 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/post" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
-                <Image src={post} alt="" />{" "}
+                <Image src={post} alt="" />
               </Col>
               <Col>Post</Col>
             </Row>
@@ -58,7 +58,7 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/payment" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={card} alt="" />
               </Col>
@@ -68,7 +68,7 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/transaction" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={clock} alt="" />
               </Col>
@@ -78,7 +78,7 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/support" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={support} alt="" />
               </Col>
@@ -88,9 +88,9 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/end-users" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
-                <Image src={users} alt="" />{" "}
+                <Image src={users} alt="" />
               </Col>
               <Col>End Users</Col>
             </Row>
@@ -98,7 +98,7 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/become-guide/all" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={users} alt="" />
               </Col>
@@ -108,9 +108,9 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/badge" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
-                <Image src={camera} alt="" />{" "}
+                <Image src={camera} alt="" />
               </Col>
               <Col>Badge Management</Col>
             </Row>
@@ -118,7 +118,7 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/guidelines/faq" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={file} alt="" />
               </Col>
@@ -128,7 +128,7 @@ const AdminNavigation = () => {
         </li>
         <li className="mb-1">
           <NavLink to="/help" className="nav-link">
-            <Row className="mt-2 ms-2">
+            <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={help} alt="" />
               </Col>

@@ -179,7 +179,7 @@ const CreateBadge = () => {
                   />
                 </Col>
               </Row>
-              <Row className="pt-4">
+              {/*<Row className="pt-4">
                 <Col className="col-4">
                   <select
                     className="form-select"
@@ -191,7 +191,7 @@ const CreateBadge = () => {
                     <option value="3">Three</option>
                   </select>
                 </Col>
-              </Row>
+                  </Row>*/}
               <Row className="pt-4">
                 <Col className="col-8">
                   <textarea

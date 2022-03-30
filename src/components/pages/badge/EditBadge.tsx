@@ -198,7 +198,7 @@ const EditBadge = () => {
                 </Col>
               </Row>
               <Row className="pt-4">
-                <Col className="col-4">
+                {/*<Col className="col-4">
                   <select
                     className="form-select"
                     aria-label="Default select example"
@@ -208,7 +208,7 @@ const EditBadge = () => {
                     <option value="2">Two</option>
                     <option value="3">Three</option>
                   </select>
-                </Col>
+                  </Col>*/}
               </Row>
               <Row className="pt-4">
                 <Col className="col-8">

@@ -91,6 +91,13 @@ interface Badge {
 const SubPostScreen = () => {
   const [badgeData, setBadgeData] = useState([] as any[]);
 
+  const [selCategory, setSelCategory] = useState({});
+
+  const HandleCategoryChange = (obj: any) => {
+    setSelCategory(obj);
+  };
+  //console.log(selCategory);
+
   const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
     let badgeWithImg: Badge[] = [];
 
@@ -103,14 +110,17 @@ const SubPostScreen = () => {
     );
     setBadgeData(badgeWithImg);
   }, []);
+  //console.log(badgeData);
 
   const loadBadgeData = useCallback(async () => {
     try {
       await BadgeService.loadData().then(
         (res) => {
-          console.log(res.data);
+          //console.log(res.data);
           setBadgeWithImg(res.data);
           //setBadgeData(res.data);
+
+          setSelCategory(res.data[0]);
         },
         (error) => {
           console.log(error);
@@ -192,7 +202,7 @@ const SubPostScreen = () => {
                 <Select
                   styles={controlStyles}
                   //value={badgeData[0]}
-                  //defaultValue={badgeData[0]}
+                  defaultValue={badgeData[0]}
                   //defaultInputValue={badgeData[0]}
                   //getOptionLabel={(e) => e.badge_name}
                   getOptionValue={(e) => e.id}
@@ -207,6 +217,8 @@ const SubPostScreen = () => {
                       <span>{badgeData.badge_name}</span>
                     </div>
                   )}
+                  value={selCategory}
+                  onChange={(option) => HandleCategoryChange(option)}
                 />
               </Nav>
               <Form

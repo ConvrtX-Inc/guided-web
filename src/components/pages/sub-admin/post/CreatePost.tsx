@@ -25,7 +25,11 @@ const CreatePost = () => {
   //function handleDateChange(event: any) {
   //  setDateAvailability(event.target.value);
   //}
+  const [selCategory, setSelCategory] = useState({});
 
+  const HandleCategoryChange = (obj: any) => {
+    setSelCategory(obj);
+  };
   const handleDateChange = (event: any) => {
     setDateAvailability(event.target.value);
   };
@@ -60,6 +64,8 @@ const CreatePost = () => {
           //console.log(res.data);
           setBadgeWithImg(res.data);
           //setBadgeData(res.data);
+
+          setSelCategory(res.data[0]);
         },
         (error) => {
           console.log(error);
@@ -159,7 +165,7 @@ const CreatePost = () => {
                 <Select
                   styles={controlStyles}
                   //value={badgeData[0]}
-                  //defaultValue={badgeData[0]}
+                  defaultValue={badgeData[0]}
                   //defaultInputValue={badgeData[0]}
                   //getOptionLabel={(e) => e.badge_name}
                   getOptionValue={(e) => e.id}
@@ -174,6 +180,8 @@ const CreatePost = () => {
                       <span>{badgeData.badge_name}</span>
                     </div>
                   )}
+                  value={selCategory}
+                  onChange={(option) => HandleCategoryChange(option)}
                 />
               </Col>
             </Row>

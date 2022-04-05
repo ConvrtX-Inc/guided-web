@@ -31,7 +31,8 @@ import PostItems from "./PostItems";
 import { useCallback, useEffect, useState } from "react";
 import BadgeService from "../../../../services/badge/Badge.Service";
 import Select from "react-select";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import ToastNotificationBasic from "../../../ui/ToastNotificationBasic";
 
 const DUMMY_DATA = [
   {
@@ -88,11 +89,16 @@ interface Badge {
   img64: string;
 }
 
-const SubPostScreen = () => {
+interface LocationState {
+  status: boolean;
+  message: string;
+}
+
+const SubPostScreen = (props: any) => {
+  const location = useLocation();
+  const state = location.state as LocationState;
   const [badgeData, setBadgeData] = useState([] as any[]);
-
   const [selCategory, setSelCategory] = useState({});
-
   const HandleCategoryChange = (obj: any) => {
     setSelCategory(obj);
   };
@@ -169,13 +175,16 @@ const SubPostScreen = () => {
         <Col>
           <h2>Posts</h2>
         </Col>
+        <Col>
+          {state?.status && <ToastNotificationBasic message={state?.message} />}
+        </Col>
       </Row>
       <Row className="mt-4 create-post-row">
         <Col className="ps-5">
           <p>Filter by category</p>
         </Col>
         <Col className="d-flex flex-row-reverse">
-          {/*<button type="button" className="btn me-5 btn-create-post">
+          {/*<button type="button" className="btn me-5 message={state?.message} btn-create-post">
             <Image className="me-2" src={create_badge} alt="" /> Create Post
   </button>*/}
           <Link
@@ -204,7 +213,7 @@ const SubPostScreen = () => {
                   //value={badgeData[0]}
                   defaultValue={badgeData[0]}
                   //defaultInputValue={badgeData[0]}
-                  //getOptionLabel={(e) => e.badge_name}
+                  getOptionLabel={(e) => e.badge_name}
                   getOptionValue={(e) => e.id}
                   options={badgeData}
                   formatOptionLabel={(badgeData) => (

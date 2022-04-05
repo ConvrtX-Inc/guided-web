@@ -1,0 +1,126 @@
+.sub-payment-content-row {
+    width: 85%;
+}
+.sub-payment-content {
+    width: 425px;
+    height: 270px;
+    padding: 40px;
+    border-radius: 8px;
+    background-color: #FFF;
+    font-family: 'Poppins';
+    font-style: normal;
+    color: #000;
+
+    label {
+        font-size: 12px;
+        line-height: 18px;
+    }
+
+    h5 {
+        margin: 17px 0px;
+        font-weight: 600;
+        font-size: 40px;
+        line-height: 96px;
+    }
+
+    .label-header {
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .label-text {
+        font-style: normal;
+        font-weight: 400;
+        text-transform: capitalize;
+        color: #C4C4C4;
+    }
+
+    .label-name {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 21px;
+    }
+
+    .top-line-border {
+        border-top: 1px solid rgba(0, 0, 0, 0.15);
+    }
+}
+
+.pay-methods-content {
+    .label {
+        width: 100%;
+        border-bottom: 1px solid #8B8B8B;
+        line-height: 0.1em;
+        margin: 10px 0 20px;
+        color: #8B8B8B;
+    }
+
+    label span {
+        background: snow;
+        padding:0 10px;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: capitalize;
+    }
+
+    .pay-methods-bank-cards {
+        width: 142px;
+        height: 60px;
+        border: none;
+        box-sizing: border-box;
+        border-radius: 8px;
+        background-color: #FFF;
+        padding: 15px 0px 0px 30px;
+        position: relative;
+    }
+
+    .active {
+        border: 1px solid #EE832C;
+    }
+
+    .active-check {
+        position: absolute;
+        height: 17px;
+        width: 17px;
+        background-color: #EE832C;
+        border-radius: 50%;
+        display: inline-block;
+        top: -5px;
+        right: -5px;
+        content: "✔";
+
+        img {
+            position: absolute;
+        }
+    }
+
+    .logo-img path {
+        fill: #FFF;
+    }
+
+    .unactive-check {
+       display: none;
+    }
+}
+
+.add-new-card-position {
+    position: absolute;
+    right: 20px;
+    top: 30px;
+}
+
+.pay-button {
+    background-color: #066028;
+    color: #FFF;
+    border-radius: 16px;
+    width: 204px;
+    height: 60px;
+    border: none;
+    position: absolute;
+    right: 14%;
+}
+

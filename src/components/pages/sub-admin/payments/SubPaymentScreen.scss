@@ -1,0 +1,138 @@
+
+.payment-content-header {
+    height: 110px;
+    position: relative;
+}
+
+.credit-card-list-rows {
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.credit-card-div {
+    width: 305px;
+    height: 190.62px;
+}
+
+.add-new-card-position {
+    position: absolute !important;
+}
+
+.add-new-card-button {
+    background-color: #066028;
+    color: #FFF;
+    border-radius: 16px;
+    width: 204px;
+    height: 60px;
+    border: none;
+    position: relative;
+}
+
+.compact-right {
+    position: absolute;
+    right: 10px;
+    top: 22px;
+    width: 40px;
+    height: 20px;
+}
+
+.circe-plus-img {
+     position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 20px;
+}
+
+.download-csv-button {
+    width: 137px;
+    height: 39px;
+    color: #007749;
+    background: #FFFFFF;
+    border: 1px solid #007749;
+    border-radius: 29px;
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    letter-spacing: -0.01em;
+    position: absolute;
+    right: 40px;
+}
+
+.inline-display {
+    position: relative;
+    display: inline-block;
+}
+
+.date-filters {
+    width: 60%;
+}
+
+.sorting-filters{
+    width: 40%;
+}
+
+.date-field-input {
+    width: 300px;
+    height: 60px;
+    background: #FFFFFF;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 18px;
+    margin-right: 19px;
+    padding: 25px;
+}
+
+.calendar-icon {
+    position: absolute;
+    right: 40px;
+    top: 22px;
+}
+
+.searchAndSort {
+    position: relative;
+    display: inline-block;
+}
+
+.searchAndSortField {
+    width: 136px;
+    height: 42px;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 20px;
+    margin-top: 20px;
+    margin-right: 9px;
+    padding-left: 39px;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 15px;
+    bottom: 12px;
+};
+
+.sortIcon {
+    position: absolute;
+    bottom: 12px;
+    right: 25px;
+}
+
+.filter {
+    width: 95px;
+    height: 42px;
+    background: #FFFFFF;
+    border: 1px solid #E3E3E3;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    color: #007749;
+    padding-left: 12px;
+}
+
+.filterIcon {
+    position: absolute;
+    left: 12px;
+    top: 15px;
+}

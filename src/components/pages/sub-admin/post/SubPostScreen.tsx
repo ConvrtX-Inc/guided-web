@@ -28,7 +28,7 @@ import hunt from "../../../../assets/images/Hunt.png";
 
 import "./SubPostScreen.scss";
 import PostItems from "./PostItems";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import BadgeService from "../../../../services/badge/Badge.Service";
 import Select from "react-select";
 import { Link, useLocation } from "react-router-dom";
@@ -95,6 +95,7 @@ interface LocationState {
 }
 
 const SubPostScreen = (props: any) => {
+  const isMounted = useRef(true);
   const location = useLocation();
   const state = location.state as LocationState;
   const [badgeData, setBadgeData] = useState([] as any[]);
@@ -138,7 +139,9 @@ const SubPostScreen = (props: any) => {
   }, [setBadgeWithImg]);
 
   useEffect(() => {
-    loadBadgeData();
+    if (isMounted) {
+      loadBadgeData();
+    }
   }, [loadBadgeData]);
 
   const controlStyles = {
@@ -188,7 +191,7 @@ const SubPostScreen = (props: any) => {
             <Image className="me-2" src={create_badge} alt="" /> Create Post
   </button>*/}
           <Link
-            to={`/sub-admin/post/create`}
+            to={`/sub-admin/post/activity-package`}
             className="btn btn-create-post me-5"
           >
             <Image className="me-1" src={create_badge} alt="" /> Create post

@@ -1,7 +1,6 @@
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 
 import "./SubDashboardScreen.scss";
@@ -11,6 +10,12 @@ import cardimg0 from "../../../../assets/admin/card-img0.png";
 import cardimg1 from "../../../../assets/admin/card-img1.png";
 import cardimg2 from "../../../../assets/admin/card-img2.png";
 import MostRecent from "./MostRecent";
+import PackageActivityCard from "./PackageActivityCard";
+import EventsCard from "./EventsCard";
+import NewsFeedsCard from "./NewsFeedsCard";
+import ArticlesCard from "./ArticlesCard";
+import AdvertismentsCard from "./AdvertismentsCard";
+import OutfittersCard from "./OutfittersCard";
 
 const DUMMY_DATA = [
   {
@@ -43,56 +48,13 @@ const SubDashboardScreen = () => {
         </Col>
       </Row>
       <Row className="card-count-info">
-        <Col className="col-sm mt-4">
-          <Card>
-            <Card.Body>
-              <h5 className="card-title text-center mb-3">
-                Packages / Activity
-              </h5>
-              <p className="card-text text-center">
-                Total Posts Views : <span>24</span>
-              </p>
-              <p className="card-text text-center">Total Posts Posted : 7</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm mt-4">
-          <Card>
-            <Card.Body>
-              <h5 className="card-title text-center mb-3">Events</h5>
-              <p className="card-text text-center">
-                Total Events Views : <span>23</span>
-              </p>
-              <p className="card-text text-center">Total Events Posted : 10</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm mt-4">
-          <Card>
-            <Card.Body>
-              <h5 className="card-title text-center mb-3">Newsfeeds</h5>
-              <p className="card-text text-center">
-                Total Newsfeeds Views : <span>31</span>
-              </p>
-              <p className="card-text text-center">
-                Total Newsfeeds Posted : 5
-              </p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col className="col-sm mt-4">
-          <Card>
-            <Card.Body>
-              <h5 className="card-title text-center mb-3">Articles</h5>
-              <p className="card-text text-center">
-                Total Articles Views : <span>30</span>
-              </p>
-              <p className="card-text text-center">
-                Total Articles Posted : 10
-              </p>
-            </Card.Body>
-          </Card>
-        </Col>
+        {/**Cards here by sub-admin type */}
+        <PackageActivityCard />
+        <EventsCard />
+        <NewsFeedsCard />
+        <ArticlesCard />
+        <AdvertismentsCard />
+        <OutfittersCard />
       </Row>
       <Row className="mt-5">
         <Col className="col-sm">

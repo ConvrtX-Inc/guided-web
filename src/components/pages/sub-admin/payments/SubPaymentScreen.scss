@@ -1,6 +1,5 @@
 
 .payment-content-header {
-    height: 110px;
     position: relative;
 }
 
@@ -12,9 +11,20 @@
 .credit-card-div {
     width: 305px;
     height: 190.62px;
+    border: 1px solid #000;
+    position: relative;
+}
+
+.credit-card-close-btn {
+    border-radius: 20px;
+    border: 2px solid #FFFFFF;
+    color: #fff;
+    position: absolute;
+    right: 5px;
 }
 
 .add-new-card-position {
+    right: 50px;
     position: absolute !important;
 }
 
@@ -58,12 +68,17 @@
     text-align: center;
     letter-spacing: -0.01em;
     position: absolute;
-    right: 40px;
+    right: 84px;
 }
 
-.inline-display {
+.inline-block {
     position: relative;
     display: inline-block;
+}
+
+.inline-display-block {
+    position: relative;
+    display: block;
 }
 
 .date-filters {
@@ -102,7 +117,7 @@
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 20px;
-    margin-top: 20px;
+    margin-top: 17px;
     margin-right: 9px;
     padding-left: 39px;
 }
@@ -135,4 +150,247 @@
     position: absolute;
     left: 12px;
     top: 15px;
+}
+
+.payment-transaction-history-table {
+    background: #FFFFFF;
+    border-radius: 15px;
+    position: relative;
+}
+
+.payment-transaction-history-table-headers {
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    text-transform: capitalize;
+    color: #000000;
+    position: absolute;
+    top: 25px;
+}
+
+.payment-transaction-history-table-row {
+    border-bottom: 1px solid #ADB1B1;
+    position: relative;
+    height: 70px;
+}
+
+.payment-transaction-history-table-values {
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    text-transform: capitalize;
+    color: #000000;
+    position: absolute;
+    top: 25px;
+}
+
+.table-value-amount {
+    font-weight: 600;
+}
+
+.table-value-status-accept {
+    color: #31A650;
+}
+
+.table-value-status-denied {
+    color: #FF6A6A;
+}
+
+.page-nav-field {
+    position: relative;
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    color: #9FA2B4;
+
+    button {
+        border: none;
+        background: none;
+    }
+}
+
+.page-nav {
+    position: absolute;
+    right: 0;
+}
+
+.pending-payments-button {
+    width: 217px;
+    height: 66px;
+    border: 1px solid #C4C4C4;
+    color: #C4C4C4;
+    background: #FFFFFF;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 15px;
+    font-weight: 600;
+    margin-right: 20px;
+}
+
+.payments-button {
+    width: 217px;
+    height: 66px;
+    border: 1px solid #EE832C;
+    background: #FFFFFF;
+    color: #EE832C;
+    box-sizing: border-box;
+    border-radius: 15px;
+    font-weight: 600;
+}
+
+.backdrop {
+    z-index: 1;
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.backdrop-content {
+    //position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.add-card-modal {
+    width: 1071px;
+    height: 620px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    margin-top: 5%;
+    padding: 40px;
+    font-family: 'Gilroy';
+    font-style: normal;
+    position: relative;
+}
+
+.add-card-modal-header {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 24px;
+    text-transform: capitalize;
+    color: #000000;
+}
+
+.add-card-modal-content {
+    margin-top: 21px;
+}
+
+.add-card-modal-col-header {
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
+    letter-spacing: -0.55px;
+    text-transform: capitalize;
+    color: #000000;
+    padding-left: 0px;
+    margin-bottom: 20px;
+}
+
+.add-card-modal-labels {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16px;
+    color: #898A8D;
+    padding-left: 0px;
+    margin-bottom: 5px;
+}
+
+.add-card-modal-rows {
+    margin-bottom: 15px;
+}
+
+.add-card-modal-input-1 {
+    background: #FFFFFF;
+    border: 1px solid #ADB1B1;
+    box-sizing: border-box;
+    border-radius: 15px;
+    height: 60px;
+    padding-left: 20px;
+}
+
+.add-card-modal-input-2 {
+    width: 220px;
+}
+
+.add-card-modal-input-3 {
+    margin-top: 23px;
+}
+
+.add-card-modal-save-button {
+    width: 200px;
+    height: 60px;
+    background: #007749;
+    border-radius: 16px;
+    color: #FFF;
+    border: none;
+    margin-left: 40%;
+    margin-top: 20px;
+}
+
+.add-card-modal-group-field {
+    width: 50%;
+    padding: 0;
+}
+
+.add-card-modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    border: none;
+    background-color: snow;
+}
+
+.remove-card-div {
+    width: 300px;
+    height: 185px;
+    margin-top: 20%;
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 26px;
+}
+
+.remove-card-header {
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.01em;
+    color: #303030;
+    margin-bottom: 13px;
+}
+
+.remove-card-btn {
+    width: 100px;
+    height: 30px;
+    box-sizing: border-box;
+    border-radius: 46.2px;
+}
+
+.remove-card-cancel-btn {
+    background: #FFFFFF;
+    border: 1px solid #8CBCB9;
+    color: #8CBCB9;
+    margin-left: 10%;
+}
+
+.remove-card-continue-btn {
+    background: #FF4848;
+    border: 1px solid #FF4848;
+    color: #FFF;
+     margin-left: 5%
 }

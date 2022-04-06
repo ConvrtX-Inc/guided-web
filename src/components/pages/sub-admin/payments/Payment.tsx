@@ -4,7 +4,12 @@ import AddNewCard from './sub-components/addNewCard';
 import CreditCardList from './sub-components/cardList';
 import './Payment.scss';
 
-const Payment = () => {
+interface IPayment {
+  showAddCardModal: any;
+  showRemoveCardModal: any;
+}
+
+const Payment = ({ showAddCardModal, showRemoveCardModal }: IPayment) => {
   return (
     <Container>
       <Row className="mt-5 ms-3">
@@ -68,10 +73,12 @@ const Payment = () => {
           </Col>
         </Row>
       </Row>
-      <CreditCardList />
+      <CreditCardList
+        showRemoveCardModal={showRemoveCardModal}
+      />
       <Row className='ms-3'>
         <Col>
-          <AddNewCard cls={''} />
+          <AddNewCard  cls={''} showAddCardModal={showAddCardModal} />
         </Col>
 
         <Col>

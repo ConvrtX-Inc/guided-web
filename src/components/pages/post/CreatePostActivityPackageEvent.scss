@@ -1,0 +1,221 @@
+.create-post-activitypackage-container {
+  h2 {
+    font-family: "Gilroy";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+  }
+  h4 {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 30px;
+    /* or 188% */
+
+    color: #000000;
+  }
+  .btn-bck {
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  .post-form {
+    height: 3309px;
+    background: #ffffff;
+    border-radius: 15px;
+
+    font-family: "Gilroy";
+    font-style: normal;
+
+    .form-label {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+
+      color: #181b1b;
+    }
+    .select-category {
+      //background: #ffffff;
+      border: 1px solid #c4c4c4;
+      box-sizing: border-box;
+      border-radius: 18px;
+      /* identical to box height */
+
+      color: #000000;
+
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+      height: 66px;
+      width: 364px;
+    }
+    .input-title,
+    .input-email,
+    .input-person,
+    .input-contact-number,
+    .input-website,
+    /*.input-location,
+    .input-street,
+    .input-province,
+    .input-city,
+    .input-postal-code,*/
+    .form-loc,.form-pack {
+      background: #ffffff;
+      border: 1px solid #c4c4c4;
+      box-sizing: border-box;
+      border-radius: 18px;
+      height: 66px;
+    }
+    .input-pack-date {
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+      /* identical to box height */
+
+      color: #898a8d;
+    }
+    .input-date {
+      border: 1px solid #c4c4c4;
+      box-sizing: border-box;
+      border-radius: 18px;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+      /* identical to box height */
+
+      color: #898a8d;
+      width: 364px;
+      height: 66px;
+    }
+    .input-description,
+    .input-additional-notes,
+    .input-guide-rules,
+    .input-locallaws,
+    .input-waiver {
+      background: #ffffff;
+      border: 1px solid #c4c4c4;
+      box-sizing: border-box;
+      border-radius: 18px;
+    }
+    .label-pin-loc {
+      font-family: "Poppins";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 16px;
+      text-decoration-line: underline;
+      text-transform: capitalize;
+
+      color: #000000;
+    }
+    .form-check-input {
+      border-radius: 20px;
+    }
+    .form-check-input:checked {
+      background-color: #4cd964;
+      border: none;
+    }
+    .btn-submit {
+      background: #007749;
+      border-radius: 16px;
+      border: none;
+      width: 204px;
+      height: 65px;
+      font-family: "Gilroy";
+      font-style: normal;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 20px;
+      /* identical to box height, or 111% */
+
+      color: #ffffff;
+    }
+    .chk-badge-img {
+      width: 38.16px;
+      height: 38.84px;
+      cursor: pointer;
+    }
+    .chk-multiple-badge {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
+      text-align: center;
+
+      color: #181b1b;
+    }
+    .ul-badge-img {
+      list-style-type: none;
+
+      li {
+        display: inline-block;
+      }
+    }
+    //.form-check-label-badge:before {
+    //  content: url("https://cdn1.iconfinder.com/data/icons/windows8_icons_iconpharm/26/unchecked_checkbox.png");
+    //  position: absolute;
+    //  z-index: 100;
+    //}
+    :checked + .form-check-label-badge:before {
+      //content: url("../../../../assets/images/checkd-badge.png");
+      //position: absolute;
+      content: "✓";
+      background-color: #000;
+      transform: scale(1);
+      cursor: pointer;
+    }
+    :checked + .form-check-label-badge {
+      border-color: #000;
+    }
+    .form-check-label-badge {
+      border: 3px solid transparent;
+      border-radius: 50%;
+
+      //display: block;
+      position: relative;
+      //margin: 10px;
+      cursor: pointer;
+    }
+
+    .form-check-label-badge:before {
+      background-color: white;
+      color: white;
+      content: " ";
+      display: block;
+      border-radius: 50%;
+      border: 1px solid #000;
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      line-height: 25px;
+      transition-duration: 0.4s;
+      transform: scale(0);
+    }
+    .chkbox-badge {
+      display: none;
+    }
+    .upload-img {
+      .col {
+        background: #e4e4e4;
+        border-radius: 12px;
+        height: 117px;
+        button {
+          background: #ffffff;
+          box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
+          border-radius: 50%;
+        }
+      }
+      .prev-img {
+        //width: 168px;
+        height: 117px;
+      }
+    }
+  }
+}

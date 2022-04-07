@@ -41,7 +41,10 @@ import SubPaymentScreen from "./components/pages/sub-admin/payments/SubPaymentSc
 import SubSupportScreen from "./components/pages/sub-admin/support/SubSupportScreen";
 import PageNotFound from "./components/layout/PageNotFound";
 import ViewPost from "./components/pages/sub-admin/post/ViewPost";
-import CreatePost from "./components/pages/sub-admin/post/CreatePost";
+import CreatePostArticleNewsfeed from "./components/pages/post/CreatePostArticleNewsfeed";
+import CreatePostActivityPackage from "./components/pages/post/CreatePostActivityPackageEvent";
+import EditPostArticleNewsfeed from "./components/pages/post/EditPostArticleNewsfeed";
+import EditPostActivityPackage from "./components/pages/post/EditPostActivityPackage";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -124,7 +127,38 @@ function App() {
             <Route path="post">
               <Route index element={<SubPostScreen />} />
               <Route path="/sub-admin/post/:id" element={<ViewPost />} />
-              <Route path="/sub-admin/post/create" element={<CreatePost />} />
+              <Route
+                path="/sub-admin/post/article"
+                element={<CreatePostArticleNewsfeed />}
+              />
+              <Route
+                path="/sub-admin/post/edit-article"
+                element={<EditPostArticleNewsfeed />}
+              />
+              <Route
+                path="/sub-admin/post/edit-newsfeed"
+                element={<EditPostArticleNewsfeed />}
+              />
+              <Route
+                path="/sub-admin/post/newsfeed"
+                element={<CreatePostArticleNewsfeed />}
+              />
+              <Route
+                path="/sub-admin/post/activity-package"
+                element={<CreatePostActivityPackage />}
+              />
+              <Route
+                path="/sub-admin/post/edit-activity-package"
+                element={<EditPostActivityPackage />}
+              />
+              <Route
+                path="/sub-admin/post/event"
+                element={<CreatePostActivityPackage />}
+              />
+              <Route
+                path="/sub-admin/post/edit-event"
+                element={<EditPostActivityPackage />}
+              />
             </Route>
             <Route path="payment" element={<SubPaymentScreen />} />
             <Route path="support" element={<SubSupportScreen />} />

@@ -3,41 +3,40 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import Form from "react-bootstrap/Form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
-import "./CreatePost.scss";
-import left from "../../../../assets/admin/left.png";
+import "./CreatePostArticleNewsfeed.scss";
+import left from "../../../assets/admin/left.png";
 import Select from "react-select";
-import PostService from "../../../../services/post/Post.Service";
-import BadgeService from "../../../../services/badge/Badge.Service";
-import AuthContext from "../../../../context/AuthContext";
+import PostService from "../../../services/post/Post.Service";
+import BadgeService from "../../../services/badge/Badge.Service";
+import AuthContext from "../../../context/AuthContext";
+import { Badge } from "../../../shared/interfaces/Badge.interface";
+import { convertBase64 } from "../../../shared/helper/ConvertBase64";
+import { PostImage } from "../../../shared/interfaces/PostImage.interface";
+import { CategoryState } from "../../../shared/interfaces/CategoryState";
 //import DatePicker from "react-datepicker";
 
-interface Badge {
-  id: string;
-  badge_name: string;
-  badge_description: string;
-  img64: string;
-}
-interface PostImage {
-  activity_article_id?: string;
-  activity_newsfeed_id?: string;
-  snapshot_img: string;
-}
-const CreatePost = () => {
+const CreatePostArticleNewsfeed = () => {
+  const location = useLocation();
+  const state = location.state as CategoryState;
   const navigate = useNavigate();
   const firstRender = useRef(true); //check page if first render/load
   const refFileInput = useRef<HTMLInputElement | null>(null);
   const authCtx = useContext(AuthContext);
   const user = JSON.parse(authCtx.user).user; //get current logged in user details
   const category = [
+    { id: 1, text: "Activity/Package" },
+    { id: 3, text: "Event" },
     { id: 4, text: "Article" },
     { id: 2, text: "News Feed" },
   ];
   //const [dateAvailability, setDateAvailability] = useState("");
   //const [postCategory, setPostCategory] = useState("");
-  const [postCategory, setPostCategory] = useState("Article");
+  const [postCategory, setPostCategory] = useState(
+    state?.categoryName || "Article"
+  );
   //const [categoryData, setCategoryData] = useState([]);
   const [mainBadge, setMainBadge] = useState({});
   const [badgeData, setBadgeData] = useState([] as any[]);
@@ -59,7 +58,7 @@ const CreatePost = () => {
   const [postData, setPostData] = useState({
     post_id: "",
     user_id: user.id, //login user id
-    category_type: 4, //Article is default
+    category_type: state?.category || 4, //Article is default
     title: "",
     views: 0,
   });
@@ -113,6 +112,32 @@ const CreatePost = () => {
     setPostData({ ...postData, category_type: parseInt(event.target.value) });
     //comment category id, do not include in submit
     //setPostData({ ...postData, [event.target.name]: event.target.value });
+    const id = parseInt(event.target.value);
+    const stateCategory = {
+      category: parseInt(event.target.value),
+      categoryName: event.target.options[event.target.selectedIndex].text,
+    };
+    if (id === 3) {
+      navigate("/sub-admin/post/event", {
+        state: stateCategory,
+        replace: true,
+      });
+    } else if (id === 1) {
+      navigate("/sub-admin/post/activity-package", {
+        state: stateCategory,
+        replace: true,
+      });
+    } else if (id === 2) {
+      navigate("/sub-admin/post/newsfeed", {
+        state: stateCategory,
+        replace: true,
+      });
+    } else if (id === 4) {
+      navigate("/sub-admin/post/article", {
+        state: stateCategory,
+        replace: true,
+      });
+    }
   };
 
   //console.log(subBadges);
@@ -174,21 +199,6 @@ const CreatePost = () => {
     //console.log(fileArray);
     //setUploadFiles((files) => [...uploadFiles, fileArray]);
     //setUploadFiles(fileArray);
-  };
-
-  const convertBase64 = (file: any) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
   };
 
   const handleSelectFile = () => {
@@ -456,6 +466,7 @@ const CreatePost = () => {
                   aria-label="Default select example"
                   //value={postCategory}
                   name="post_category_id"
+                  value={postData.category_type}
                   onChange={handleCategoryChange}
                 >
                   {
@@ -486,12 +497,12 @@ const CreatePost = () => {
                 </div>
               </Col>
             </Row>
-            <Row>
+            <Row className="mt-3">
               <Col className="mt-2 col-10">
                 <hr />
               </Col>
             </Row>
-            <Row>
+            <Row className="mt-3">
               <Col className="col-4">
                 <Form.Label>Select Main Badge</Form.Label>
                 <Select
@@ -603,7 +614,7 @@ const CreatePost = () => {
               )}
             </Row>
             <Row className="mt-4">
-              <Col className="col-8">
+              <Col className="mt-3 col-8">
                 <Form.Control
                   required
                   autoComplete="off"
@@ -637,7 +648,7 @@ const CreatePost = () => {
               </Col>
             </Row>
             <Row className="mt-4">
-              <Col>
+              <Col className="col-8">
                 <Form.Control
                   as="textarea"
                   placeholder="Description of event"
@@ -649,6 +660,66 @@ const CreatePost = () => {
                 />
               </Col>
             </Row>
+
+            {/*FOR ACTIVITY PACKAGE HERE
+            <Row className="mt-5">
+              <Col className="col-4">
+                <Form.Control
+                  required
+                  autoComplete="off"
+                  className="txt-contact-person"
+                  type="text"
+                  placeholder="Contact Person"
+                  name="contactperson"
+                  //value={title}
+                  onChange={(e) => handleInputChange(e)}
+                />
+              </Col>
+              <Col className="col-4">
+                <Form.Control
+                  required
+                  autoComplete="off"
+                  className="txt-email"
+                  type="text"
+                  placeholder="Email Address"
+                  name="emailaddress"
+                  //value={title}
+                  onChange={(e) => handleInputChange(e)}
+                />
+              </Col>
+            </Row>
+            <Row className="mt-4">
+              <Col className="col-4">
+                <Form.Control
+                  required
+                  autoComplete="off"
+                  className="txt-contact-number"
+                  type="text"
+                  placeholder="Contact number"
+                  name="contactnumber"
+                  //value={title}
+                  onChange={(e) => handleInputChange(e)}
+                />
+              </Col>
+              <Col className="col-4">
+                <Form.Control
+                  required
+                  autoComplete="off"
+                  className="txt-website"
+                  type="text"
+                  placeholder="Website"
+                  name="website"
+                  //value={title}
+                  onChange={(e) => handleInputChange(e)}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col className="mt-5 col-10">
+                <hr />
+              </Col>
+            </Row>*/}
+
             <Row className="mt-5">
               <Col className="mt-5">
                 <button type="submit" className="btn-submit">
@@ -662,4 +733,4 @@ const CreatePost = () => {
     </Container>
   );
 };
-export default CreatePost;
+export default CreatePostArticleNewsfeed;

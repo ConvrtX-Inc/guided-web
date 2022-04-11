@@ -2,17 +2,17 @@ import axios from "axios";
 import AuthHeader from "../Auth-Header";
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-const config = {
+const config = (token?: string) => ({
   headers: {
     "Content-Type": "application/json",
     Authorization: AuthHeader(),
   },
   params: {},
-};
+});
 
 const postData = (data: any) => {
   return axios
-    .post(API_URL + `api/v1/badges/`, data, config)
+    .post(API_URL + `api/v1/badges/`, data, config())
     .then((response) => {
       return response.data;
     });
@@ -20,15 +20,15 @@ const postData = (data: any) => {
 
 const patchData = (id: string, data: any) => {
   return axios
-    .patch(API_URL + `api/v1/badges/${id}`, data, config)
+    .patch(API_URL + `api/v1/badges/${id}`, data, config())
     .then((response) => {
       return response;
     });
 };
 
 const loadData = () => {
-  config["params"] = {};
-  return axios.get(API_URL + "api/v1/badges", config).then((response) => {
+  config()["params"] = {};
+  return axios.get(API_URL + "api/v1/badges", config()).then((response) => {
     //console.log("from loaddata..");
     //console.log("load data", response);
     return response;
@@ -36,10 +36,10 @@ const loadData = () => {
 };
 
 const filterData = (data: any) => {
-  config["params"] = {
+  config()["params"] = {
     s: data,
   };
-  return axios.get(API_URL + "api/v1/badges", config).then((response) => {
+  return axios.get(API_URL + "api/v1/badges", config()).then((response) => {
     console.log("from filterdata..");
     console.log("filter data", response);
     return response;

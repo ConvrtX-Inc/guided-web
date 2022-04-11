@@ -16,6 +16,8 @@ import NewsFeedsCard from "./NewsFeedsCard";
 import ArticlesCard from "./ArticlesCard";
 import AdvertismentsCard from "./AdvertismentsCard";
 import OutfittersCard from "./OutfittersCard";
+import { useContext } from "react";
+import AuthContext from "../../../../context/AuthContext";
 
 const DUMMY_DATA = [
   {
@@ -40,6 +42,7 @@ const DUMMY_DATA = [
   },
 ];
 const SubDashboardScreen = () => {
+  const authCtx = useContext(AuthContext);
   return (
     <Container className="sub-dashboard-container">
       <Row className="mt-5">
@@ -48,13 +51,33 @@ const SubDashboardScreen = () => {
         </Col>
       </Row>
       <Row className="card-count-info">
-        {/**Cards here by sub-admin type */}
-        <PackageActivityCard />
-        <EventsCard />
-        <NewsFeedsCard />
-        <ArticlesCard />
-        <AdvertismentsCard />
-        <OutfittersCard />
+        {
+          /**Cards here by sub-admin type */
+          authCtx.userRole.is_subadmin_others ? (
+            <>
+              <ArticlesCard />
+              <EventsCard />
+              <AdvertismentsCard />
+              <OutfittersCard />
+              <PackageActivityCard />
+              <NewsFeedsCard />
+            </>
+          ) : authCtx.userRole.is_subadmin_nonprofit ? (
+            <>
+              <PackageActivityCard />
+              <EventsCard />
+              <NewsFeedsCard />
+              <ArticlesCard />
+            </>
+          ) : (
+            authCtx.userRole.is_subadmin_guide && (
+              <>
+                <ArticlesCard />
+                <NewsFeedsCard />
+              </>
+            )
+          )
+        }
       </Row>
       <Row className="mt-5">
         <Col className="col-sm">

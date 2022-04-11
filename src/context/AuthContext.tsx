@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { UserAccess } from "../shared/interfaces/UserAccess.interface";
 
 const AuthContext = React.createContext({
-  //token: "",
   user: "",
+  //usertype: "",
+  userRole: {} as UserAccess,
   isLoggedIn: false,
   //login: (userdata: any, token: string, expirationTime: string) => {},
   login: (userdata: any, expirationTime: string) => {},
@@ -17,39 +19,45 @@ const AuthContext = React.createContext({
   return 20000;
 };*/
 
+//Get User roles
+function GetUserRole() {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  let access: UserAccess = {} as UserAccess;
+  if (user && user.token) {
+    access.user_id = user.user.id;
+    access.user_type_name = user.user.user_type_name;
+    access.is_subadmin_guide = user.user.is_subadmin_guide;
+    access.is_subadmin_nonprofit = user.user.is_subadmin_nonprofit;
+    access.is_subadmin_others = user.user.is_subadmin_others;
+    //return user.user.user_type_name;
+    return access;
+  } else {
+    return access;
+  }
+}
+
 export const AuthContextProvider = (props: any) => {
-  //const initialToken = localStorage.getItem("token") || "";
   const initialUser = localStorage.getItem("user") || "";
-  //const [token, setToken] = useState(initialToken);
   const [userData, setUserData] = useState(initialUser);
-  //const userIsLoggedIn = !!token;
   const userIsLoggedIn = !!userData;
-  //const userHasData = !!user;
+  const userRole = GetUserRole();
 
   const logoutHandler = () => {
-    //setToken("");
     setUserData("");
-    //localStorage.removeItem("token");
     localStorage.removeItem("user");
   };
 
-  const loginHandler = (
-    user: any,
-    //token: string,
-    expirationTime: string
-  ) => {
-    //setToken(token);
-    setUserData(user);
+  const loginHandler = async (user: any, expirationTime: string) => {
     localStorage.setItem("user", JSON.stringify(user));
-    //localStorage.setItem("token", token);
+    setUserData(user);
 
     //const remainingTime = calculateRemainingTime(expirationTime);
     //setTimeout(logoutHandler, remainingTime);
   };
 
   const contextValue = {
-    //token: token,
     user: userData,
+    userRole: userRole,
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,

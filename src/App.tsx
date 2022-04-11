@@ -11,8 +11,6 @@ import SupportScreen from "./components/pages/support/SupportScreen";
 import UserScreen from "./components/pages/users/UserScreen";
 import BadgeScreen from "./components/pages/badge/BadgeScreen";
 import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen";
-//import ModalTest from "./components/ui/ModalTest";
-//import PageNotFound from "./components/pages/PageNotFound";
 import ContWithPhone from "./components/pages/login/contwithphone";
 import NewPassword from "./components/pages/login/newpassword";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -32,25 +30,29 @@ import GuideContainer from "./components/pages/become-guide/GuideContainer";
 import CreateBadge from "./components/pages/badge/CreateBadge";
 import EditBadge from "./components/pages/badge/EditBadge";
 import AdminLayout from "./components/layout/AdminLayout";
-import { useContext } from "react";
 import AuthContext from "./context/AuthContext";
 import SubAdminLayout from "./components/layout/sub-admin/SubAdminLayout";
 import SubDashboardScreen from "./components/pages/sub-admin/dashboard/SubDashboardScreen";
 import SubPostScreen from "./components/pages/sub-admin/post/SubPostScreen";
 import SubPaymentScreen from "./components/pages/sub-admin/payments/SubPaymentScreen";
 import SubSupportScreen from "./components/pages/sub-admin/support/SubSupportScreen";
-import PageNotFound from "./components/layout/PageNotFound";
 import ViewPost from "./components/pages/sub-admin/post/ViewPost";
 import CreatePostArticleNewsfeed from "./components/pages/post/CreatePostArticleNewsfeed";
 import CreatePostActivityPackage from "./components/pages/post/CreatePostActivityPackageEvent";
 import EditPostArticleNewsfeed from "./components/pages/post/EditPostArticleNewsfeed";
 import EditPostActivityPackage from "./components/pages/post/EditPostActivityPackage";
+import { UserAccess } from "./shared/interfaces/UserAccess.interface";
+import { useContext } from "react";
 
 function App() {
   const authCtx = useContext(AuthContext);
+  //console.log("user type:", authCtx.usertype);
+  const userAccess: UserAccess = authCtx.userRole;
+  //console.log(userAccess);
   return (
     <BrowserRouter>
       <Routes>
+        {/*Login pages */}
         {!authCtx.isLoggedIn && (
           <Route element={<LoginLayout />}>
             <Route index element={<SignInForm />} />
@@ -63,12 +65,12 @@ function App() {
               path="/confirm-resetpassword"
               element={<ConfirmResetPassword />}
             />
+            <Route path="*" element={<Navigate to="/signin" />} />
           </Route>
         )}
-        {authCtx.isLoggedIn && (
-          <Route path="*" element={<Navigate to="dashboard" />} />
-        )}
-        {authCtx.isLoggedIn && (
+
+        {/*Admin pages */}
+        {authCtx.isLoggedIn && userAccess.user_type_name === "Admin" && (
           <Route element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardScreen />} />
             <Route path="guides" element={<GuidesScreen />} />
@@ -113,58 +115,56 @@ function App() {
               path="/become-guide/viewapplication"
               element={<ViewApplication />}
             />
-            <Route path="*" element={<PageNotFound />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
           </Route>
         )}
-        {!authCtx.isLoggedIn && (
-          <Route path="*" element={<Navigate to="/signin" />} />
-        )}
 
-        <Route element={<SubAdminLayout />}>
-          <Route path="sub-admin">
-            <Route index element={<SubDashboardScreen />} />
+        {/*Sub-admin pages */}
+        {authCtx.isLoggedIn && userAccess.user_type_name === "SubAdmin" && (
+          <Route element={<SubAdminLayout />}>
             <Route path="dashboard" element={<SubDashboardScreen />} />
             <Route path="post">
               <Route index element={<SubPostScreen />} />
-              <Route path="/sub-admin/post/:id" element={<ViewPost />} />
+              <Route path="/post/:id" element={<ViewPost />} />
               <Route
-                path="/sub-admin/post/article"
+                path="/post/article"
                 element={<CreatePostArticleNewsfeed />}
               />
               <Route
-                path="/sub-admin/post/edit-article"
+                path="/post/edit-article"
                 element={<EditPostArticleNewsfeed />}
               />
               <Route
-                path="/sub-admin/post/edit-newsfeed"
+                path="/post/edit-newsfeed"
                 element={<EditPostArticleNewsfeed />}
               />
               <Route
-                path="/sub-admin/post/newsfeed"
+                path="/post/newsfeed"
                 element={<CreatePostArticleNewsfeed />}
               />
               <Route
-                path="/sub-admin/post/activity-package"
+                path="/post/activity-package"
                 element={<CreatePostActivityPackage />}
               />
               <Route
-                path="/sub-admin/post/edit-activity-package"
+                path="/post/edit-activity-package"
                 element={<EditPostActivityPackage />}
               />
               <Route
-                path="/sub-admin/post/event"
+                path="/post/event"
                 element={<CreatePostActivityPackage />}
               />
               <Route
-                path="/sub-admin/post/edit-event"
+                path="/post/edit-event"
                 element={<EditPostActivityPackage />}
               />
             </Route>
             <Route path="payment" element={<SubPaymentScreen />} />
             <Route path="support" element={<SubSupportScreen />} />
+
+            <Route path="*" element={<Navigate to="/dashboard" />} />
           </Route>
-        </Route>
-        <Route path="*" element={<PageNotFound />} />
+        )}
       </Routes>
     </BrowserRouter>
   );

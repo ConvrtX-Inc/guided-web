@@ -28,11 +28,14 @@ import hunt from "../../../../assets/images/Hunt.png";
 
 import "./SubPostScreen.scss";
 import PostItems from "./PostItems";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import BadgeService from "../../../../services/badge/Badge.Service";
 import Select from "react-select";
 import { Link, useLocation } from "react-router-dom";
 import ToastNotificationBasic from "../../../ui/ToastNotificationBasic";
+import { Badge } from "../../../../shared/interfaces/Badge.interface";
+import AuthContext from "../../../../context/AuthContext";
+import { UserAccess } from "../../../../shared/interfaces/UserAccess.interface";
 
 const DUMMY_DATA = [
   {
@@ -82,13 +85,6 @@ const DUMMY_DATA = [
   },
 ];
 
-interface Badge {
-  id: string;
-  badge_name: string;
-  badge_description: string;
-  img64: string;
-}
-
 interface LocationState {
   status: boolean;
   message: string;
@@ -97,13 +93,37 @@ interface LocationState {
 const SubPostScreen = (props: any) => {
   const isMounted = useRef(true);
   const location = useLocation();
+
+  const authCtx = useContext(AuthContext);
+  const userAccess: UserAccess = authCtx.userRole;
+
   const state = location.state as LocationState;
+  const [access, setAccess] = useState({
+    default_path: "",
+  });
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [selCategory, setSelCategory] = useState({});
+
   const HandleCategoryChange = (obj: any) => {
     setSelCategory(obj);
   };
   //console.log(selCategory);
+
+  const getUserAccess = useCallback(async () => {
+    //console.log(userAccess);
+    const user = userAccess;
+    if (user.user_type_name === "SubAdmin") {
+      if (user.is_subadmin_guide) {
+        setAccess({
+          default_path: `/post/article`,
+        });
+      } else {
+        setAccess({
+          default_path: `/post/activity-package`,
+        });
+      }
+    }
+  }, [userAccess]);
 
   const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
     let badgeWithImg: Badge[] = [];
@@ -141,8 +161,9 @@ const SubPostScreen = (props: any) => {
   useEffect(() => {
     if (isMounted) {
       loadBadgeData();
+      getUserAccess();
     }
-  }, [loadBadgeData]);
+  }, [loadBadgeData, getUserAccess]);
 
   const controlStyles = {
     control: (styles: any) => ({
@@ -191,7 +212,8 @@ const SubPostScreen = (props: any) => {
             <Image className="me-2" src={create_badge} alt="" /> Create Post
   </button>*/}
           <Link
-            to={`/sub-admin/post/activity-package`}
+            //to={`/post/activity-package`}
+            to={access.default_path}
             className="btn btn-create-post me-5"
           >
             <Image className="me-1" src={create_badge} alt="" /> Create post

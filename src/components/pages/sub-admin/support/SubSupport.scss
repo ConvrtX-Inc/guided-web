@@ -97,6 +97,19 @@
       white-space: nowrap;
       overflow: hidden;
     }
+
+    .inbox-msg-notif {
+      width: 20px;
+      height: 20px;
+      color: #fff;
+      border-radius: 10px;
+      text-align: center;
+      line-height: 20px !important;
+      position: absolute !important;
+      top: 25px;
+      background-color: #007749;
+      opacity: 100% !important;
+    }
   }
 
   .message-thread {

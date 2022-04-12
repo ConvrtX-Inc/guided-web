@@ -22,6 +22,7 @@ const inboxList = () => {
             Lorem Ipsum is simply dummy text of the printing. 
             Lorem Ipsum is simply dummy text of the printing. 
           </p>
+          <label className='inbox-msg-notif'>1</label>
         </div>
       </div>
     );

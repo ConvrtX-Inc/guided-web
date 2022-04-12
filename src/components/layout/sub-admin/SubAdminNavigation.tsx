@@ -3,14 +3,14 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
+import AuthContext from "../../../context/AuthContext";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
 
 import grid from "../../../assets/admin/grid.png";
 import support from "../../../assets/admin/Vector.png";
 import post from "../../../assets/admin/post.png";
 import card from "../../../assets/admin/credit-card.png";
-import { useContext } from "react";
-import AuthContext from "../../../context/AuthContext";
 
 const SubAdminNavigation = () => {
   const authCtx = useContext(AuthContext);
@@ -21,7 +21,7 @@ const SubAdminNavigation = () => {
     <Navbar className="sidebar">
       <ul className="list-unstyled ps-3">
         <li className="mb-1">
-          <NavLink to="sub-admin/dashboard" className="nav-link">
+          <NavLink to="dashboard" className="nav-link">
             <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={grid} alt="" />
@@ -31,7 +31,7 @@ const SubAdminNavigation = () => {
           </NavLink>
         </li>
         <li className="mb-1">
-          <NavLink to="sub-admin/post" className="nav-link">
+          <NavLink to="post" className="nav-link">
             <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={post} alt="" />
@@ -41,10 +41,7 @@ const SubAdminNavigation = () => {
           </NavLink>
         </li>
         <li className="mb-5">
-          <NavLink
-            to="sub-admin/payment"
-            className="nav-link transaction-history"
-          >
+          <NavLink to="payment" className="nav-link transaction-history">
             <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={card} alt="" />
@@ -54,7 +51,7 @@ const SubAdminNavigation = () => {
           </NavLink>
         </li>
         <li className="mb-1">
-          <NavLink to="sub-admin/support" className="nav-link">
+          <NavLink to="support" className="nav-link">
             <Row className="mt-2 ps-1">
               <Col className="col-2">
                 <Image src={support} alt="" />

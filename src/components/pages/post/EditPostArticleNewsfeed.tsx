@@ -12,7 +12,7 @@ import { Badge } from "../../../shared/interfaces/Badge.interface";
 import PostService from "../../../services/post/Post.Service";
 import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 import AuthContext from "../../../context/AuthContext";
-import { CategoryState } from "../../../shared/interfaces/CategoryState";
+import { CategoryState } from "../../../shared/interfaces/CategoryState.interface";
 import { PostImage } from "../../../shared/interfaces/PostImage.interface";
 import Select from "react-select";
 
@@ -90,22 +90,22 @@ const EditPostArticleNewsfeed = () => {
       categoryName: event.target.options[event.target.selectedIndex].text,
     };
     if (id === 3) {
-      navigate("/sub-admin/post/event", {
+      navigate("/post/event", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 1) {
-      navigate("/sub-admin/post/activity-package", {
+      navigate("/post/activity-package", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 2) {
-      navigate("/sub-admin/post/newsfeed", {
+      navigate("/post/newsfeed", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 4) {
-      navigate("/sub-admin/post/article", {
+      navigate("/post/article", {
         state: stateCategory,
         replace: true,
       });

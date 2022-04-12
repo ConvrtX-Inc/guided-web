@@ -34,7 +34,7 @@ const PostItems = (props: any) => {
           view post
   </button>*/}
         <Link
-          to={`/sub-admin/post/${postItem.id}`}
+          to={`/post/${postItem.id}`}
           state={{
             post: postItem,
           }}

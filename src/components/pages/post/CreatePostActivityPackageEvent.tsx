@@ -4,7 +4,6 @@ import Row from "react-bootstrap/Row";
 import Image from "react-bootstrap/Image";
 import Form from "react-bootstrap/Form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Select from "react-select";
 import left from "../../../assets/admin/left.png";
 
 import "./CreatePostActivityPackageEvent.scss";
@@ -14,20 +13,20 @@ import AuthContext from "../../../context/AuthContext";
 import { Badge } from "../../../shared/interfaces/Badge.interface";
 import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 import { PostImage } from "../../../shared/interfaces/PostImage.interface";
-import { CategoryState } from "../../../shared/interfaces/CategoryState";
+import { CategoryState } from "../../../shared/interfaces/CategoryState.interface";
+import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
+import SelectCategoryList from "./SelectCategoryList";
+import SelectBadge from "./SelectBadge";
+import SelectServices from "./SelectServices";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
   const state = location.state as CategoryState;
+
   const navigate = useNavigate();
+
   const authCtx = useContext(AuthContext);
-  const user = JSON.parse(authCtx.user).user; //get current logged in user details
-  const category = [
-    { id: 1, text: "Activity/Package" },
-    { id: 3, text: "Event" },
-    { id: 4, text: "Article" },
-    { id: 2, text: "News Feed" },
-  ];
+  const userAccess: UserAccess = authCtx.userRole;
   const services = [
     { id: 1, text: "Foods" },
     { id: 2, text: "Wifi" },
@@ -36,6 +35,7 @@ const CreatePostActivityPackage = () => {
     { id: 5, text: "Electricity" },
   ];
   const refFileInput = useRef<HTMLInputElement | null>(null);
+
   const [postCategory, setPostCategory] = useState(
     state?.categoryName || "Activity/Package"
   );
@@ -52,18 +52,31 @@ const CreatePostActivityPackage = () => {
     sub_badge_ids: {},
     premium_user: false,
     is_post: true,
+    package_note: "",
   });
   const [postData, setPostData] = useState({
     post_id: "",
-    user_id: user.id, //login user id
+    user_id: userAccess.user_id, //login user id
     category_type: state?.category || 1,
     title: "",
     views: 0,
+  });
+  const [packageForms, setPackageForms] = useState({
+    guide_rules: "",
+    local_law_taxes: "",
+    release_waiver: "",
   });
   const { title, description, news_date } = submitData;
   const handleInputChange = (event: any) => {
     setsubmitData({ ...submitData, [event.target.name]: event.target.value });
     setPostData({ ...postData, [event.target.name]: event.target.value });
+  };
+  //console.log(packageForms);
+  const handlePackageInputChange = (event: any) => {
+    setPackageForms({
+      ...packageForms,
+      [event.target.name]: event.target.value,
+    });
   };
   const handleSelectFile = () => {
     refFileInput?.current?.click();
@@ -76,6 +89,7 @@ const CreatePostActivityPackage = () => {
       setUploadFiles([
         ...uploadFiles,
         {
+          default_img: false,
           snapshot_img: String(base64),
         },
       ]);
@@ -88,6 +102,7 @@ const CreatePostActivityPackage = () => {
       setsubmitData({ ...submitData, premium_user: false });
     }
   };
+
   const handleCategoryChange = (event: any) => {
     setPostCategory(event.target.options[event.target.selectedIndex].text);
     setPostData({ ...postData, category_type: parseInt(event.target.value) });
@@ -97,29 +112,31 @@ const CreatePostActivityPackage = () => {
       categoryName: event.target.options[event.target.selectedIndex].text,
     };
     if (id === 3) {
-      navigate("/sub-admin/post/event", {
+      navigate("/post/event", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 1) {
-      navigate("/sub-admin/post/activity-package", {
+      navigate("/post/activity-package", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 2) {
-      navigate("/sub-admin/post/newsfeed", {
+      navigate("/post/newsfeed", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 4) {
-      navigate("/sub-admin/post/article", {
+      navigate("/post/article", {
         state: stateCategory,
         replace: true,
       });
     }
   };
+
   const handleBadgeChange = (obj: any) => {
     setMainBadge(obj);
+    console.log(obj);
     setsubmitData({ ...submitData, main_badge_id: obj.id });
   };
   const handleSubBadgesChange = (event: any) => {
@@ -144,7 +161,15 @@ const CreatePostActivityPackage = () => {
   const handleServicesChange = (obj: any) => {
     console.log(obj);
   };
-  const handleSubmit = async (e: any) => {};
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    let bulkUpload = {};
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(submitData);
+  };
 
   //Update badge data with image
   const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
@@ -189,31 +214,13 @@ const CreatePostActivityPackage = () => {
   useEffect(() => {
     loadBadgeData();
   }, [loadBadgeData]);
-  const controlStyles = {
-    control: (styles: any) => ({
-      ...styles,
-      fontFamily: `Gilroy`,
-      fontStyle: `normal`,
-      fontWeight: `400`,
-      fontSize: `16px`,
-      lineHeight: `19px`,
-      color: `#181B1B`,
-      width: `364px`,
-      height: `66px`,
-      border: `1px solid #C4C4C4`,
-      borderRadius: `18px`,
-      ":hover": {
-        border: `1px solid #C4C4C4`,
-      },
-    }),
-  };
   return (
     <Container className="create-post-activitypackage-container mb-5">
       <Row className="mt-5">
         <Col className="col-6">
           <Row>
             <Col className="col-2">
-              <Link to={`/sub-admin/post`} className="btn btn-bck">
+              <Link to={`/post`} className="btn btn-bck">
                 <Image className="" src={left} alt="" />
               </Link>
             </Col>
@@ -229,19 +236,11 @@ const CreatePostActivityPackage = () => {
             <Row>
               <Col className="col-4">
                 <Form.Label>Category</Form.Label>
-                <Form.Select
-                  className="select-category"
-                  aria-label="Default select example"
-                  name="post_category_id"
-                  value={postData.category_type}
-                  onChange={handleCategoryChange}
-                >
-                  {category.map((item: any) => (
-                    <option key={item.id} value={item.id}>
-                      {item.text}
-                    </option>
-                  ))}
-                </Form.Select>
+                <SelectCategoryList
+                  userAccess={userAccess}
+                  categoryType={postData.category_type}
+                  setCategoryType={handleCategoryChange}
+                />
               </Col>
               <Col className="d-flex justify-content-center align-items-center">
                 <label htmlFor="site_state" className="form-check-label">
@@ -265,7 +264,7 @@ const CreatePostActivityPackage = () => {
             <Row className="mt-3">
               <Col className="col-4">
                 <Form.Label>Select Main Badge</Form.Label>
-                <Select
+                {/*<Select
                   styles={controlStyles}
                   defaultValue={badgeData[0]}
                   getOptionLabel={(e) => e.badge_name}
@@ -283,6 +282,11 @@ const CreatePostActivityPackage = () => {
                   )}
                   value={mainBadge}
                   onChange={(option) => handleBadgeChange(option)}
+                  />*/}
+                <SelectBadge
+                  mainBadge={mainBadge}
+                  badgeData={badgeData}
+                  handleBadgeChange={(option: any) => handleBadgeChange(option)}
                 />
               </Col>
             </Row>
@@ -383,9 +387,6 @@ const CreatePostActivityPackage = () => {
                   type="date"
                   className="input-date"
                   placeholder="Set Availability"
-                  name="news_date"
-                  value={news_date}
-                  onChange={(e) => handleInputChange(e)}
                 />
               </Col>
             </Row>
@@ -525,6 +526,7 @@ const CreatePostActivityPackage = () => {
                   className="mt-1 form-pack input-traveler-limit"
                   type="text"
                   placeholder="Traveler Limit"
+                  name="max_traveller"
                 />
               </Col>
               <Col className="col-4">
@@ -543,6 +545,7 @@ const CreatePostActivityPackage = () => {
                   autoComplete="off"
                   className="form-pack input-base-price"
                   type="text"
+                  name="base_price"
                   placeholder="Base price"
                 />
               </Col>
@@ -563,6 +566,7 @@ const CreatePostActivityPackage = () => {
                   autoComplete="off"
                   className="form-pack input-extra-cost-per-person"
                   type="text"
+                  name="extra_cost_per_person"
                   placeholder="Extra cost per person"
                 />
               </Col>
@@ -583,13 +587,14 @@ const CreatePostActivityPackage = () => {
                   placeholder="Additional notes"
                   rows={7}
                   className="input-additional-notes"
+                  name="package_note"
                 />
               </Col>
             </Row>
             <Row className="mt-4">
               <Form.Label>Free services (Maximum 5)</Form.Label>
               <Col className="col-4">
-                <Select
+                {/*<Select
                   placeholder="Search free services"
                   isMulti
                   styles={controlStyles}
@@ -597,6 +602,10 @@ const CreatePostActivityPackage = () => {
                   getOptionLabel={(e) => e.text}
                   getOptionValue={(e) => String(e.id)}
                   onChange={handleServicesChange}
+              />*/}
+                <SelectServices
+                  services={services}
+                  handleServicesChange={handleServicesChange}
                 />
               </Col>
             </Row>
@@ -607,6 +616,8 @@ const CreatePostActivityPackage = () => {
                   placeholder="Guide Rules & What to Bring"
                   rows={5}
                   className="input-guide-rules"
+                  name="guide_rules"
+                  onChange={(e) => handlePackageInputChange(e)}
                 />
               </Col>
             </Row>
@@ -617,6 +628,8 @@ const CreatePostActivityPackage = () => {
                   placeholder="Local Laws & Taxes"
                   rows={5}
                   className="input-locallaws"
+                  name="local_law_taxes"
+                  onChange={(e) => handlePackageInputChange(e)}
                 />
               </Col>
             </Row>
@@ -627,6 +640,8 @@ const CreatePostActivityPackage = () => {
                   placeholder="Waiver Screen"
                   rows={5}
                   className="input-waiver"
+                  name="release_waiver"
+                  onChange={(e) => handlePackageInputChange(e)}
                 />
               </Col>
             </Row>

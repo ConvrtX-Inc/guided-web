@@ -24,9 +24,10 @@ import { Link } from "react-router-dom";
 import MostRecent from "./MostRecent";
 import RecentGuides from "./RecentGuides";
 import MostActive from "./MostActive";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DashboardService from "../../../services/dashboard/Dashboard.Service";
 import SpinnerSmall from "../../ui/SpinnerSmall";
+//import AuthContext from "../../../context/AuthContext";
 
 const DUMMY_DATA = [
   {
@@ -114,6 +115,8 @@ const DUMMY_DATA3 = [
 ];
 
 const DashboardScreen = () => {
+  //const authCtx = useContext(AuthContext);
+
   const [cntAllUsers, setCntAllUsers] = useState([]);
   const [cntActiveUsers, setCntActiveUsers] = useState([]);
   const [cntOnlineUsers, setCntOnlineUsers] = useState([]);
@@ -157,7 +160,8 @@ const DashboardScreen = () => {
       setflagActiveUsers(false);
     }
   };
-  const loadCountOnlineUsers = async () => {
+  const loadCountOnlineUsers = useCallback(async () => {
+    //console.log(authCtx.token);
     try {
       await DashboardService.loadCountOnlineUsers().then(
         (res) => {
@@ -172,7 +176,11 @@ const DashboardScreen = () => {
       console.log(err);
       setflagOnlineUsers(false);
     }
-  };
+  }, [
+    setCntOnlineUsers,
+    setflagOnlineUsers, //authCtx.token
+  ]);
+
   const loadCountTotalDownloads = async () => {
     try {
       await DashboardService.loadCountTotalDownloads().then(
@@ -209,7 +217,7 @@ const DashboardScreen = () => {
     loadCountTotalDownloads();
     loadCountAllUsers();
     loadCountActiveUsers();
-  }, []);
+  }, [loadCountOnlineUsers]);
 
   return (
     <Container className="dashboard-container">

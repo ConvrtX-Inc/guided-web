@@ -8,44 +8,56 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import "./CreatePostArticleNewsfeed.scss";
 import left from "../../../assets/admin/left.png";
-import Select from "react-select";
 import PostService from "../../../services/post/Post.Service";
 import BadgeService from "../../../services/badge/Badge.Service";
 import AuthContext from "../../../context/AuthContext";
 import { Badge } from "../../../shared/interfaces/Badge.interface";
 import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 import { PostImage } from "../../../shared/interfaces/PostImage.interface";
-import { CategoryState } from "../../../shared/interfaces/CategoryState";
+import { CategoryState } from "../../../shared/interfaces/CategoryState.interface";
+import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
+import SelectCategoryList from "./SelectCategoryList";
+import SelectBadge from "./SelectBadge";
 //import DatePicker from "react-datepicker";
 
 const CreatePostArticleNewsfeed = () => {
   const location = useLocation();
   const state = location.state as CategoryState;
+
   const navigate = useNavigate();
+
   const firstRender = useRef(true); //check page if first render/load
   const refFileInput = useRef<HTMLInputElement | null>(null);
+
   const authCtx = useContext(AuthContext);
-  const user = JSON.parse(authCtx.user).user; //get current logged in user details
-  const category = [
-    { id: 1, text: "Activity/Package" },
-    { id: 3, text: "Event" },
-    { id: 4, text: "Article" },
-    { id: 2, text: "News Feed" },
-  ];
+  const userAccess: UserAccess = authCtx.userRole;
+
   //const [dateAvailability, setDateAvailability] = useState("");
   //const [postCategory, setPostCategory] = useState("");
+
+  //get selected category
   const [postCategory, setPostCategory] = useState(
     state?.categoryName || "Article"
   );
   //const [categoryData, setCategoryData] = useState([]);
+
+  //get main badge data
   const [mainBadge, setMainBadge] = useState({});
+
+  //data for badge list
   const [badgeData, setBadgeData] = useState([] as any[]);
+
+  //get sub badges
   const [subBadges, setSubBadges] = useState([] as any[]);
   //const [uploadFiles, setUploadFiles] = useState([] as any[]);
   //const [uploadFiles, setUploadFiles] = useState([] as ArticleImage[]);
+
+  //data for activity-article-image or activity-newsfeed-image
   const [uploadFiles, setUploadFiles] = useState([] as PostImage[]);
+
+  //data for activity-article or activity-newsfeed
   const [submitData, setsubmitData] = useState({
-    user_id: user.id, //login user id
+    user_id: userAccess.user_id, //login user id
     //post_category_id: "",
     title: "",
     description: "",
@@ -55,23 +67,15 @@ const CreatePostArticleNewsfeed = () => {
     premium_user: false,
     is_post: true,
   });
+
+  //data for activity-post
   const [postData, setPostData] = useState({
     post_id: "",
-    user_id: user.id, //login user id
+    user_id: userAccess.user_id, //login user id
     category_type: state?.category || 4, //Article is default
     title: "",
     views: 0,
   });
-  const {
-    //user_id,
-    //post_category_id,
-    title,
-    description,
-    news_date,
-    //post_main_badge,
-    //post_sub_badges,
-    //premium_user,
-  } = submitData;
 
   //console.log(postData);
   //Update title,description,date
@@ -118,22 +122,22 @@ const CreatePostArticleNewsfeed = () => {
       categoryName: event.target.options[event.target.selectedIndex].text,
     };
     if (id === 3) {
-      navigate("/sub-admin/post/event", {
+      navigate("/post/event", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 1) {
-      navigate("/sub-admin/post/activity-package", {
+      navigate("/post/activity-package", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 2) {
-      navigate("/sub-admin/post/newsfeed", {
+      navigate("/post/newsfeed", {
         state: stateCategory,
         replace: true,
       });
     } else if (id === 4) {
-      navigate("/sub-admin/post/article", {
+      navigate("/post/article", {
         state: stateCategory,
         replace: true,
       });
@@ -250,6 +254,10 @@ const CreatePostArticleNewsfeed = () => {
               }
             }
             //console.log(uploadFiles);
+            //set a default_img
+            if (uploadFiles.length > 0) {
+              uploadFiles[0].default_img = true;
+            }
             bulkUpload = { bulk: uploadFiles };
             //console.log(bulkUpload);
           }
@@ -273,7 +281,7 @@ const CreatePostArticleNewsfeed = () => {
         (res) => {
           //console.log(res);
           if (res.status === 201) {
-            navigate("/sub-admin/post", {
+            navigate("/post", {
               state: {
                 status: true,
                 message: "Post successfully created.",
@@ -411,41 +419,13 @@ const CreatePostArticleNewsfeed = () => {
     return value;
   };*/
 
-  //React-Select styles
-  const controlStyles = {
-    control: (styles: any) => ({
-      ...styles,
-      fontFamily: `Gilroy`,
-      fontStyle: `normal`,
-      fontWeight: `400`,
-      fontSize: `16px`,
-      lineHeight: `19px`,
-      color: `#181B1B`,
-      width: `364px`,
-      height: `66px`,
-      border: `1px solid #C4C4C4`,
-      borderRadius: `18px`,
-      ":hover": {
-        border: `1px solid #C4C4C4`,
-      },
-      /*":active": {
-        border: `1px solid #007749`,
-      },
-      ":focus": {
-        border: `1px solid #007749`,
-      },
-      ":blur": {
-        border: `1px solid #007749`,
-      },*/
-    }),
-  };
   return (
     <Container className="create-post-container">
       <Row className="mt-5">
         <Col className="col-6">
           <Row>
             <Col className="col-2">
-              <Link to={`/sub-admin/post`} className="btn btn-bck">
+              <Link to={`/post`} className="btn btn-bck">
                 <Image className="" src={left} alt="" />
               </Link>
             </Col>
@@ -461,27 +441,11 @@ const CreatePostArticleNewsfeed = () => {
             <Row>
               <Col className="col-4">
                 <Form.Label>Category</Form.Label>
-                <Form.Select
-                  className="select-category"
-                  aria-label="Default select example"
-                  //value={postCategory}
-                  name="post_category_id"
-                  value={postData.category_type}
-                  onChange={handleCategoryChange}
-                >
-                  {
-                    category.map((item: any) => (
-                      <option key={item.id} value={item.id}>
-                        {item.text}
-                      </option>
-                    ))
-                    /*categoryData.map((item: any) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))*/
-                  }
-                </Form.Select>
+                <SelectCategoryList
+                  userAccess={userAccess}
+                  categoryType={postData.category_type}
+                  setCategoryType={handleCategoryChange}
+                />
               </Col>
               <Col className="d-flex justify-content-center align-items-center">
                 <label htmlFor="site_state" className="form-check-label">
@@ -505,27 +469,10 @@ const CreatePostArticleNewsfeed = () => {
             <Row className="mt-3">
               <Col className="col-4">
                 <Form.Label>Select Main Badge</Form.Label>
-                <Select
-                  //filterOption={filterOption}
-                  styles={controlStyles}
-                  //value={badgeData[0]}
-                  defaultValue={badgeData[0]}
-                  //defaultInputValue={badgeData[0]}
-                  getOptionLabel={(e) => e.badge_name}
-                  getOptionValue={(e) => e.id}
-                  options={badgeData}
-                  formatOptionLabel={(badgeData) => (
-                    <div className="badge-option">
-                      <img
-                        src={badgeData.imgBase64}
-                        alt={badgeData.badge_name}
-                        className="me-4"
-                      />
-                      <span>{badgeData.badge_name}</span>
-                    </div>
-                  )}
-                  value={mainBadge}
-                  onChange={(option) => handleBadgeChange(option)}
+                <SelectBadge
+                  mainBadge={mainBadge}
+                  badgeData={badgeData}
+                  handleBadgeChange={(option: any) => handleBadgeChange(option)}
                 />
               </Col>
             </Row>
@@ -622,7 +569,7 @@ const CreatePostArticleNewsfeed = () => {
                   type="text"
                   placeholder="Title"
                   name="title"
-                  value={title}
+                  value={submitData.title}
                   onChange={(e) => handleInputChange(e)}
                 />
               </Col>
@@ -642,7 +589,7 @@ const CreatePostArticleNewsfeed = () => {
                   //value={dateAvailability}
                   //onChange={handleDateChange}
                   name="news_date"
-                  value={news_date}
+                  value={submitData.news_date}
                   onChange={(e) => handleInputChange(e)}
                 />
               </Col>
@@ -655,71 +602,11 @@ const CreatePostArticleNewsfeed = () => {
                   rows={7}
                   className="input-description"
                   name="description"
-                  value={description}
+                  value={submitData.description}
                   onChange={(e) => handleInputChange(e)}
                 />
               </Col>
             </Row>
-
-            {/*FOR ACTIVITY PACKAGE HERE
-            <Row className="mt-5">
-              <Col className="col-4">
-                <Form.Control
-                  required
-                  autoComplete="off"
-                  className="txt-contact-person"
-                  type="text"
-                  placeholder="Contact Person"
-                  name="contactperson"
-                  //value={title}
-                  onChange={(e) => handleInputChange(e)}
-                />
-              </Col>
-              <Col className="col-4">
-                <Form.Control
-                  required
-                  autoComplete="off"
-                  className="txt-email"
-                  type="text"
-                  placeholder="Email Address"
-                  name="emailaddress"
-                  //value={title}
-                  onChange={(e) => handleInputChange(e)}
-                />
-              </Col>
-            </Row>
-            <Row className="mt-4">
-              <Col className="col-4">
-                <Form.Control
-                  required
-                  autoComplete="off"
-                  className="txt-contact-number"
-                  type="text"
-                  placeholder="Contact number"
-                  name="contactnumber"
-                  //value={title}
-                  onChange={(e) => handleInputChange(e)}
-                />
-              </Col>
-              <Col className="col-4">
-                <Form.Control
-                  required
-                  autoComplete="off"
-                  className="txt-website"
-                  type="text"
-                  placeholder="Website"
-                  name="website"
-                  //value={title}
-                  onChange={(e) => handleInputChange(e)}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col className="mt-5 col-10">
-                <hr />
-              </Col>
-            </Row>*/}
-
             <Row className="mt-5">
               <Col className="mt-5">
                 <button type="submit" className="btn-submit">

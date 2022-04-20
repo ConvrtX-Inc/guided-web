@@ -36,6 +36,7 @@ import ToastNotificationBasic from "../../../ui/ToastNotificationBasic";
 import { Badge } from "../../../../shared/interfaces/Badge.interface";
 import AuthContext from "../../../../context/AuthContext";
 import { UserAccess } from "../../../../shared/interfaces/UserAccess.interface";
+import PostService from "../../../../services/post/Post.Service";
 
 const DUMMY_DATA = [
   {
@@ -101,6 +102,7 @@ const SubPostScreen = (props: any) => {
   const [access, setAccess] = useState({
     default_path: "",
   });
+  const [postData, setPostData] = useState([] as any[]);
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [selCategory, setSelCategory] = useState({});
 
@@ -125,6 +127,22 @@ const SubPostScreen = (props: any) => {
     }
   }, [userAccess]);
 
+  const loadPosts = useCallback(async () => {
+    try {
+      await PostService.loadActivityPost(userAccess.user_id || "").then(
+        (res) => {
+          console.log(res.data);
+          setPostData(res.data);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    } catch (error) {
+      console.log("Error loadPosts:", error);
+    }
+  }, [setPostData, userAccess.user_id]);
+
   const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
     let badgeWithImg: Badge[] = [];
 
@@ -143,10 +161,7 @@ const SubPostScreen = (props: any) => {
     try {
       await BadgeService.loadData().then(
         (res) => {
-          //console.log(res.data);
           setBadgeWithImg(res.data);
-          //setBadgeData(res.data);
-
           setSelCategory(res.data[0]);
         },
         (error) => {
@@ -160,10 +175,11 @@ const SubPostScreen = (props: any) => {
 
   useEffect(() => {
     if (isMounted) {
+      loadPosts();
       loadBadgeData();
       getUserAccess();
     }
-  }, [loadBadgeData, getUserAccess]);
+  }, [loadPosts, loadBadgeData, getUserAccess]);
 
   const controlStyles = {
     control: (styles: any) => ({
@@ -181,15 +197,6 @@ const SubPostScreen = (props: any) => {
       ":hover": {
         border: `1px solid #007749`,
       },
-      /*":active": {
-        border: `1px solid #007749`,
-      },
-      ":focus": {
-        border: `1px solid #007749`,
-      },
-      ":blur": {
-        border: `1px solid #007749`,
-      },*/
     }),
   };
 

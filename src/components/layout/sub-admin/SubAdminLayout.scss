@@ -49,5 +49,22 @@
       border-radius: 30px 0px 0px 30px;
       color: #007749;
     }
+
+    .btn-logout {
+      font-family: Gilroy;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 20px;
+      /* identical to box height, or 111% */
+
+      text-align: center;
+
+      color: #ff4848;
+      background: rgba(255, 72, 72, 0.31);
+      border-radius: 16px;
+      //width: 260px;
+      height: 65px;
+      border: none;
+    }
   }
 }

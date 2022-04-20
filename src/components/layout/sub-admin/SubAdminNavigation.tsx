@@ -2,7 +2,6 @@ import Image from "react-bootstrap/Image";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Navbar from "react-bootstrap/Navbar";
-import Button from "react-bootstrap/Button";
 import AuthContext from "../../../context/AuthContext";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
@@ -62,13 +61,14 @@ const SubAdminNavigation = () => {
         </li>
 
         <li className="mb-3">
-          <Row>
-            <Col className="col-2"></Col>
+          <Row className="mt-4 ps-1">
+            <Col className="col-1"></Col>
             <Col>
-              <Button variant="link" type="button" onClick={logoutHandler}>
+              <button className="w-100 btn-logout" type="button" onClick={logoutHandler}>
                 Log-out
-              </Button>
+              </button>
             </Col>
+            <Col className="col-1"></Col>
           </Row>
         </li>
       </ul>

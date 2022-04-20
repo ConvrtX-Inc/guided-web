@@ -9,7 +9,6 @@ import file from "../../assets/admin/file-text.png";
 import help from "../../assets/admin/help.png";
 
 import { NavLink } from "react-router-dom";
-import Button from "react-bootstrap/Button";
 import Navbar from "react-bootstrap/Navbar";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
@@ -137,13 +136,18 @@ const AdminNavigation = () => {
           </NavLink>
         </li>
         <li className="mb-3">
-          <Row>
-            <Col className="col-2"></Col>
+          <Row className="mt-4 ps-1">
+            <Col className="col-1"></Col>
             <Col>
-              <Button variant="link" type="button" onClick={logoutHandler}>
+              <button
+                className="w-100 btn-logout"
+                type="button"
+                onClick={logoutHandler}
+              >
                 Log-out
-              </Button>
+              </button>
             </Col>
+            <Col className="col-1"></Col>
           </Row>
         </li>
       </ul>

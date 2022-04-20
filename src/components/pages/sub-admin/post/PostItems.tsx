@@ -13,12 +13,14 @@ const PostItems = (props: any) => {
             <div className="image-wrapper">
               <img
                 className="post-img"
-                src={postItem.img}
+                src={`${"data:image/png;base64,"}${postItem.snapshot_img}`}
                 alt={postItem.title}
               />
               <img
                 className="post-img-badge"
-                src={postItem.badge}
+                src={`${"data:image/png;base64,"}${
+                  postItem.activityBadge.img_icon
+                }`}
                 alt={postItem.title}
               />
             </div>

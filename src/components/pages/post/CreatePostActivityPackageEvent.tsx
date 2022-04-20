@@ -63,7 +63,7 @@ const CreatePostActivityPackage = () => {
     activity_date: "",
     address: "1600 Amphitheatre Pkwy,  Mountain View,  California,  94043",
     max_extra_person: 100,
-    currency_id: "200339a3-5870-462d-9eb8-4b6cfc788886"
+    currency_id: "200339a3-5870-462d-9eb8-4b6cfc788886",
   });
   const [postData, setPostData] = useState({
     post_id: "",
@@ -81,7 +81,7 @@ const CreatePostActivityPackage = () => {
     views: 0,
     snapshot_img: "",
   });
-  const [packageForms, setPackageForms  ] = useState({
+  const [packageForms, setPackageForms] = useState({
     activity_package_id: "",
     guide_rules: "",
     local_law_taxes: "",
@@ -279,6 +279,10 @@ const CreatePostActivityPackage = () => {
           if (res1.status === 201) {
             //set id for image upload
             for (let i = 0; i < uploadFiles.length; i++) {
+              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
+                "data:image/png;base64,",
+                ""
+              );
               if (postData.category_type === 1) {
                 uploadFiles[i].activity_package_destination_id = res1.data.id;
               } else if (postData.category_type === 3) {

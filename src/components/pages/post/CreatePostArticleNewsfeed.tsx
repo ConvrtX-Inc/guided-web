@@ -263,6 +263,10 @@ const CreatePostArticleNewsfeed = () => {
 
             //set id for image upload
             for (let i = 0; i < uploadFiles.length; i++) {
+              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
+                "data:image/png;base64,",
+                ""
+              );
               if (postData.category_type === 4) {
                 uploadFiles[i].activity_article_id = res.data.id;
               } else if (postData.category_type === 2) {

@@ -52,12 +52,25 @@ const loadRecentPosts = () => {
     });
 };
 
+const loadUserActivityPostSummary = (id: string) => {
+  config()["params"] = {};
+  return axios
+    .get(
+      API_URL + `api/v1/dashboard-related/user-activity-post-summary/${id}`,
+      config()
+    )
+    .then((response) => {
+      return response;
+    });
+};
+
 const DashboardService = {
   loadRecentPosts,
   loadCountTotalDownloads,
   loadCountOnlineUsers,
   loadCountActiveUsers,
   loadCountAllUsers,
+  loadUserActivityPostSummary,
 };
 
 export default DashboardService;

@@ -75,6 +75,9 @@ const CreatePostArticleNewsfeed = () => {
     category_type: state?.category || 4, //Article is default
     title: "",
     views: 0,
+    snapshot_img: "",
+    main_badge_id: "",
+    activityBadgeId: "",
   });
 
   //console.log(postData);
@@ -155,6 +158,10 @@ const CreatePostArticleNewsfeed = () => {
           sub_badge_id: event.target.value,
         },
       ]);*/
+      if (subBadges.length > 4) {
+        event.target.checked = false;
+        return;
+      }
       setSubBadges(() => [...subBadges, event.target.value]);
 
       setsubmitData({
@@ -178,6 +185,10 @@ const CreatePostArticleNewsfeed = () => {
     //setPostData({ ...postData, post_sub_b,dges: subBadges });
   };
 
+  const removeImage = (id: number) => {
+    setUploadFiles((files) => files.filter((f) => f.temp_id !== id));
+  };
+
   //handle upload multiple files
   //console.log(uploadFiles);
   //console.log(uploadFiles.length);
@@ -194,6 +205,8 @@ const CreatePostArticleNewsfeed = () => {
         ...uploadFiles,
         {
           //activity_article_id: "",
+          temp_id: Math.random(),
+          default_img: false,
           snapshot_img: String(base64),
         },
       ]);
@@ -236,6 +249,7 @@ const CreatePostArticleNewsfeed = () => {
     //console.log(submitData);
     let bulkUpload = {};
     try {
+      submitData.sub_badge_ids = subBadges.toString();
       //await PostService.postArticleData(submitData).then(
       await postDataTo(postData.category_type, submitData).then(
         (res) => {
@@ -244,9 +258,15 @@ const CreatePostArticleNewsfeed = () => {
             console.log(res.data);
             //setPostData({ ...postData, post_id: res.data.id }); //this data will be submitted to post-activity
             postData.post_id = res.data.id;
+            postData.main_badge_id = submitData.main_badge_id;
+            postData.activityBadgeId = submitData.main_badge_id;
 
             //set id for image upload
             for (let i = 0; i < uploadFiles.length; i++) {
+              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
+                "data:image/png;base64,",
+                ""
+              );
               if (postData.category_type === 4) {
                 uploadFiles[i].activity_article_id = res.data.id;
               } else if (postData.category_type === 2) {
@@ -257,6 +277,7 @@ const CreatePostArticleNewsfeed = () => {
             //set a default_img
             if (uploadFiles.length > 0) {
               uploadFiles[0].default_img = true;
+              postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
             }
             bulkUpload = { bulk: uploadFiles };
             //console.log(bulkUpload);
@@ -527,8 +548,16 @@ const CreatePostArticleNewsfeed = () => {
                   className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
                   key={img.snapshot_img}
                 >
+                  <button
+                    type="button"
+                    className="btn-close btn-remove-img"
+                    aria-label="Close"
+                    onClick={() => {
+                      removeImage(img.temp_id);
+                    }}
+                  ></button>
                   <img
-                    className="prev-img img-fluid rounded mx-auto d-block"
+                    className="w-100 prev-img img-fluid rounded mx-auto d-block"
                     src={img.snapshot_img}
                     alt="..."
                   />
@@ -545,6 +574,7 @@ const CreatePostArticleNewsfeed = () => {
               {uploadFiles.length < 5 && (
                 <Col className="col-2 me-2 d-flex justify-content-center align-items-center">
                   <input
+                    accept="image/x-png,image/gif,image/jpeg"
                     type="file"
                     ref={refFileInput}
                     className="form-control d-none"
@@ -552,7 +582,7 @@ const CreatePostArticleNewsfeed = () => {
                   />
                   <button
                     onClick={handleSelectFile}
-                    className="btn"
+                    className="btn btn-file-upload"
                     type="button"
                   >
                     +
@@ -600,6 +630,7 @@ const CreatePostArticleNewsfeed = () => {
                   as="textarea"
                   placeholder="Description of event"
                   rows={7}
+                  maxLength={200}
                   className="input-description"
                   name="description"
                   value={submitData.description}

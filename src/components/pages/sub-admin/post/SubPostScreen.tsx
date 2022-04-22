@@ -70,7 +70,7 @@ const SubPostScreen = (props: any) => {
     try {
       await PostService.loadActivityPost(userAccess.user_id || "").then(
         (res) => {
-          console.log(res.data);
+          //console.log(res.data);
           setPostData(res.data);
         },
         (err) => {
@@ -215,14 +215,6 @@ const SubPostScreen = (props: any) => {
                     placeholder="Search"
                     //onChange={(e) => onSearchChange(e)}
                   />
-                </InputGroup>
-                <InputGroup className="input-group-2 me-2">
-                  <Form.Select className="custom-select">
-                    <option>Sort by</option>
-                  </Form.Select>
-                  {/*<InputGroup.Text>
-                    <Image src={down} alt="" />
-  </InputGroup.Text>*/}
                 </InputGroup>
                 <Button
                   className="btn btn-light btn-filter"

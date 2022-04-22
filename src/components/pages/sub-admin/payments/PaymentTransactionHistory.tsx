@@ -1,5 +1,4 @@
 import { Col, Container, Row } from "react-bootstrap";
-import Payment from './Payment';
 import AddNewCard from './sub-components/addNewCard';
 import CreditCardList from './sub-components/cardList';
 import DateField from './sub-components/dateField';

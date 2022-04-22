@@ -54,7 +54,7 @@ const CreatePostArticleNewsfeed = () => {
 
   //data for activity-article-image or activity-newsfeed-image
   const [uploadFiles, setUploadFiles] = useState([] as PostImage[]);
-
+  const [isLoading, setIsLoading] = useState(false);
   //data for activity-article or activity-newsfeed
   const [submitData, setsubmitData] = useState({
     user_id: userAccess.user_id, //login user id
@@ -78,6 +78,7 @@ const CreatePostArticleNewsfeed = () => {
     snapshot_img: "",
     main_badge_id: "",
     activityBadgeId: "",
+    premium_user: false,
   });
 
   //console.log(postData);
@@ -96,12 +97,14 @@ const CreatePostArticleNewsfeed = () => {
 
   //Update switch, is premium user true/false
   const handleSwitchChange = (event: any) => {
-    //console.log(event.target.checked);
+    let premium_user: boolean;
     if (event.target.checked) {
-      setsubmitData({ ...submitData, premium_user: true });
+      premium_user = true;
     } else {
-      setsubmitData({ ...submitData, premium_user: false });
+      premium_user = false;
     }
+    setsubmitData({ ...submitData, premium_user: premium_user });
+    setPostData({ ...postData, premium_user: premium_user });
   };
 
   /*const handleDateChange = (event: any) => {
@@ -141,6 +144,16 @@ const CreatePostArticleNewsfeed = () => {
       });
     } else if (id === 4) {
       navigate("/post/article", {
+        state: stateCategory,
+        replace: true,
+      });
+    } else if (id === 5) {
+      navigate("/post/advertistment", {
+        state: stateCategory,
+        replace: true,
+      });
+    } else if (id === 6) {
+      navigate("/post/outfitter", {
         state: stateCategory,
         replace: true,
       });
@@ -246,6 +259,9 @@ const CreatePostArticleNewsfeed = () => {
   //submit form, submit post article/newsfeed
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    setIsLoading(true);
+
     //console.log(submitData);
     let bulkUpload = {};
     try {
@@ -302,6 +318,7 @@ const CreatePostArticleNewsfeed = () => {
         (res) => {
           //console.log(res);
           if (res.status === 201) {
+            setIsLoading(false);
             navigate("/post", {
               state: {
                 status: true,
@@ -394,44 +411,12 @@ const CreatePostArticleNewsfeed = () => {
     }
   }, [setBadgeWithImg]);
 
-  //console.log(postCat);
-  //Load category data
-  /*const loadCategoryData = useCallback(async () => {
-    try {
-      await PostService.loadPostCategory().then(
-        (res) => {
-          //console.log(res.data);
-          setCategoryData(res.data);
-
-          //intial value for category
-          //comment category id, do not include in submit
-          //setPostData((postData) => ({
-          //  ...postData,
-          //  post_category_id: res.data[0].id,
-          //}));
-
-          //initial value for category
-          setPostCategory(res.data[0].name);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);*/
-
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
     } else {
-      //saveToPostActivity();
     }
-    //loadCategoryData();
     loadBadgeData();
-    //}, [loadBadgeData, loadCategoryData]);
-    //}, [loadBadgeData, saveToPostActivity]);
   }, [loadBadgeData]);
 
   /*const filterOption = (option: any, inputValue: any) => {
@@ -640,9 +625,21 @@ const CreatePostArticleNewsfeed = () => {
             </Row>
             <Row className="mt-5">
               <Col className="mt-5">
-                <button type="submit" className="btn-submit">
-                  Submit
-                </button>
+                {!isLoading && (
+                  <button type="submit" className="btn-submit">
+                    Submit
+                  </button>
+                )}
+                {isLoading && (
+                  <button className="btn-submit" type="button" disabled>
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Loading...
+                  </button>
+                )}
               </Col>
             </Row>
           </Form>

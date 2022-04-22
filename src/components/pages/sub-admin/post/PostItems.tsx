@@ -1,14 +1,15 @@
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
+//import { format, parse } from "date-fns";
 import { Link } from "react-router-dom";
 
 const PostItems = (props: any) => {
+  console.log(props.items);
   const displayData = props.items.map((postItem: any) => (
     <tr key={postItem.id}>
       <td className="p-4">
         <Row>
-          {/*<Col style={{ backgroundImage: `url(${postItem.img}` }}>*/}
           <Col className="col-4">
             <div className="image-wrapper">
               <img
@@ -16,25 +17,27 @@ const PostItems = (props: any) => {
                 src={`${"data:image/png;base64,"}${postItem.snapshot_img}`}
                 alt={postItem.title}
               />
-              <img
-                className="post-img-badge"
-                src={`${"data:image/png;base64,"}${
-                  postItem.activityBadge.img_icon
-                }`}
-                alt={postItem.title}
-              />
+              {postItem.activityBadge && (
+                <img
+                  className="post-img-badge"
+                  src={`${"data:image/png;base64,"}${
+                    postItem.activityBadge.img_icon
+                  }`}
+                  alt={postItem.title}
+                />
+              )}
             </div>
           </Col>
           <Col>{postItem.title}</Col>
         </Row>
       </td>
       <td className="p-4">{postItem.views}</td>
-      <td className="p-4">{postItem.created_date}</td>
-      <td className="p-4">{postItem.paid}</td>
+      <td className="p-4">{String(postItem.created_date).substring(0, 10)}</td>
       <td className="p-4">
-        {/*<button type="button" className="btn btn-view-post">
-          view post
-  </button>*/}
+        {!postItem.premium_user && "No"}
+        {postItem.premium_user && "Yes"}
+      </td>
+      <td className="p-4">
         <Link
           to={`/post/${postItem.id}`}
           state={{
@@ -59,7 +62,16 @@ const PostItems = (props: any) => {
             <th className="p-4">Post</th>
           </tr>
         </thead>
-        <tbody>{displayData}</tbody>
+        <tbody>
+          {props.items.length === 0 && (
+            <tr>
+              <td colSpan={5} className="text-center">
+                No data
+              </td>
+            </tr>
+          )}
+          {props.items.length > 0 && displayData}
+        </tbody>
       </Table>
     </Col>
   );

@@ -8,6 +8,20 @@ const config = (token?: string) => ({
   },
   params: {},
 });
+const postOutfitterData = (data: any) => {
+  return axios
+    .post(API_URL + `api/v1/activity-outfitter/`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const postOutfitterDataImage = (data: any) => {
+  return axios
+    .post(API_URL + `api/v1/activity-outfitter-image/bulk`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
 const loadActivityPost = (id: string) => {
   config()["params"] = {};
   return axios
@@ -119,6 +133,30 @@ const postToActivityPost = (data: any) => {
       return response;
     });
 };
+const patchToUserActivitySummary = (id: string, data: any) => {
+  return axios
+    .patch(API_URL + `api/v1/user-activity-post-summary/${id}`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const postToUserActivitySummary = (id: string, data: any) => {
+  return axios
+    .post(API_URL + `api/v1/user-activity-post-summary`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const loadUserActivitySummary = (id: string) => {
+  return axios
+    .get(
+      API_URL + `api/v1/user-activity-post-summary/get-byuser/${id}`,
+      config()
+    )
+    .then((response) => {
+      return response;
+    });
+};
 const PostService = {
   loadActivityPost,
   loadPostCategory,
@@ -142,5 +180,13 @@ const PostService = {
   postEventDataDestination,
   postEventDataImage,
   postEventFormsData,
+
+  patchToUserActivitySummary,
+  postToUserActivitySummary,
+  loadUserActivitySummary,
+
+  //outfitter
+  postOutfitterData,
+  postOutfitterDataImage,
 };
 export default PostService;

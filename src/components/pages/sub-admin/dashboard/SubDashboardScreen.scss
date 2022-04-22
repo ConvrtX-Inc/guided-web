@@ -83,6 +83,16 @@
     background: #ffffff;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.09);
     border-radius: 15px;
+    .most-recent-img {
+      height: 118px;
+    }
+    .img-badge {
+      position: absolute;
+      left: 10%;
+      top: 40%;
+      width: 27.05px;
+      height: 27.05px;
+    }
     .btn-read-more {
       background: #ffc74a;
       border-radius: 10px;

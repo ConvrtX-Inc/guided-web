@@ -33,14 +33,19 @@ const SignInForm = () => {
     setIsPending(true);
     setIsError(false);
 
+    let login: boolean | false = false;
+    let result: any | {} = {};
     try {
       await AuthService.login(email, password).then(
         (res) => {
           setIsPending(false);
-          authCtx.login(res, "0");
-          navigate("../dashboard", { replace: true });
+          //authCtx.login(res, "0");
+          //navigate("../dashboard", { replace: true });
+          login = true;
+          result = res;
         },
         (error) => {
+          login = false;
           var err = "";
           if (error.response.data.errors.email !== undefined) {
             err = error.response.data.errors.email;
@@ -53,6 +58,15 @@ const SignInForm = () => {
           setIsPending(false);
         }
       );
+
+      if (login) {
+        //console.log("Execute code here......");
+
+        //console.log(result.user.id);
+
+        authCtx.login(result, "0");
+        navigate("../dashboard", { replace: true });
+      }
     } catch (err) {
       console.log(err);
       setIsPending(false);

@@ -43,6 +43,9 @@ import EditPostArticleNewsfeed from "./components/pages/post/EditPostArticleNews
 import EditPostActivityPackage from "./components/pages/post/EditPostActivityPackage";
 import { UserAccess } from "./shared/interfaces/UserAccess.interface";
 import { useContext } from "react";
+import ScrollToTop from "./components/layout/ScrollToTop";
+import CreatePostOutfitter from "./components/pages/post/CreatePostOutfitter";
+import CreatePostAds from "./components/pages/post/CreatePostAds";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -51,6 +54,7 @@ function App() {
   //console.log(userAccess);
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/*Login pages */}
         {!authCtx.isLoggedIn && (
@@ -158,6 +162,8 @@ function App() {
                 path="/post/edit-event"
                 element={<EditPostActivityPackage />}
               />
+              <Route path="/post/advertistment" element={<CreatePostAds />} />
+              <Route path="/post/outfitter" element={<CreatePostOutfitter />} />
             </Route>
             <Route path="payment" element={<SubPaymentScreen />} />
             <Route path="support" element={<SubSupportScreen />} />

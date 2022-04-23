@@ -15,6 +15,7 @@ import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
 import { PostImage } from "../../../shared/interfaces/PostImage.interface";
 import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 import PostService from "../../../services/post/Post.Service";
+import { PostFormsNavigate } from "./PostFormsNavigate";
 
 const CreatePostAdsOutfitter = () => {
   const authCtx = useContext(AuthContext);
@@ -103,42 +104,16 @@ const CreatePostAdsOutfitter = () => {
   const handleCategoryChange = (event: any) => {
     setPostCategory(event.target.options[event.target.selectedIndex].text);
     setPostData({ ...postData, category_type: parseInt(event.target.value) });
-    const id = parseInt(event.target.value);
-    const stateCategory = {
-      category: parseInt(event.target.value),
-      categoryName: event.target.options[event.target.selectedIndex].text,
-    };
-    if (id === 3) {
-      navigate("/post/event", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 1) {
-      navigate("/post/activity-package", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 2) {
-      navigate("/post/newsfeed", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 4) {
-      navigate("/post/article", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 5) {
-      navigate("/post/advertistment", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 6) {
-      navigate("/post/outfitter", {
-        state: stateCategory,
-        replace: true,
-      });
-    }
+
+    //navigate to forms by category type id
+    const navigateTo = PostFormsNavigate(
+      parseInt(event.target.value),
+      event.target.options[event.target.selectedIndex].text
+    );
+    navigate(navigateTo.path, {
+      state: navigateTo.stateCategory,
+      replace: true,
+    });
   };
 
   const postDataTo = (category: number, data: any) => {
@@ -269,7 +244,7 @@ const CreatePostAdsOutfitter = () => {
         </Col>
       </Row>
       <Row className="mt-4">
-        <Col className="ms-3 me-3 post-form">
+        <Col className="ms-3 me-3 post-form post-form-outfitter">
           <Form className="m-5" onSubmit={(e) => handleSubmit(e)}>
             <Row>
               <Col className="col-4">

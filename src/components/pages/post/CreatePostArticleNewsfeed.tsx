@@ -18,6 +18,7 @@ import { CategoryState } from "../../../shared/interfaces/CategoryState.interfac
 import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
 import SelectCategoryList from "./SelectCategoryList";
 import SelectBadge from "./SelectBadge";
+import { PostFormsNavigate } from "./PostFormsNavigate";
 
 const CreatePostArticleNewsfeed = () => {
   const location = useLocation();
@@ -104,46 +105,16 @@ const CreatePostArticleNewsfeed = () => {
   //Update selected category type
   const handleCategoryChange = (event: any) => {
     setPostCategory(event.target.options[event.target.selectedIndex].text);
-
     setPostData({ ...postData, category_type: parseInt(event.target.value) });
 
-    //comment category id, do not include in submit
-    const id = parseInt(event.target.value);
-    const stateCategory = {
-      category: parseInt(event.target.value),
-      categoryName: event.target.options[event.target.selectedIndex].text,
-    };
-    if (id === 3) {
-      navigate("/post/event", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 1) {
-      navigate("/post/activity-package", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 2) {
-      navigate("/post/newsfeed", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 4) {
-      navigate("/post/article", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 5) {
-      navigate("/post/advertistment", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 6) {
-      navigate("/post/outfitter", {
-        state: stateCategory,
-        replace: true,
-      });
-    }
+    const navigateTo = PostFormsNavigate(
+      parseInt(event.target.value),
+      event.target.options[event.target.selectedIndex].text
+    );
+    navigate(navigateTo.path, {
+      state: navigateTo.stateCategory,
+      replace: true,
+    });
   };
 
   //Update selected sub-badges

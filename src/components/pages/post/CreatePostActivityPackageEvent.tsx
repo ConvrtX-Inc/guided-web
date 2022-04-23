@@ -20,6 +20,7 @@ import SelectBadge from "./SelectBadge";
 import SelectServices from "./SelectServices";
 import PostService from "../../../services/post/Post.Service";
 import { ActivityDestination } from "../../../shared/interfaces/ActivityDestination.interface";
+import { PostFormsNavigate } from "./PostFormsNavigate";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
@@ -149,42 +150,16 @@ const CreatePostActivityPackage = () => {
   const handleCategoryChange = (event: any) => {
     setPostCategory(event.target.options[event.target.selectedIndex].text);
     setPostData({ ...postData, category_type: parseInt(event.target.value) });
-    const id = parseInt(event.target.value);
-    const stateCategory = {
-      category: parseInt(event.target.value),
-      categoryName: event.target.options[event.target.selectedIndex].text,
-    };
-    if (id === 3) {
-      navigate("/post/event", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 1) {
-      navigate("/post/activity-package", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 2) {
-      navigate("/post/newsfeed", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 4) {
-      navigate("/post/article", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 5) {
-      navigate("/post/advertistment", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 6) {
-      navigate("/post/outfitter", {
-        state: stateCategory,
-        replace: true,
-      });
-    }
+
+    //navigate to forms by category type id
+    const navigateTo = PostFormsNavigate(
+      parseInt(event.target.value),
+      event.target.options[event.target.selectedIndex].text
+    );
+    navigate(navigateTo.path, {
+      state: navigateTo.stateCategory,
+      replace: true,
+    });
   };
 
   const handleBadgeChange = (obj: any) => {

@@ -8,6 +8,20 @@ const config = (token?: string) => ({
   },
   params: {},
 });
+const postAdsData = (data: any) => {
+  return axios
+    .post(API_URL + `api/v1/activity-advertisement/`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const postAdsDataImage = (data: any) => {
+  return axios
+    .post(API_URL + `api/v1/activity-advertisement-image/bulk`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
 const postOutfitterData = (data: any) => {
   return axios
     .post(API_URL + `api/v1/activity-outfitter/`, data, config())
@@ -188,5 +202,9 @@ const PostService = {
   //outfitter
   postOutfitterData,
   postOutfitterDataImage,
+
+  //advertisment
+  postAdsData,
+  postAdsDataImage,
 };
 export default PostService;

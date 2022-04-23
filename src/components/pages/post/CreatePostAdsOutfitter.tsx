@@ -14,33 +14,88 @@ import AuthContext from "../../../context/AuthContext";
 import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
 import { PostImage } from "../../../shared/interfaces/PostImage.interface";
 import { convertBase64 } from "../../../shared/helper/ConvertBase64";
+import PostService from "../../../services/post/Post.Service";
 
-const CreatePostAds = () => {
+const CreatePostAdsOutfitter = () => {
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
   const navigate = useNavigate();
   const location = useLocation();
-  const refFileInput = useRef<HTMLInputElement | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const state = location.state as CategoryState;
+  const [isLoading, setIsLoading] = useState(false);
   const [postCategory, setPostCategory] = useState(
-    state?.categoryName || "Advertisement"
+    state?.categoryName || "Outfitter"
   );
   const [submitData, setsubmitData] = useState({
+    user_id: userAccess.user_id,
     title: "",
     premium_user: false,
-    ad_date: "",
+    availability_date: "",
+    ad_date: "", //for ads
+    activities: "", //for ads
     description: "",
+    price: 0,
+    is_post: true,
+    country: "PH",
+    address: "Davao City",
+    street: "103 Libra",
+    city: "Davao",
+    province: "Davao Del Sur",
+    zip_code: 8000,
+    product_link: "www.google.com",
   });
   const [postData, setPostData] = useState({
     premium_user: false,
-    category_type: state?.category || 5, //Advertisement is default
+    category_type: state?.category || 6, //Outfitter is default
+    views: 0,
+    snapshot_img: "",
+    title: "",
+    post_id: "",
+    user_id: userAccess.user_id, //login user id
+    contact_user_id: "",
+    contact_person: "",
+    contact_number: "",
+    contact_email: "",
+    contact_website: "",
   });
+
+  const refFileInput = useRef<HTMLInputElement | null>(null);
 
   const [uploadFiles, setUploadFiles] = useState([] as PostImage[]);
 
+  const handlePostInputChange = (event: any) => {
+    setPostData({ ...postData, [event.target.name]: event.target.value });
+  };
+
+  const handleSelectFile = () => {
+    refFileInput?.current?.click();
+  };
+
+  const handleUploadFiles = async (event: any) => {
+    const fileObj = [];
+    fileObj.push(event.target.files);
+    for (let i = 0; i < fileObj[0].length; i++) {
+      const base64 = await convertBase64(fileObj[0][i]);
+      setUploadFiles([
+        ...uploadFiles,
+        {
+          temp_id: Math.random(),
+          default_img: false,
+          snapshot_img: String(base64),
+        },
+      ]);
+    }
+  };
+
   const handleInputChange = (event: any) => {
-    setsubmitData({ ...submitData, [event.target.name]: event.target.value });
+    if (event.target.name === "price") {
+      setsubmitData({
+        ...submitData,
+        [event.target.name]: parseFloat(event.target.value),
+      });
+    } else {
+      setsubmitData({ ...submitData, [event.target.name]: event.target.value });
+    }
 
     setPostData({ ...postData, [event.target.name]: event.target.value });
   };
@@ -86,32 +141,105 @@ const CreatePostAds = () => {
     }
   };
 
-  const handlePostInputChange = (event: any) => {
-    setPostData({ ...postData, [event.target.name]: event.target.value });
+  const postDataTo = (category: number, data: any) => {
+    if (category === 5) {
+      return PostService.postAdsData(data);
+    } else if (category === 6) {
+      return PostService.postOutfitterData(data);
+    } else {
+      return PostService.postAdsData(data);
+    }
+  };
+
+  const postImageTo = (category: number, data: any) => {
+    if (category === 5) {
+      return PostService.postAdsDataImage(data);
+    } else if (category === 6) {
+      return PostService.postOutfitterDataImage(data);
+    } else {
+      return PostService.postAdsDataImage(data);
+    }
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    setIsLoading(true);
+
+    let bulkUpload = {};
+    let isSuccess: boolean | false = false;
+
+    try {
+      //hard code for category type
+      if (postData.category_type === 5) {
+        //ads
+        submitData.ad_date = submitData.availability_date;
+      } else if (postData.category_type === 5) {
+        //outfitter
+        //nothing else
+      }
+
+      await postDataTo(postData.category_type, submitData).then(
+        (res) => {
+          if (res.status === 201) {
+            isSuccess = true;
+            console.log("postDataTo: ", res.data);
+            postData.post_id = res.data.id;
+
+            for (let i = 0; i < uploadFiles.length; i++) {
+              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
+                "data:image/png;base64,",
+                ""
+              );
+              uploadFiles[i].activity_outfitter_id = res.data.id;
+            }
+            if (uploadFiles.length > 0) {
+              uploadFiles[0].default_img = true;
+              postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
+            }
+            bulkUpload = { bulk: uploadFiles };
+          }
+        },
+        (err) => {
+          console.log("Error postDataTo: ", err);
+        }
+      );
+
+      if (isSuccess) {
+        await postImageTo(postData.category_type, bulkUpload).then(
+          (res) => {
+            console.log("postImageTo: ", res.status);
+          },
+          (err) => {
+            console.log("Error postImageTo: ", err);
+          }
+        );
+
+        await PostService.postToActivityPost(postData).then(
+          (res) => {
+            if (res.status === 201) {
+              setIsLoading(false);
+              navigate("/post", {
+                state: {
+                  status: true,
+                  message: "Post successfully created.",
+                },
+                replace: true,
+              });
+            }
+          },
+          (err) => {
+            console.log("Error postToActivityPost: ", err);
+          }
+        );
+      }
+    } catch (error) {
+      console.log("Error in handleSubmit:", error);
+    }
   };
 
   const removeImage = (id: number) => {
     setUploadFiles((files) => files.filter((f) => f.temp_id !== id));
-  };
-
-  const handleSelectFile = () => {
-    refFileInput?.current?.click();
-  };
-
-  const handleUploadFiles = async (event: any) => {
-    const fileObj = [];
-    fileObj.push(event.target.files);
-    for (let i = 0; i < fileObj[0].length; i++) {
-      const base64 = await convertBase64(fileObj[0][i]);
-      setUploadFiles([
-        ...uploadFiles,
-        {
-          temp_id: Math.random(),
-          default_img: false,
-          snapshot_img: String(base64),
-        },
-      ]);
-    }
   };
 
   const handleSwitchChange = (event: any) => {
@@ -142,7 +270,7 @@ const CreatePostAds = () => {
       </Row>
       <Row className="mt-4">
         <Col className="ms-3 me-3 post-form">
-          <Form className="m-5">
+          <Form className="m-5" onSubmit={(e) => handleSubmit(e)}>
             <Row>
               <Col className="col-4">
                 <Form.Label>Category</Form.Label>
@@ -236,11 +364,24 @@ const CreatePostAds = () => {
               <Col className="col-4">
                 <Form.Label>Date</Form.Label>
                 <Form.Control
+                  required
                   type="date"
                   className="input-date"
                   placeholder="Set Availability"
-                  name="ad_date"
-                  value={submitData.ad_date}
+                  name="availability_date"
+                  value={submitData.availability_date}
+                  onChange={(e) => handleInputChange(e)}
+                />
+              </Col>
+              <Col className="col-4">
+                <Form.Label></Form.Label>
+                <Form.Control
+                  required
+                  autoComplete="off"
+                  className="mt-1 input-price"
+                  type="text"
+                  placeholder="Price"
+                  name="price"
                   onChange={(e) => handleInputChange(e)}
                 />
               </Col>
@@ -328,4 +469,4 @@ const CreatePostAds = () => {
     </Container>
   );
 };
-export default CreatePostAds;
+export default CreatePostAdsOutfitter;

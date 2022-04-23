@@ -44,14 +44,11 @@ import EditPostActivityPackage from "./components/pages/post/EditPostActivityPac
 import { UserAccess } from "./shared/interfaces/UserAccess.interface";
 import { useContext } from "react";
 import ScrollToTop from "./components/layout/ScrollToTop";
-import CreatePostOutfitter from "./components/pages/post/CreatePostOutfitter";
-import CreatePostAds from "./components/pages/post/CreatePostAds";
+import CreatePostAdsOutfitter from "./components/pages/post/CreatePostAdsOutfitter";
 
 function App() {
   const authCtx = useContext(AuthContext);
-  //console.log("user type:", authCtx.usertype);
   const userAccess: UserAccess = authCtx.userRole;
-  //console.log(userAccess);
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -162,8 +159,14 @@ function App() {
                 path="/post/edit-event"
                 element={<EditPostActivityPackage />}
               />
-              <Route path="/post/advertistment" element={<CreatePostAds />} />
-              <Route path="/post/outfitter" element={<CreatePostOutfitter />} />
+              <Route
+                path="/post/advertistment"
+                element={<CreatePostAdsOutfitter />}
+              />
+              <Route
+                path="/post/outfitter"
+                element={<CreatePostAdsOutfitter />}
+              />
             </Route>
             <Route path="payment" element={<SubPaymentScreen />} />
             <Route path="support" element={<SubSupportScreen />} />

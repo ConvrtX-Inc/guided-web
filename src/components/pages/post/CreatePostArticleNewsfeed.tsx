@@ -18,7 +18,7 @@ import { CategoryState } from "../../../shared/interfaces/CategoryState.interfac
 import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
 import SelectCategoryList from "./SelectCategoryList";
 import SelectBadge from "./SelectBadge";
-//import DatePicker from "react-datepicker";
+import { PostFormsNavigate } from "./PostFormsNavigate";
 
 const CreatePostArticleNewsfeed = () => {
   const location = useLocation();
@@ -31,9 +31,6 @@ const CreatePostArticleNewsfeed = () => {
 
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
-
-  //const [dateAvailability, setDateAvailability] = useState("");
-  //const [postCategory, setPostCategory] = useState("");
 
   //get selected category
   const [postCategory, setPostCategory] = useState(
@@ -49,11 +46,10 @@ const CreatePostArticleNewsfeed = () => {
 
   //get sub badges
   const [subBadges, setSubBadges] = useState([] as any[]);
-  //const [uploadFiles, setUploadFiles] = useState([] as any[]);
-  //const [uploadFiles, setUploadFiles] = useState([] as ArticleImage[]);
 
   //data for activity-article-image or activity-newsfeed-image
   const [uploadFiles, setUploadFiles] = useState([] as PostImage[]);
+  const [isLoading, setIsLoading] = useState(false);
 
   //data for activity-article or activity-newsfeed
   const [submitData, setsubmitData] = useState({
@@ -78,9 +74,9 @@ const CreatePostArticleNewsfeed = () => {
     snapshot_img: "",
     main_badge_id: "",
     activityBadgeId: "",
+    premium_user: false,
   });
 
-  //console.log(postData);
   //Update title,description,date
   const handleInputChange = (event: any) => {
     setsubmitData({ ...submitData, [event.target.name]: event.target.value });
@@ -96,83 +92,45 @@ const CreatePostArticleNewsfeed = () => {
 
   //Update switch, is premium user true/false
   const handleSwitchChange = (event: any) => {
-    //console.log(event.target.checked);
+    let premium_user: boolean;
     if (event.target.checked) {
-      setsubmitData({ ...submitData, premium_user: true });
+      premium_user = true;
     } else {
-      setsubmitData({ ...submitData, premium_user: false });
+      premium_user = false;
     }
+    setsubmitData({ ...submitData, premium_user: premium_user });
+    setPostData({ ...postData, premium_user: premium_user });
   };
 
-  /*const handleDateChange = (event: any) => {
-    setDateAvailability(event.target.value);
-  };*/
-
-  //console.log(postData);
   //Update selected category type
   const handleCategoryChange = (event: any) => {
-    //console.log(event.target.options[event.target.selectedIndex].text);
-    //setPostCategory(event.target.value);
-    //console.log(event.target.options[event.target.selectedIndex].text);
     setPostCategory(event.target.options[event.target.selectedIndex].text);
-
     setPostData({ ...postData, category_type: parseInt(event.target.value) });
-    //comment category id, do not include in submit
-    //setPostData({ ...postData, [event.target.name]: event.target.value });
-    const id = parseInt(event.target.value);
-    const stateCategory = {
-      category: parseInt(event.target.value),
-      categoryName: event.target.options[event.target.selectedIndex].text,
-    };
-    if (id === 3) {
-      navigate("/post/event", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 1) {
-      navigate("/post/activity-package", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 2) {
-      navigate("/post/newsfeed", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 4) {
-      navigate("/post/article", {
-        state: stateCategory,
-        replace: true,
-      });
-    }
+
+    const navigateTo = PostFormsNavigate(
+      parseInt(event.target.value),
+      event.target.options[event.target.selectedIndex].text
+    );
+    navigate(navigateTo.path, {
+      state: navigateTo.stateCategory,
+      replace: true,
+    });
   };
 
-  //console.log(subBadges);
   //Update selected sub-badges
   const handleSubBadgesChange = (event: any) => {
     if (event.target.checked) {
-      //console.log(event.target.value);
-      /*setSubBadges([
-        ...subBadges,
-        {
-          sub_badge_id: event.target.value,
-        },
-      ]);*/
       if (subBadges.length > 4) {
         event.target.checked = false;
         return;
       }
       setSubBadges(() => [...subBadges, event.target.value]);
-
       setsubmitData({
         ...submitData,
         sub_badge_ids: [...subBadges, event.target.value],
       });
     } else {
-      setSubBadges(
-        //subBadges.filter((badge) => badge.sub_badge_id !== event.target.value)
-        subBadges.filter((badge) => badge !== event.target.value)
-      );
+      setSubBadges(subBadges.filter((badge) => badge !== event.target.value));
 
       setsubmitData({
         ...submitData,
@@ -181,8 +139,6 @@ const CreatePostArticleNewsfeed = () => {
         ),
       });
     }
-
-    //setPostData({ ...postData, post_sub_b,dges: subBadges });
   };
 
   const removeImage = (id: number) => {
@@ -190,38 +146,29 @@ const CreatePostArticleNewsfeed = () => {
   };
 
   //handle upload multiple files
-  //console.log(uploadFiles);
-  //console.log(uploadFiles.length);
   const handleUploadFiles = async (event: any) => {
     const fileObj = [];
     //const fileArray = [] as any[];
-    //console.log(event.target.files);
     fileObj.push(event.target.files);
     for (let i = 0; i < fileObj[0].length; i++) {
       //console.log(fileObj[0][i]);
       const base64 = await convertBase64(fileObj[0][i]);
-      //setUploadFiles(() => [...uploadFiles, String(base64)]);
       setUploadFiles([
         ...uploadFiles,
         {
-          //activity_article_id: "",
           temp_id: Math.random(),
           default_img: false,
           snapshot_img: String(base64),
         },
       ]);
-      //fileArray.push(String(base64));
     }
-    //setUploadFiles((files) => [...uploadFiles, event.target.files]);
-    //console.log(fileArray);
-    //setUploadFiles((files) => [...uploadFiles, fileArray]);
-    //setUploadFiles(fileArray);
   };
 
   const handleSelectFile = () => {
     refFileInput?.current?.click();
   };
 
+  //post data source
   const postDataTo = (category: number, data: any) => {
     if (category === 4) {
       return PostService.postArticleData(data);
@@ -232,6 +179,8 @@ const CreatePostArticleNewsfeed = () => {
       return PostService.postArticleData(data);
     }
   };
+
+  //post image source
   const postImageTo = (category: number, data: any) => {
     if (category === 4) {
       return PostService.postArticleImage(data);
@@ -246,17 +195,15 @@ const CreatePostArticleNewsfeed = () => {
   //submit form, submit post article/newsfeed
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    //console.log(submitData);
+
+    setIsLoading(true);
+
     let bulkUpload = {};
     try {
       submitData.sub_badge_ids = subBadges.toString();
-      //await PostService.postArticleData(submitData).then(
       await postDataTo(postData.category_type, submitData).then(
         (res) => {
-          //console.log(res);
           if (res.status === 201) {
-            console.log(res.data);
-            //setPostData({ ...postData, post_id: res.data.id }); //this data will be submitted to post-activity
             postData.post_id = res.data.id;
             postData.main_badge_id = submitData.main_badge_id;
             postData.activityBadgeId = submitData.main_badge_id;
@@ -273,14 +220,13 @@ const CreatePostArticleNewsfeed = () => {
                 uploadFiles[i].activity_newsfeed_id = res.data.id;
               }
             }
-            //console.log(uploadFiles);
+
             //set a default_img
             if (uploadFiles.length > 0) {
               uploadFiles[0].default_img = true;
               postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
             }
             bulkUpload = { bulk: uploadFiles };
-            //console.log(bulkUpload);
           }
         },
         (err) => {
@@ -288,7 +234,6 @@ const CreatePostArticleNewsfeed = () => {
         }
       );
 
-      //await PostService.postArticleImage(bulkUpload).then(
       await postImageTo(postData.category_type, bulkUpload).then(
         (res) => {
           console.log(res.status);
@@ -300,8 +245,8 @@ const CreatePostArticleNewsfeed = () => {
 
       await PostService.postToActivityPost(postData).then(
         (res) => {
-          //console.log(res);
           if (res.status === 201) {
+            setIsLoading(false);
             navigate("/post", {
               state: {
                 status: true,
@@ -315,42 +260,10 @@ const CreatePostArticleNewsfeed = () => {
           console.log(err);
         }
       );
-
-      //await PostService.postArticleData(submitData).then(
-      //  (res) => {},
-      //  (err) => {}
-      //);
     } catch (err) {
       console.log(err);
     }
   };
-
-  //Save to Post-Activity after success submit
-  /*const saveToPostActivity = useCallback(async () => {
-    if (postData.post_id) {
-      try {
-        await PostService.postToActivityPost(postData).then(
-          (res) => {
-            //console.log(res);
-            if (res.status === 201) {
-              navigate("/sub-admin/post", {
-                state: {
-                  status: true,
-                  message: "Post successfully created.",
-                },
-                replace: true,
-              });
-            }
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }, [postData, navigate]);*/
 
   //Update badge data with image
   const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
@@ -365,11 +278,10 @@ const CreatePostArticleNewsfeed = () => {
     );
     setBadgeData(badgeWithImg);
 
-    //initial value for react-select
+    //initial value for main badge react-select
     setMainBadge(badgeWithImg[0]);
 
-    //initial value for react-select
-    //setPostData({ ...postData, post_main_badge: badgeWithImg[0].id });
+    //initial value for main badge react-select
     setsubmitData((submitData) => ({
       ...submitData,
       main_badge_id: badgeWithImg[0].id,
@@ -381,9 +293,7 @@ const CreatePostArticleNewsfeed = () => {
     try {
       await BadgeService.loadData().then(
         (res) => {
-          //console.log(res.data);
           setBadgeWithImg(res.data);
-          //setBadgeData(res.data);
         },
         (error) => {
           console.log(error);
@@ -394,51 +304,13 @@ const CreatePostArticleNewsfeed = () => {
     }
   }, [setBadgeWithImg]);
 
-  //console.log(postCat);
-  //Load category data
-  /*const loadCategoryData = useCallback(async () => {
-    try {
-      await PostService.loadPostCategory().then(
-        (res) => {
-          //console.log(res.data);
-          setCategoryData(res.data);
-
-          //intial value for category
-          //comment category id, do not include in submit
-          //setPostData((postData) => ({
-          //  ...postData,
-          //  post_category_id: res.data[0].id,
-          //}));
-
-          //initial value for category
-          setPostCategory(res.data[0].name);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);*/
-
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
     } else {
-      //saveToPostActivity();
     }
-    //loadCategoryData();
     loadBadgeData();
-    //}, [loadBadgeData, loadCategoryData]);
-    //}, [loadBadgeData, saveToPostActivity]);
   }, [loadBadgeData]);
-
-  /*const filterOption = (option: any, inputValue: any) => {
-    console.log(option);
-    const { label, value } = option;
-    return value;
-  };*/
 
   return (
     <Container className="create-post-container">
@@ -607,17 +479,10 @@ const CreatePostArticleNewsfeed = () => {
             <Row className="mt-4">
               <Col>
                 <Form.Label>Date</Form.Label>
-                {/*<DatePicker
-                  className="input-date"
-                  selected={dateAvailability}
-                  onChange={(date: Date) => setDateAvailability(date)}
-                  />*/}
                 <Form.Control
                   type="date"
                   className="input-date"
                   placeholder="Set Availability"
-                  //value={dateAvailability}
-                  //onChange={handleDateChange}
                   name="news_date"
                   value={submitData.news_date}
                   onChange={(e) => handleInputChange(e)}
@@ -640,9 +505,21 @@ const CreatePostArticleNewsfeed = () => {
             </Row>
             <Row className="mt-5">
               <Col className="mt-5">
-                <button type="submit" className="btn-submit">
-                  Submit
-                </button>
+                {!isLoading && (
+                  <button type="submit" className="btn-submit">
+                    Submit
+                  </button>
+                )}
+                {isLoading && (
+                  <button className="btn-submit" type="button" disabled>
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Loading...
+                  </button>
+                )}
               </Col>
             </Row>
           </Form>

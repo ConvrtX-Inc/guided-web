@@ -9,7 +9,14 @@ const config = (token?: string) => ({
   },
   params: {},
 });
-
+const loadSubAdminRecentPosts = (id: string) => {
+  config()["params"] = {};
+  return axios
+    .get(API_URL + `api/v1/sub-admin-post/activity-recent-post/${id}`, config())
+    .then((response) => {
+      return response;
+    });
+};
 const loadCountAllUsers = () => {
   config()["params"] = {};
   return axios
@@ -65,6 +72,7 @@ const loadUserActivityPostSummary = (id: string) => {
 };
 
 const DashboardService = {
+  loadSubAdminRecentPosts,
   loadRecentPosts,
   loadCountTotalDownloads,
   loadCountOnlineUsers,

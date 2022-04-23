@@ -20,6 +20,7 @@ import SelectBadge from "./SelectBadge";
 import SelectServices from "./SelectServices";
 import PostService from "../../../services/post/Post.Service";
 import { ActivityDestination } from "../../../shared/interfaces/ActivityDestination.interface";
+import { PostFormsNavigate } from "./PostFormsNavigate";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
@@ -41,6 +42,8 @@ const CreatePostActivityPackage = () => {
   const [postCategory, setPostCategory] = useState(
     state?.categoryName || "Activity/Package"
   );
+
+  const [isLoading, setIsLoading] = useState(false);
   const [mainBadge, setMainBadge] = useState({});
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [subBadges, setSubBadges] = useState([] as any[]);
@@ -64,6 +67,7 @@ const CreatePostActivityPackage = () => {
     address: "1600 Amphitheatre Pkwy,  Mountain View,  California,  94043",
     max_extra_person: 100,
     currency_id: "200339a3-5870-462d-9eb8-4b6cfc788886",
+    services: "",
   });
   const [postData, setPostData] = useState({
     post_id: "",
@@ -80,6 +84,8 @@ const CreatePostActivityPackage = () => {
     contact_website: "",
     views: 0,
     snapshot_img: "",
+    activityBadgeId: "",
+    premium_user: false,
   });
   const [packageForms, setPackageForms] = useState({
     activity_package_id: "",
@@ -131,42 +137,29 @@ const CreatePostActivityPackage = () => {
   };
 
   const handleSwitchChange = (event: any) => {
+    let premium_user: boolean;
     if (event.target.checked) {
-      setsubmitData({ ...submitData, premium_user: true });
+      premium_user = true;
     } else {
-      setsubmitData({ ...submitData, premium_user: false });
+      premium_user = false;
     }
+    setsubmitData({ ...submitData, premium_user: premium_user });
+    setPostData({ ...postData, premium_user: premium_user });
   };
 
   const handleCategoryChange = (event: any) => {
     setPostCategory(event.target.options[event.target.selectedIndex].text);
     setPostData({ ...postData, category_type: parseInt(event.target.value) });
-    const id = parseInt(event.target.value);
-    const stateCategory = {
-      category: parseInt(event.target.value),
-      categoryName: event.target.options[event.target.selectedIndex].text,
-    };
-    if (id === 3) {
-      navigate("/post/event", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 1) {
-      navigate("/post/activity-package", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 2) {
-      navigate("/post/newsfeed", {
-        state: stateCategory,
-        replace: true,
-      });
-    } else if (id === 4) {
-      navigate("/post/article", {
-        state: stateCategory,
-        replace: true,
-      });
-    }
+
+    //navigate to forms by category type id
+    const navigateTo = PostFormsNavigate(
+      parseInt(event.target.value),
+      event.target.options[event.target.selectedIndex].text
+    );
+    navigate(navigateTo.path, {
+      state: navigateTo.stateCategory,
+      replace: true,
+    });
   };
 
   const handleBadgeChange = (obj: any) => {
@@ -199,7 +192,9 @@ const CreatePostActivityPackage = () => {
     }
   };
   const handleServicesChange = (obj: any) => {
-    console.log(obj);
+    //console.log(obj);
+    //console.log(Object.values(obj));
+    //setsubmitData({ ...submitData, services: obj.toString() });
   };
 
   const postDataTo = (category: number, data: any) => {
@@ -248,6 +243,9 @@ const CreatePostActivityPackage = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    setIsLoading(true);
+
     let bulkUpload = {};
     try {
       submitData.sub_badge_ids = subBadges.toString();
@@ -256,6 +254,8 @@ const CreatePostActivityPackage = () => {
           console.log("postDataTo: ", submitData);
           if (res.status === 201) {
             postData.post_id = res.data.id;
+            postData.main_badge_id = submitData.main_badge_id;
+            postData.activityBadgeId = submitData.main_badge_id;
 
             //activity post
             postData.title = submitData.name;
@@ -326,6 +326,7 @@ const CreatePostActivityPackage = () => {
         (res3) => {
           console.log("postToActivityPost: ", res3);
           if (res3.status === 201) {
+            setIsLoading(false);
             navigate("/post", {
               state: {
                 status: true,
@@ -342,11 +343,6 @@ const CreatePostActivityPackage = () => {
     } catch (error) {
       console.log("Error handleSubmit: ", error);
     }
-
-    //console.log("submitData", submitData);
-    //console.log("postData", postData);
-    //console.log("uploadFiles", uploadFiles);
-    //console.log("packageForms", packageForms);
   };
 
   //Update badge data with image
@@ -412,6 +408,7 @@ const CreatePostActivityPackage = () => {
           </Row>
         </Col>
       </Row>
+
       <Row className="mt-4">
         <Col className="ms-3 me-3 post-form">
           <Form className="m-5" onSubmit={(e) => handleSubmit(e)}>
@@ -570,7 +567,7 @@ const CreatePostActivityPackage = () => {
               </Col>
             </Row>
             <Row className="mt-4">
-              <Col>
+              <Col className="col-8">
                 <Form.Label>Date</Form.Label>
                 <Form.Control
                   required
@@ -855,9 +852,21 @@ const CreatePostActivityPackage = () => {
             </Row>
             <Row className="mt-5">
               <Col className="mt-5">
-                <button type="submit" className="btn-submit">
-                  Submit
-                </button>
+                {!isLoading && (
+                  <button type="submit" className="btn-submit">
+                    Submit
+                  </button>
+                )}
+                {isLoading && (
+                  <button className="btn-submit" type="button" disabled>
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Loading...
+                  </button>
+                )}
               </Col>
             </Row>
           </Form>

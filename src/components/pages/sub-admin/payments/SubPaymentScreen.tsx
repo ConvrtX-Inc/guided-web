@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import PaymentTransactionHistory from './PaymentTransactionHistory';
 import Backdrop from './sub-components/backdrop';
 import Payment from './Payment';

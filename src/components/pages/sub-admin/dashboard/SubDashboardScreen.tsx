@@ -4,11 +4,6 @@ import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 
 import "./SubDashboardScreen.scss";
-
-import cardimg from "../../../../assets/admin/card-img.png";
-import cardimg0 from "../../../../assets/admin/card-img0.png";
-import cardimg1 from "../../../../assets/admin/card-img1.png";
-import cardimg2 from "../../../../assets/admin/card-img2.png";
 import MostRecent from "./MostRecent";
 import PackageActivityCard from "./PackageActivityCard";
 import EventsCard from "./EventsCard";
@@ -20,29 +15,6 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import AuthContext from "../../../../context/AuthContext";
 import DashboardService from "../../../../services/dashboard/Dashboard.Service";
 import { UserAccess } from "../../../../shared/interfaces/UserAccess.interface";
-
-const DUMMY_DATA = [
-  {
-    id: 1,
-    article: "Title of Post",
-    img: cardimg,
-  },
-  {
-    id: 2,
-    article: "Title of Post",
-    img: cardimg0,
-  },
-  {
-    id: 3,
-    article: "Title of Post",
-    img: cardimg1,
-  },
-  {
-    id: 4,
-    article: "Title of Post",
-    img: cardimg2,
-  },
-];
 
 interface IPostSummary {
   UserActivityPostSummary_activity_package_count?: number;
@@ -68,6 +40,7 @@ const SubDashboardScreen = () => {
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
 
+  const [postData, setPostData] = useState([] as any[]);
   const [postSummary, setPostSummary] = useState({} as IPostSummary);
 
   const loadPostSummary = useCallback(async () => {
@@ -104,9 +77,27 @@ const SubDashboardScreen = () => {
     }
   }, [setPostSummary, userAccess.user_id]);
 
+  const loadSubAdminRecentPosts = useCallback(async () => {
+    try {
+      await DashboardService.loadSubAdminRecentPosts(
+        userAccess.user_id || ""
+      ).then(
+        (res) => {
+          setPostData(res.data);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    } catch (error) {
+      console.log("Error loadSubAdminRecentPosts:", error);
+    }
+  }, [setPostData, userAccess.user_id]);
+
   useEffect(() => {
+    loadSubAdminRecentPosts();
     loadPostSummary();
-  }, [loadPostSummary]);
+  }, [loadPostSummary, loadSubAdminRecentPosts]);
 
   return (
     <Container className="sub-dashboard-container">
@@ -199,7 +190,7 @@ const SubDashboardScreen = () => {
         </Col>
       </Row>
       <Row className="mb-5">
-        <MostRecent mostrecent={DUMMY_DATA} />
+        <MostRecent mostrecent={postData} />
       </Row>
     </Container>
   );

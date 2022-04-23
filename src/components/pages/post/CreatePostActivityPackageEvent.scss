@@ -53,6 +53,7 @@
       height: 66px;
       width: 364px;
     }
+    .input-price,
     .input-title,
     .input-email,
     .input-person,
@@ -89,7 +90,7 @@
       /* identical to box height */
 
       color: #898a8d;
-      width: 364px;
+      //width: 364px;
       height: 66px;
     }
     .input-description,
@@ -221,8 +222,8 @@
           //z-index: 1;
           opacity: 0;
         }
-        .btn-remove-img:hover{
-          opacity: .75;
+        .btn-remove-img:hover {
+          opacity: 0.75;
         }
       }
       .prev-img {
@@ -230,5 +231,9 @@
         height: 117px;
       }
     }
+  }
+  .post-form-outfitter,
+  .post-form-ads {
+    height: 1301px;
   }
 }

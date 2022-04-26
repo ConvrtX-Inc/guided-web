@@ -18,6 +18,8 @@ import PostService from "../../../services/post/Post.Service";
 import { PostFormsNavigate } from "./PostFormsNavigate";
 import { GetCategoryName } from "./GetCategoryName";
 import OutfitterService from "../../../services/post/Outfitter.Service";
+import SelectContactPerson from "./SelectContactPerson";
+import UserService from "../../../services/users/User.Service";
 
 const EditPostAdsOutfitter = () => {
   const authCtx = useContext(AuthContext);
@@ -29,6 +31,7 @@ const EditPostAdsOutfitter = () => {
   const [postCategory, setPostCategory] = useState(
     state?.categoryName || GetCategoryName(state?.category || 0)
   );
+  const [contactPersons, setContactPersons] = useState([] as any[]);
   const [submitData, setsubmitData] = useState({
     user_id: userAccess.user_id,
     title: "",
@@ -138,6 +141,10 @@ const EditPostAdsOutfitter = () => {
     }
   };
 
+  const handleContactPerson = (obj: any) => {
+    console.log(obj);
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -245,9 +252,26 @@ const EditPostAdsOutfitter = () => {
     }
   }, [state.post_id]);
 
+  const getContactPersons = useCallback(async () => {
+    try {
+      await UserService.getUsers().then(
+        (res) => {
+          //console.log(res.data);
+          setContactPersons(res.data.data);
+        },
+        (error) => {
+          console.log("Error in getUsers:", error);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }, [setContactPersons]);
+
   useEffect(() => {
     getData();
-  }, [getData]);
+    getContactPersons();
+  }, [getData, getContactPersons]);
 
   return (
     <Container className="create-post-activitypackage-container">
@@ -260,7 +284,7 @@ const EditPostAdsOutfitter = () => {
               </Link>
             </Col>
             <Col>
-              <h2>Create {postCategory}</h2>
+              <h2>Edit {postCategory}</h2>
             </Col>
           </Row>
         </Col>
@@ -400,13 +424,17 @@ const EditPostAdsOutfitter = () => {
             </Row>
             <Row className="mt-5">
               <Col className="col-4">
-                <Form.Control
+                {/*<Form.Control
                   autoComplete="off"
                   className="input-person"
                   type="text"
                   placeholder="Contact Person"
                   name="contact_person"
                   onChange={(e) => handlePostInputChange(e)}
+              />*/}
+                <SelectContactPerson
+                  contactPersons={contactPersons}
+                  handleContactPerson={handleContactPerson}
                 />
               </Col>
               <Col className="col-4">

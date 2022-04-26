@@ -13,7 +13,7 @@ export const PostFormsNavigate = (category: number, categoryName: string) => {
   } else if (category === 4) {
     path = "/post/article";
   } else if (category === 5) {
-    path = "/post/advertistment";
+    path = "/post/advertisement";
   } else if (category === 6) {
     path = "/post/outfitter";
   }

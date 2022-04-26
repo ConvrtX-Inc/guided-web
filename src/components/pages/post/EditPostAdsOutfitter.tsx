@@ -16,10 +16,12 @@ import { PostImage } from "../../../shared/interfaces/PostImage.interface";
 import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 import PostService from "../../../services/post/Post.Service";
 import { PostFormsNavigate } from "./PostFormsNavigate";
-import UserService from "../../../services/users/User.Service";
+import { GetCategoryName } from "./GetCategoryName";
+import OutfitterService from "../../../services/post/Outfitter.Service";
 import SelectContactPerson from "./SelectContactPerson";
+import UserService from "../../../services/users/User.Service";
 
-const CreatePostAdsOutfitter = () => {
+const EditPostAdsOutfitter = () => {
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
   const navigate = useNavigate();
@@ -27,7 +29,7 @@ const CreatePostAdsOutfitter = () => {
   const state = location.state as CategoryState;
   const [isLoading, setIsLoading] = useState(false);
   const [postCategory, setPostCategory] = useState(
-    state?.categoryName || "Outfitter"
+    state?.categoryName || GetCategoryName(state?.category || 0)
   );
   const [contactPersons, setContactPersons] = useState([] as any[]);
   const [mainContactPerson, setMainContactPerson] = useState({});
@@ -39,7 +41,7 @@ const CreatePostAdsOutfitter = () => {
     ad_date: "", //for ads
     activities: "", //for ads
     description: "",
-    price: "",
+    price: 0,
     is_post: true,
     country: "PH",
     address: "Davao City",
@@ -75,31 +77,6 @@ const CreatePostAdsOutfitter = () => {
   const handleSelectFile = () => {
     refFileInput?.current?.click();
   };
-
-  const handleContactPerson = (obj: any) => {
-    setMainContactPerson(obj);
-    setPostData({ ...postData, contact_user_id: obj.id });
-  };
-
-  const getContactPersons = useCallback(async () => {
-    try {
-      await UserService.getUsers().then(
-        (res) => {
-          //console.log(res.data);
-          setContactPersons(res.data.data);
-        },
-        (error) => {
-          console.log("Error in getUsers:", error);
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  }, [setContactPersons]);
-
-  useEffect(() => {
-    getContactPersons();
-  }, [getContactPersons]);
 
   const handleUploadFiles = async (event: any) => {
     const fileObj = [];
@@ -163,6 +140,11 @@ const CreatePostAdsOutfitter = () => {
     } else {
       return PostService.postAdsDataImage(data);
     }
+  };
+
+  const handleContactPerson = (obj: any) => {
+    setMainContactPerson(obj);
+    setPostData({ ...postData, contact_user_id: obj.id });
   };
 
   const handleSubmit = async (e: any) => {
@@ -256,6 +238,43 @@ const CreatePostAdsOutfitter = () => {
     setsubmitData({ ...submitData, premium_user: premium_user });
     setPostData({ ...postData, premium_user: premium_user });
   };
+
+  const getData = useCallback(async () => {
+    try {
+      await OutfitterService.getOutfitterData(state?.post_id || "").then(
+        (res) => {
+          console.log(res.data);
+        },
+        (err) => {
+          console.log("Error getOutfitterData: ", err);
+        }
+      );
+    } catch (error) {
+      console.log("Error in getData:", error);
+    }
+  }, [state.post_id]);
+
+  const getContactPersons = useCallback(async () => {
+    try {
+      await UserService.getUsers().then(
+        (res) => {
+          //console.log(res.data);
+          setContactPersons(res.data.data);
+        },
+        (error) => {
+          console.log("Error in getUsers:", error);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }, [setContactPersons]);
+
+  useEffect(() => {
+    getData();
+    getContactPersons();
+  }, [getData, getContactPersons]);
+
   return (
     <Container className="create-post-activitypackage-container">
       <Row className="mt-5">
@@ -267,7 +286,7 @@ const CreatePostAdsOutfitter = () => {
               </Link>
             </Col>
             <Col>
-              <h2>Create {postCategory}</h2>
+              <h2>Edit {postCategory}</h2>
             </Col>
           </Row>
         </Col>
@@ -282,6 +301,7 @@ const CreatePostAdsOutfitter = () => {
                   userAccess={userAccess}
                   categoryType={postData.category_type}
                   setCategoryType={handleCategoryChange}
+                  disabled={true}
                 />
               </Col>
               <Col className="d-flex justify-content-center align-items-center">
@@ -478,4 +498,4 @@ const CreatePostAdsOutfitter = () => {
     </Container>
   );
 };
-export default CreatePostAdsOutfitter;
+export default EditPostAdsOutfitter;

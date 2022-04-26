@@ -10,10 +10,6 @@ import user_7 from "../../../assets/admin/user-7.png";
 import user1 from "../../../assets/admin/user1.png";
 import user2 from "../../../assets/admin/user2.png";
 import box from "../../../assets/admin/box.png";
-import cardimg from "../../../assets/admin/card-img.png";
-import cardimg0 from "../../../assets/admin/card-img0.png";
-import cardimg1 from "../../../assets/admin/card-img1.png";
-import cardimg2 from "../../../assets/admin/card-img2.png";
 
 import Image from "react-bootstrap/Image";
 import Card from "react-bootstrap/Card";
@@ -24,33 +20,12 @@ import { Link } from "react-router-dom";
 import MostRecent from "./MostRecent";
 import RecentGuides from "./RecentGuides";
 import MostActive from "./MostActive";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import DashboardService from "../../../services/dashboard/Dashboard.Service";
 import SpinnerSmall from "../../ui/SpinnerSmall";
+import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
+import AuthContext from "../../../context/AuthContext";
 //import AuthContext from "../../../context/AuthContext";
-
-const DUMMY_DATA = [
-  {
-    id: 1,
-    article: "Article Name Goes Here",
-    img: cardimg,
-  },
-  {
-    id: 2,
-    article: "Article Name Goes Here",
-    img: cardimg0,
-  },
-  {
-    id: 3,
-    article: "Article Name Goes Here",
-    img: cardimg1,
-  },
-  {
-    id: 4,
-    article: "Article Name Goes Here",
-    img: cardimg2,
-  },
-];
 
 const DUMMY_DATA2 = [
   {
@@ -116,6 +91,10 @@ const DUMMY_DATA3 = [
 
 const DashboardScreen = () => {
   //const authCtx = useContext(AuthContext);
+  const authCtx = useContext(AuthContext);
+  const userAccess: UserAccess = authCtx.userRole;
+
+  const [postData, setPostData] = useState([] as any[]);
 
   const [cntAllUsers, setCntAllUsers] = useState([]);
   const [cntActiveUsers, setCntActiveUsers] = useState([]);
@@ -127,6 +106,23 @@ const DashboardScreen = () => {
   const [flagActiveUsers, setflagActiveUsers] = useState(true);
   const [flagOnlineUsers, setflagOnlineUsers] = useState(true);
   const [flagTotalDownloads, setflagTotalDownloads] = useState(true);
+
+  const loadSubAdminRecentPosts = useCallback(async () => {
+    try {
+      await DashboardService.loadSubAdminRecentPosts(
+        userAccess.user_id || ""
+      ).then(
+        (res) => {
+          setPostData(res.data);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    } catch (error) {
+      console.log("Error loadSubAdminRecentPosts:", error);
+    }
+  }, [setPostData, userAccess.user_id]);
 
   const loadCountAllUsers = async () => {
     try {
@@ -217,7 +213,8 @@ const DashboardScreen = () => {
     loadCountTotalDownloads();
     loadCountAllUsers();
     loadCountActiveUsers();
-  }, [loadCountOnlineUsers]);
+    loadSubAdminRecentPosts();
+  }, [loadCountOnlineUsers, loadSubAdminRecentPosts]);
 
   return (
     <Container className="dashboard-container">
@@ -302,7 +299,7 @@ const DashboardScreen = () => {
       </Row>
       <Row className="mb-5">
         {/*<MostRecent mostrecent={recentPost} />*/}
-        <MostRecent mostrecent={DUMMY_DATA} />
+        <MostRecent mostrecent={postData} />
       </Row>
       <Row>
         <Col className="mt-5 col-sm">

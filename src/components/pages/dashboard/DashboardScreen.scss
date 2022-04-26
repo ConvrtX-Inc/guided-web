@@ -45,12 +45,33 @@
     background: #ffffff;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.09);
     border-radius: 15px;
+    .most-recent-img {
+      height: 118px;
+    }
+    .img-badge {
+      position: absolute;
+      left: 10%;
+      top: 40%;
+      width: 27.05px;
+      height: 27.05px;
+    }
+    .btn-read-more {
+      background: #ffc74a;
+      border-radius: 10px;
+      font-family: "Gilroy";
+      font-style: normal;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 18px;
+      /* identical to box height, or 150% */
 
-    img {
+      color: #000000;
+    }
+    /*img {
       background: #181b1b;
       border-radius: 8px;
       //width: 230px;
-    }
+    }*/
 
     a {
       width: 93px;

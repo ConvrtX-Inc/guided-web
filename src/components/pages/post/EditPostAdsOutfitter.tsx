@@ -32,6 +32,7 @@ const EditPostAdsOutfitter = () => {
     state?.categoryName || GetCategoryName(state?.category || 0)
   );
   const [contactPersons, setContactPersons] = useState([] as any[]);
+  const [mainContactPerson, setMainContactPerson] = useState({});
   const [submitData, setsubmitData] = useState({
     user_id: userAccess.user_id,
     title: "",
@@ -142,7 +143,8 @@ const EditPostAdsOutfitter = () => {
   };
 
   const handleContactPerson = (obj: any) => {
-    console.log(obj);
+    setMainContactPerson(obj);
+    setPostData({ ...postData, contact_user_id: obj.id });
   };
 
   const handleSubmit = async (e: any) => {
@@ -433,6 +435,7 @@ const EditPostAdsOutfitter = () => {
                   onChange={(e) => handlePostInputChange(e)}
               />*/}
                 <SelectContactPerson
+                  mainContact={mainContactPerson}
                   contactPersons={contactPersons}
                   handleContactPerson={handleContactPerson}
                 />

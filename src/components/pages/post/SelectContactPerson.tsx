@@ -1,9 +1,11 @@
 import Select from "react-select";
 
 const SelectContactPerson = ({
+  mainContact,
   contactPersons,
   handleContactPerson,
 }: {
+  mainContact: any;
   contactPersons: any[];
   handleContactPerson: any;
 }) => {
@@ -33,6 +35,8 @@ const SelectContactPerson = ({
       getOptionValue={(e) => e.id}
       options={contactPersons}
       onChange={handleContactPerson}
+      defaultValue={contactPersons[0]}
+      value={mainContact.length > 0 ? mainContact : null}
     />
   );
 };

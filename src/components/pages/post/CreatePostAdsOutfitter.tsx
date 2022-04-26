@@ -30,6 +30,7 @@ const CreatePostAdsOutfitter = () => {
     state?.categoryName || "Outfitter"
   );
   const [contactPersons, setContactPersons] = useState([] as any[]);
+  const [mainContactPerson, setMainContactPerson] = useState({});
   const [submitData, setsubmitData] = useState({
     user_id: userAccess.user_id,
     title: "",
@@ -38,7 +39,7 @@ const CreatePostAdsOutfitter = () => {
     ad_date: "", //for ads
     activities: "", //for ads
     description: "",
-    price: 0,
+    price: "",
     is_post: true,
     country: "PH",
     address: "Davao City",
@@ -76,7 +77,8 @@ const CreatePostAdsOutfitter = () => {
   };
 
   const handleContactPerson = (obj: any) => {
-    console.log(obj);
+    setMainContactPerson(obj);
+    setPostData({ ...postData, contact_user_id: obj.id });
   };
 
   const getContactPersons = useCallback(async () => {
@@ -413,6 +415,7 @@ const CreatePostAdsOutfitter = () => {
                   onChange={(e) => handlePostInputChange(e)}
               />*/}
                 <SelectContactPerson
+                  mainContact={mainContactPerson}
                   contactPersons={contactPersons}
                   handleContactPerson={handleContactPerson}
                 />

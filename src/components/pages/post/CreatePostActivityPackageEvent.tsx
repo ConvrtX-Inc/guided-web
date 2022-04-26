@@ -47,6 +47,7 @@ const CreatePostActivityPackage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [contactPersons, setContactPersons] = useState([] as any[]);
+  const [mainContactPerson, setMainContactPerson] = useState({});
   const [mainBadge, setMainBadge] = useState({});
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [subBadges, setSubBadges] = useState([] as any[]);
@@ -206,7 +207,8 @@ const CreatePostActivityPackage = () => {
     //setsubmitData({ ...submitData, services: obj.toString() });
   };
   const handleContactPerson = (obj: any) => {
-    console.log(obj);
+    setMainContactPerson(obj);
+    setPostData({ ...postData, contact_user_id: obj.id });
   };
 
   const postDataTo = (category: number, data: any) => {
@@ -423,6 +425,7 @@ const CreatePostActivityPackage = () => {
         (res) => {
           //console.log(res.data);
           setContactPersons(res.data.data);
+          //setMainContactPerson(res.data.data[0]);
         },
         (error) => {
           console.log("Error in getUsers:", error);
@@ -650,6 +653,7 @@ const CreatePostActivityPackage = () => {
                   onChange={(e) => handlePostInputChange(e)}
                 />*/}
                 <SelectContactPerson
+                  mainContact={mainContactPerson}
                   contactPersons={contactPersons}
                   handleContactPerson={handleContactPerson}
                 />

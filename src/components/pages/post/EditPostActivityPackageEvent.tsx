@@ -49,6 +49,7 @@ const EditPostActivityPackageEvent = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [contactPersons, setContactPersons] = useState([] as any[]);
+  const [mainContactPerson, setMainContactPerson] = useState({});
   const [mainBadge, setMainBadge] = useState({});
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [subBadges, setSubBadges] = useState([] as any[]);
@@ -205,7 +206,8 @@ const EditPostActivityPackageEvent = () => {
   };
 
   const handleContactPerson = (obj: any) => {
-    console.log(obj);
+    setMainContactPerson(obj);
+    setPostData({ ...postData, contact_user_id: obj.id });
   };
 
   const postDataTo = (category: number, data: any) => {
@@ -654,6 +656,7 @@ const EditPostActivityPackageEvent = () => {
                   onChange={(e) => handlePostInputChange(e)}
               />*/}
                 <SelectContactPerson
+                  mainContact={mainContactPerson}
                   contactPersons={contactPersons}
                   handleContactPerson={handleContactPerson}
                 />

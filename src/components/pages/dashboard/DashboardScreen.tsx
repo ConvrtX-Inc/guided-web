@@ -10,10 +10,6 @@ import user_7 from "../../../assets/admin/user-7.png";
 import user1 from "../../../assets/admin/user1.png";
 import user2 from "../../../assets/admin/user2.png";
 import box from "../../../assets/admin/box.png";
-import cardimg from "../../../assets/admin/card-img.png";
-import cardimg0 from "../../../assets/admin/card-img0.png";
-import cardimg1 from "../../../assets/admin/card-img1.png";
-import cardimg2 from "../../../assets/admin/card-img2.png";
 
 import Image from "react-bootstrap/Image";
 import Card from "react-bootstrap/Card";

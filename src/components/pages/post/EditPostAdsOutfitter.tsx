@@ -7,7 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import left from "../../../assets/admin/left.png";
 import "./CreatePostActivityPackageEvent.scss";
-import { useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { CategoryState } from "../../../shared/interfaces/CategoryState.interface";
 import SelectCategoryList from "./SelectCategoryList";
 import AuthContext from "../../../context/AuthContext";
@@ -17,6 +17,7 @@ import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 import PostService from "../../../services/post/Post.Service";
 import { PostFormsNavigate } from "./PostFormsNavigate";
 import { GetCategoryName } from "./GetCategoryName";
+import OutfitterService from "../../../services/post/Outfitter.Service";
 
 const EditPostAdsOutfitter = () => {
   const authCtx = useContext(AuthContext);
@@ -228,6 +229,26 @@ const EditPostAdsOutfitter = () => {
     setsubmitData({ ...submitData, premium_user: premium_user });
     setPostData({ ...postData, premium_user: premium_user });
   };
+
+  const getData = useCallback(async () => {
+    try {
+      await OutfitterService.getOutfitterData(state?.post_id || "").then(
+        (res) => {
+          console.log(res.data);
+        },
+        (err) => {
+          console.log("Error getOutfitterData: ", err);
+        }
+      );
+    } catch (error) {
+      console.log("Error in getData:", error);
+    }
+  }, [state.post_id]);
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
+
   return (
     <Container className="create-post-activitypackage-container">
       <Row className="mt-5">

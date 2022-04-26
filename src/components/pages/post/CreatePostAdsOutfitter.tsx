@@ -7,7 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import left from "../../../assets/admin/left.png";
 import "./CreatePostActivityPackageEvent.scss";
-import { useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { CategoryState } from "../../../shared/interfaces/CategoryState.interface";
 import SelectCategoryList from "./SelectCategoryList";
 import AuthContext from "../../../context/AuthContext";
@@ -16,6 +16,8 @@ import { PostImage } from "../../../shared/interfaces/PostImage.interface";
 import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 import PostService from "../../../services/post/Post.Service";
 import { PostFormsNavigate } from "./PostFormsNavigate";
+import UserService from "../../../services/users/User.Service";
+import SelectContactPerson from "./SelectContactPerson";
 
 const CreatePostAdsOutfitter = () => {
   const authCtx = useContext(AuthContext);
@@ -27,6 +29,7 @@ const CreatePostAdsOutfitter = () => {
   const [postCategory, setPostCategory] = useState(
     state?.categoryName || "Outfitter"
   );
+  const [contactPersons, setContactPersons] = useState([] as any[]);
   const [submitData, setsubmitData] = useState({
     user_id: userAccess.user_id,
     title: "",
@@ -71,6 +74,30 @@ const CreatePostAdsOutfitter = () => {
   const handleSelectFile = () => {
     refFileInput?.current?.click();
   };
+
+  const handleContactPerson = (obj: any) => {
+    console.log(obj);
+  };
+
+  const getContactPersons = useCallback(async () => {
+    try {
+      await UserService.getUsers().then(
+        (res) => {
+          //console.log(res.data);
+          setContactPersons(res.data.data);
+        },
+        (error) => {
+          console.log("Error in getUsers:", error);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }, [setContactPersons]);
+
+  useEffect(() => {
+    getContactPersons();
+  }, [getContactPersons]);
 
   const handleUploadFiles = async (event: any) => {
     const fileObj = [];
@@ -377,13 +404,17 @@ const CreatePostAdsOutfitter = () => {
             </Row>
             <Row className="mt-5">
               <Col className="col-4">
-                <Form.Control
+                {/*<Form.Control
                   autoComplete="off"
                   className="input-person"
                   type="text"
                   placeholder="Contact Person"
                   name="contact_person"
                   onChange={(e) => handlePostInputChange(e)}
+              />*/}
+                <SelectContactPerson
+                  contactPersons={contactPersons}
+                  handleContactPerson={handleContactPerson}
                 />
               </Col>
               <Col className="col-4">

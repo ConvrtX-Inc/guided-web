@@ -21,6 +21,8 @@ import SelectServices from "./SelectServices";
 import PostService from "../../../services/post/Post.Service";
 import { ActivityDestination } from "../../../shared/interfaces/ActivityDestination.interface";
 import { PostFormsNavigate } from "./PostFormsNavigate";
+import UserService from "../../../services/users/User.Service";
+import SelectContactPerson from "./SelectContactPerson";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
@@ -44,6 +46,7 @@ const CreatePostActivityPackage = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [contactPersons, setContactPersons] = useState([] as any[]);
   const [mainBadge, setMainBadge] = useState({});
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [subBadges, setSubBadges] = useState([] as any[]);
@@ -201,6 +204,9 @@ const CreatePostActivityPackage = () => {
     //console.log(obj);
     //console.log(Object.values(obj));
     //setsubmitData({ ...submitData, services: obj.toString() });
+  };
+  const handleContactPerson = (obj: any) => {
+    console.log(obj);
   };
 
   const postDataTo = (category: number, data: any) => {
@@ -411,9 +417,26 @@ const CreatePostActivityPackage = () => {
     }
   }, [setBadgeWithImg]);
 
+  const getContactPersons = useCallback(async () => {
+    try {
+      await UserService.getUsers().then(
+        (res) => {
+          //console.log(res.data);
+          setContactPersons(res.data.data);
+        },
+        (error) => {
+          console.log("Error in getUsers:", error);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }, [setContactPersons]);
+
   useEffect(() => {
     loadBadgeData();
-  }, [loadBadgeData]);
+    getContactPersons();
+  }, [loadBadgeData, getContactPersons]);
 
   return (
     <Container className="create-post-activitypackage-container mb-5">
@@ -618,13 +641,17 @@ const CreatePostActivityPackage = () => {
             </Row>
             <Row className="mt-5">
               <Col className="col-4">
-                <Form.Control
+                {/*<Form.Control
                   autoComplete="off"
                   className="input-person"
                   type="text"
                   placeholder="Contact Person"
                   name="contact_person"
                   onChange={(e) => handlePostInputChange(e)}
+                />*/}
+                <SelectContactPerson
+                  contactPersons={contactPersons}
+                  handleContactPerson={handleContactPerson}
                 />
               </Col>
               <Col className="col-4">

@@ -22,6 +22,7 @@ import { PostFormsNavigate } from "./PostFormsNavigate";
 import { GetCategoryName } from "./GetCategoryName";
 import ArticleService from "../../../services/post/Article.Service";
 import moment from "moment";
+import NewsfeedService from "../../../services/post/Newsfeed.Service";
 
 const EditPostArticleNewsfeed = () => {
   const location = useLocation();
@@ -344,15 +345,24 @@ const EditPostArticleNewsfeed = () => {
     }
   }, [setBadgeWithImg]);*/
 
+  const getDataFrom = (category: number, post_id: string) => {
+    if (category === 4) {
+      return ArticleService.getArticleData(post_id);
+    } else if (category === 2) {
+      return NewsfeedService.getNewsfeedData(post_id);
+    }
+    return ArticleService.getArticleData(post_id);
+  };
+
   const getData = useCallback(async () => {
     let defaultBadgeId: string | "";
     let defaultSubBadgeIds: string | "";
     try {
-      await ArticleService.getArticleData(state?.post_id || "").then(
+      await getDataFrom(state.category, state?.post_id || "").then(
         (res) => {
           //console.log("getArticleData: ", res.status);
           if (res.status === 200) {
-            //console.log(res.data);
+            //console.log(res.data)
             let data = res.data;
             defaultBadgeId = data.main_badge_id;
             defaultSubBadgeIds = data.sub_badge_ids;
@@ -383,7 +393,7 @@ const EditPostArticleNewsfeed = () => {
     } catch (error) {
       console.log("Error in getData:", error);
     }
-  }, [state.post_id, setsubmitData, setBadgeWithImg]);
+  }, [state.post_id, state.category, setsubmitData, setBadgeWithImg]);
 
   //console.log(submitData);
   useEffect(() => {

@@ -3,4 +3,5 @@ export interface Badge {
   badge_name: string;
   badge_description: string;
   img64: string;
+  isChecked?: boolean;
 }

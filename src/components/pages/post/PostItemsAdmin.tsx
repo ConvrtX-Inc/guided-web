@@ -1,10 +1,10 @@
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import EditPostLinks from "./EditPostLinks";
+import EditPostLinks from "../sub-admin/post/EditPostLinks";
 //import { format, parse } from "date-fns";
 
-const PostItems = (props: any) => {
+const PostItemsAdmin = (props: any) => {
   //console.log(props.items);
   const displayData = props.items.map((postItem: any) => (
     <tr key={postItem.id}>
@@ -78,4 +78,4 @@ const PostItems = (props: any) => {
   );
 };
 
-export default PostItems;
+export default PostItemsAdmin;

@@ -24,33 +24,12 @@ import { Link } from "react-router-dom";
 import MostRecent from "./MostRecent";
 import RecentGuides from "./RecentGuides";
 import MostActive from "./MostActive";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import DashboardService from "../../../services/dashboard/Dashboard.Service";
 import SpinnerSmall from "../../ui/SpinnerSmall";
+import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
+import AuthContext from "../../../context/AuthContext";
 //import AuthContext from "../../../context/AuthContext";
-
-const DUMMY_DATA = [
-  {
-    id: 1,
-    article: "Article Name Goes Here",
-    img: cardimg,
-  },
-  {
-    id: 2,
-    article: "Article Name Goes Here",
-    img: cardimg0,
-  },
-  {
-    id: 3,
-    article: "Article Name Goes Here",
-    img: cardimg1,
-  },
-  {
-    id: 4,
-    article: "Article Name Goes Here",
-    img: cardimg2,
-  },
-];
 
 const DUMMY_DATA2 = [
   {
@@ -116,6 +95,10 @@ const DUMMY_DATA3 = [
 
 const DashboardScreen = () => {
   //const authCtx = useContext(AuthContext);
+  const authCtx = useContext(AuthContext);
+  const userAccess: UserAccess = authCtx.userRole;
+
+  const [postData, setPostData] = useState([] as any[]);
 
   const [cntAllUsers, setCntAllUsers] = useState([]);
   const [cntActiveUsers, setCntActiveUsers] = useState([]);
@@ -127,6 +110,23 @@ const DashboardScreen = () => {
   const [flagActiveUsers, setflagActiveUsers] = useState(true);
   const [flagOnlineUsers, setflagOnlineUsers] = useState(true);
   const [flagTotalDownloads, setflagTotalDownloads] = useState(true);
+
+  const loadSubAdminRecentPosts = useCallback(async () => {
+    try {
+      await DashboardService.loadSubAdminRecentPosts(
+        userAccess.user_id || ""
+      ).then(
+        (res) => {
+          setPostData(res.data);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    } catch (error) {
+      console.log("Error loadSubAdminRecentPosts:", error);
+    }
+  }, [setPostData, userAccess.user_id]);
 
   const loadCountAllUsers = async () => {
     try {
@@ -217,7 +217,8 @@ const DashboardScreen = () => {
     loadCountTotalDownloads();
     loadCountAllUsers();
     loadCountActiveUsers();
-  }, [loadCountOnlineUsers]);
+    loadSubAdminRecentPosts();
+  }, [loadCountOnlineUsers, loadSubAdminRecentPosts]);
 
   return (
     <Container className="dashboard-container">
@@ -302,7 +303,7 @@ const DashboardScreen = () => {
       </Row>
       <Row className="mb-5">
         {/*<MostRecent mostrecent={recentPost} />*/}
-        <MostRecent mostrecent={DUMMY_DATA} />
+        <MostRecent mostrecent={postData} />
       </Row>
       <Row>
         <Col className="mt-5 col-sm">

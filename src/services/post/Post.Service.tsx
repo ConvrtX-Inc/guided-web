@@ -75,7 +75,7 @@ const postEventFormsData = (data: any) => {
 };
 const postEventData = (data: any) => {
   return axios
-    .post(API_URL + `api/v1/activity-event/`, data, config())
+    .post(API_URL + `api/v1/activity-events/`, data, config())
     .then((response) => {
       return response;
     });
@@ -107,7 +107,7 @@ const postActivityPackageDataDestination = (data: any) => {
 };
 const postEventDataDestination = (data: any) => {
   return axios
-    .post(API_URL + `api/v1/activity-event/`, data, config())
+    .post(API_URL + `api/v1/activity-event-destination/`, data, config())
     .then((response) => {
       return response;
     });

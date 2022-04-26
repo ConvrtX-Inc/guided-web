@@ -51,9 +51,13 @@ const CreatePostActivityPackage = () => {
   const [submitData, setsubmitData] = useState({
     user_id: userAccess.user_id, //login user id,
     name: "",
+    title: "", //for event source, same as name
     description: "",
+    date: "", //default current date, post date = post_date of activity_post
     main_badge_id: "",
+    badge_id: "", //for event source, same as main_badge_id
     sub_badge_ids: {},
+    sub_activities: {}, //for event source same as sub_badge_ids
     premium_user: false,
     is_post: true,
     package_note: "",
@@ -64,6 +68,7 @@ const CreatePostActivityPackage = () => {
     max_traveller: "",
     package_total_cost: "",
     activity_date: "",
+    event_date: "", //for event source, same as activity_date
     address: "1600 Amphitheatre Pkwy,  Mountain View,  California,  94043",
     max_extra_person: 100,
     currency_id: "200339a3-5870-462d-9eb8-4b6cfc788886",
@@ -89,6 +94,7 @@ const CreatePostActivityPackage = () => {
   });
   const [packageForms, setPackageForms] = useState({
     activity_package_id: "",
+    activity_event_id: "", //for event source, same as activity_package_id
     guide_rules: "",
     local_law_taxes: "",
     release_waiver: "",
@@ -249,6 +255,14 @@ const CreatePostActivityPackage = () => {
     let bulkUpload = {};
     try {
       submitData.sub_badge_ids = subBadges.toString();
+      submitData.date = postData.post_date;
+
+      //event different field names
+      submitData.title = submitData.name;
+      submitData.sub_activities = submitData.sub_badge_ids;
+      submitData.badge_id = submitData.main_badge_id;
+      submitData.event_date = submitData.activity_date; //set event_date data for event category
+
       await postDataTo(postData.category_type, submitData).then(
         (res) => {
           console.log("postDataTo: ", submitData);
@@ -262,10 +276,17 @@ const CreatePostActivityPackage = () => {
             postData.description = submitData.description;
 
             //activity package destination
-            activityDestination.activity_package_id = res.data.id;
+            activityDestination.latitude = 0;
+            activityDestination.longitude = 0;
+            activityDestination.place_description = "Place description";
+            activityDestination.place_name = "Place name";
+
+            activityDestination.activity_package_id = res.data.id; //for activity-package source
+            activityDestination.activity_event_id = res.data.id; //for event source
 
             //activity package forms
-            packageForms.activity_package_id = res.data.id;
+            packageForms.activity_package_id = res.data.id; //for activity-package source
+            packageForms.activity_event_id = res.data.id; //for event source
           }
         },
         (err) => {
@@ -284,14 +305,16 @@ const CreatePostActivityPackage = () => {
                 ""
               );
               if (postData.category_type === 1) {
+                //activity-package source
                 uploadFiles[i].activity_package_destination_id = res1.data.id;
               } else if (postData.category_type === 3) {
-                uploadFiles[i].activity_package_destination_id = res1.data.id;
+                //event source
+                uploadFiles[i].activity_event_destination_id = res1.data.id;
               }
             }
 
             //set a default_img
-            //console.log(uploadFiles);
+            console.log(uploadFiles);
             if (uploadFiles.length > 0) {
               uploadFiles[0].default_img = true;
               postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table

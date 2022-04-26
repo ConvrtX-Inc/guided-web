@@ -40,11 +40,12 @@ import ViewPost from "./components/pages/sub-admin/post/ViewPost";
 import CreatePostArticleNewsfeed from "./components/pages/post/CreatePostArticleNewsfeed";
 import CreatePostActivityPackage from "./components/pages/post/CreatePostActivityPackageEvent";
 import EditPostArticleNewsfeed from "./components/pages/post/EditPostArticleNewsfeed";
-import EditPostActivityPackage from "./components/pages/post/EditPostActivityPackage";
 import { UserAccess } from "./shared/interfaces/UserAccess.interface";
 import { useContext } from "react";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import CreatePostAdsOutfitter from "./components/pages/post/CreatePostAdsOutfitter";
+import EditPostAdsOutfitter from "./components/pages/post/EditPostAdsOutfitter";
+import EditPostActivityPackageEvent from "./components/pages/post/EditPostActivityPackageEvent";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -75,7 +76,58 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardScreen />} />
             <Route path="guides" element={<GuidesScreen />} />
-            <Route path="post" element={<PostScreen />} />
+            <Route path="post">
+              <Route index element={<PostScreen />} />
+              <Route path="/post/:id" element={<ViewPost />} />
+              <Route
+                path="/post/article"
+                element={<CreatePostArticleNewsfeed />}
+              />
+              <Route
+                path="/post/edit-article/:id"
+                element={<EditPostArticleNewsfeed />}
+              />
+              <Route
+                path="/post/edit-newsfeed/:id"
+                element={<EditPostArticleNewsfeed />}
+              />
+              <Route
+                path="/post/newsfeed"
+                element={<CreatePostArticleNewsfeed />}
+              />
+              <Route
+                path="/post/activity-package"
+                element={<CreatePostActivityPackage />}
+              />
+              <Route
+                path="/post/edit-activity-package/:id"
+                element={<EditPostActivityPackageEvent />}
+              />
+              <Route
+                path="/post/event"
+                element={<CreatePostActivityPackage />}
+              />
+              <Route
+                path="/post/edit-event/:id"
+                element={<EditPostActivityPackageEvent />}
+              />
+              <Route
+                path="/post/advertisement"
+                element={<CreatePostAdsOutfitter />}
+              />
+              <Route
+                path="/post/outfitter"
+                element={<CreatePostAdsOutfitter />}
+              />
+              <Route
+                path="/post/edit-outfitter/:id"
+                element={<EditPostAdsOutfitter />}
+              />
+              <Route
+                path="/post/edit-advertisement/:id"
+                element={<EditPostAdsOutfitter />}
+              />
+            </Route>
             <Route path="payment" element={<PaymentScreen />} />
             <Route path="transaction" element={<TransactionScreen />} />
             <Route path="support" element={<SupportScreen />} />
@@ -132,11 +184,11 @@ function App() {
                 element={<CreatePostArticleNewsfeed />}
               />
               <Route
-                path="/post/edit-article"
+                path="/post/edit-article/:id"
                 element={<EditPostArticleNewsfeed />}
               />
               <Route
-                path="/post/edit-newsfeed"
+                path="/post/edit-newsfeed/:id"
                 element={<EditPostArticleNewsfeed />}
               />
               <Route
@@ -148,24 +200,32 @@ function App() {
                 element={<CreatePostActivityPackage />}
               />
               <Route
-                path="/post/edit-activity-package"
-                element={<EditPostActivityPackage />}
+                path="/post/edit-activity-package/:id"
+                element={<EditPostActivityPackageEvent />}
               />
               <Route
                 path="/post/event"
                 element={<CreatePostActivityPackage />}
               />
               <Route
-                path="/post/edit-event"
-                element={<EditPostActivityPackage />}
+                path="/post/edit-event/:id"
+                element={<EditPostActivityPackageEvent />}
               />
               <Route
-                path="/post/advertistment"
+                path="/post/advertisement"
                 element={<CreatePostAdsOutfitter />}
               />
               <Route
                 path="/post/outfitter"
                 element={<CreatePostAdsOutfitter />}
+              />
+              <Route
+                path="/post/edit-outfitter/:id"
+                element={<EditPostAdsOutfitter />}
+              />
+              <Route
+                path="/post/edit-advertisement/:id"
+                element={<EditPostAdsOutfitter />}
               />
             </Route>
             <Route path="payment" element={<SubPaymentScreen />} />

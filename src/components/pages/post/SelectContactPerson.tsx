@@ -36,7 +36,7 @@ const SelectContactPerson = ({
       options={contactPersons}
       onChange={handleContactPerson}
       defaultValue={contactPersons[0]}
-      value={mainContact.length > 0 ? mainContact : null}
+      //value={mainContact.length > 0 ? mainContact : null}
     />
   );
 };

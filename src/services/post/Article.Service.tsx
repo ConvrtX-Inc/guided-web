@@ -8,6 +8,13 @@ const config = (token?: string) => ({
   },
   params: {},
 });
+const patchArticleData = (id: string, data: any) => {
+  return axios
+    .patch(API_URL + `api/v1/activity-article/${id}`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
 const getArticleData = (id: string) => {
   return axios
     .get(API_URL + `api/v1/activity-article/${id}`, config())
@@ -15,5 +22,5 @@ const getArticleData = (id: string) => {
       return response;
     });
 };
-const ArticleService = { getArticleData };
+const ArticleService = { patchArticleData, getArticleData };
 export default ArticleService;

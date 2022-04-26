@@ -171,7 +171,24 @@ const loadUserActivitySummary = (id: string) => {
       return response;
     });
 };
+const getActivityPostByPostId = (id: string) => {
+  return axios
+    .get(API_URL + `api/v1/activity-post/get-by-post/${id}`, config())
+    .then((response) => {
+      return response;
+    });
+};
+const patchActivityPost = (id: string, data: any) => {
+  return axios
+    .patch(API_URL + `api/v1/activity-post/${id}`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
 const PostService = {
+  getActivityPostByPostId,
+  patchActivityPost,
+
   loadActivityPost,
   loadPostCategory,
   //article

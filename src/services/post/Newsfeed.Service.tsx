@@ -8,6 +8,13 @@ const config = (token?: string) => ({
   },
   params: {},
 });
+const patchNewsfeedData = (id: string, data: any) => {
+  return axios
+    .patch(API_URL + `api/v1/activity-newsfeed/${id}`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
 const getNewsfeedData = (id: string) => {
   return axios
     .get(API_URL + `api/v1/activity-newsfeed/${id}`, config())
@@ -15,5 +22,5 @@ const getNewsfeedData = (id: string) => {
       return response;
     });
 };
-const NewsfeedService = { getNewsfeedData };
+const NewsfeedService = { patchNewsfeedData, getNewsfeedData };
 export default NewsfeedService;

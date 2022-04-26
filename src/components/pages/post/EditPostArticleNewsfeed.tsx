@@ -57,6 +57,7 @@ const EditPostArticleNewsfeed = () => {
 
   //data for activity-article or activity-newsfeed
   const [submitData, setsubmitData] = useState({
+    id: "",
     user_id: userAccess.user_id, //login user id
     //post_category_id: "",
     title: "",
@@ -70,12 +71,13 @@ const EditPostArticleNewsfeed = () => {
 
   //data for activity-post
   const [postData, setPostData] = useState({
+    id: "",
     post_id: "",
     user_id: userAccess.user_id, //login user id
     category_type: state?.category || 4, //Article is default
     title: "",
     views: 0,
-    snapshot_img: "",
+    //snapshot_img: "",
     main_badge_id: "",
     activityBadgeId: "",
     premium_user: false,
@@ -92,6 +94,7 @@ const EditPostArticleNewsfeed = () => {
   const handleBadgeChange = (obj: any) => {
     setMainBadge(obj);
     setsubmitData({ ...submitData, main_badge_id: obj.id });
+    setPostData({ ...postData, activityBadgeId: obj.id });
   };
 
   //Update switch, is premium user true/false
@@ -122,7 +125,7 @@ const EditPostArticleNewsfeed = () => {
   };
 
   //Update selected sub-badges
-  console.log(subBadges);
+  //console.log(subBadges);
   const handleSubBadgesChange = (event: any) => {
     /*console.log(
       "Badge id:",
@@ -190,14 +193,14 @@ const EditPostArticleNewsfeed = () => {
   };
 
   //post data source
-  const postDataTo = (category: number, data: any) => {
+  const patchDataTo = (category: number, id: string, data: any) => {
     if (category === 4) {
-      return PostService.postArticleData(data);
+      return ArticleService.patchArticleData(id, data);
     } else if (category === 2) {
-      return PostService.postNewsFeedData(data);
+      return NewsfeedService.patchNewsfeedData(id, data);
     } else {
       //default destination
-      return PostService.postArticleData(data);
+      return ArticleService.patchArticleData(id, data);
     }
   };
 
@@ -222,13 +225,9 @@ const EditPostArticleNewsfeed = () => {
     let bulkUpload = {};
     try {
       submitData.sub_badge_ids = subBadges.toString();
-      await postDataTo(postData.category_type, submitData).then(
+      await patchDataTo(postData.category_type, submitData.id, submitData).then(
         (res) => {
           if (res.status === 201) {
-            postData.post_id = res.data.id;
-            postData.main_badge_id = submitData.main_badge_id;
-            postData.activityBadgeId = submitData.main_badge_id;
-
             //set id for image upload
             for (let i = 0; i < uploadFiles.length; i++) {
               uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
@@ -243,10 +242,10 @@ const EditPostArticleNewsfeed = () => {
             }
 
             //set a default_img
-            if (uploadFiles.length > 0) {
-              uploadFiles[0].default_img = true;
-              postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
-            }
+            //if (uploadFiles.length > 0) {
+            //  uploadFiles[0].default_img = true;
+            //  postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
+            //}
             bulkUpload = { bulk: uploadFiles };
           }
         },
@@ -255,23 +254,23 @@ const EditPostArticleNewsfeed = () => {
         }
       );
 
-      await postImageTo(postData.category_type, bulkUpload).then(
+      /*await postImageTo(postData.category_type, bulkUpload).then(
         (res) => {
           console.log(res.status);
         },
         (err) => {
           console.log(err);
         }
-      );
-
-      await PostService.postToActivityPost(postData).then(
+      );*/
+      console.log(postData);
+      await PostService.patchActivityPost(postData.id, postData).then(
         (res) => {
-          if (res.status === 201) {
+          if (res.status === 200) {
             setIsLoading(false);
             navigate("/post", {
               state: {
                 status: true,
-                message: "Post successfully created.",
+                message: "Post successfully updated.",
               },
               replace: true,
             });
@@ -357,17 +356,21 @@ const EditPostArticleNewsfeed = () => {
   const getData = useCallback(async () => {
     let defaultBadgeId: string | "";
     let defaultSubBadgeIds: string | "";
+    let postId: string | "" = "";
+    let data: any | {} = {};
     try {
       await getDataFrom(state.category, state?.post_id || "").then(
         (res) => {
           //console.log("getArticleData: ", res.status);
           if (res.status === 200) {
             //console.log(res.data)
-            let data = res.data;
+            data = res.data;
             defaultBadgeId = data.main_badge_id;
             defaultSubBadgeIds = data.sub_badge_ids;
+            postId = data.id;
             setsubmitData((submitData) => ({
               ...submitData,
+              id: data.id,
               premium_user: data.premium_user,
               title: data.title,
               description: data.description,
@@ -378,7 +381,27 @@ const EditPostArticleNewsfeed = () => {
           }
         },
         (err) => {
-          console.log("Error getArticleData: ", err);
+          console.log("Error getArticleData/getNewsfeedData: ", err);
+        }
+      );
+
+      await PostService.getActivityPostByPostId(postId).then(
+        (res) => {
+          let postServiceData: any | {} = res.data;
+          setPostData((postData) => ({
+            ...postData,
+            id: postServiceData.id,
+            title: postServiceData.title,
+            description: postServiceData.description,
+            premium_user: data.premium_user,
+            main_badge_id: data.main_badge_id,
+            activityBadgeId: data.main_badge_id,
+            post_id: postServiceData.post_id,
+            //snapshot_img: postServiceData.snapshot_img
+          }));
+        },
+        (err) => {
+          console.log("Error in getActivityPostByPostId:", err);
         }
       );
 

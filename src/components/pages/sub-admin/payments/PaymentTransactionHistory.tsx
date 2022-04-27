@@ -49,7 +49,7 @@ const SubPaymentScreen = ({
           <button className='download-csv-button'> Download CSV</button>
         </Col>
       </Row>
-      <Row className="mt-5 ms-3">
+      <Row className="ms-3">
         <Col xs={3}>
           <DateField placeholder={'Set Start Date'} name={'start_date'} />
           </Col>

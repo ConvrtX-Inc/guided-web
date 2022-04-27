@@ -41,20 +41,24 @@ const SubPaymentScreen = ({
             />
         </Col>
       </Row>
-      <Row className="mt-5 ms-3">
+      <Row className="mt-5">
         <CreditCardList showRemoveCardModal={showRemoveCardModal} />
       </Row>
       <Row className="mt-5 ms-3">
-        <button className='download-csv-button'> Download CSV</button>
+        <Col className="ms-3">
+          <button className='download-csv-button'> Download CSV</button>
+        </Col>
       </Row>
       <Row className="mt-5 ms-3">
-        <div className='date-filters inline-display'>
-          <DateField placeholder={'Set Start Date'} />
-          <DateField placeholder={'Set End Date'} />
-        </div>
-        <div className='sorting-filters inline-display'>
+        <Col xs={3}>
+          <DateField placeholder={'Set Start Date'} name={'start_date'} />
+          </Col>
+        <Col xs={3}>
+          <DateField placeholder={'Set End Date'} name={'end_date'} />
+        </Col>
+        <Col xs={6}>
           <SearchSortByField />
-        </div>
+        </Col>
       </Row>
       <Row className="mt-5 ms-3 payment-transaction-history-table">
         <Row className=" ms-2 payment-transaction-history-table-row">

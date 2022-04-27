@@ -11,7 +11,6 @@
 .credit-card-div {
     width: 305px;
     height: 190.62px;
-    border: 1px solid #000;
     position: relative;
 }
 
@@ -21,6 +20,22 @@
     color: #fff;
     position: absolute;
     right: 5px;
+}
+
+.guided-sub-payment-date {
+    width: 300px;
+    height: 60px;
+    left: 360px;
+    top: 498px;
+
+    background: #FFFFFF;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 18px;
+}
+
+.guided-sub-payments-card {
+    padding-right: 20%;
 }
 
 .add-new-card-position {
@@ -67,8 +82,7 @@
     line-height: 14px;
     text-align: center;
     letter-spacing: -0.01em;
-    position: absolute;
-    right: 84px;
+    float: right;
 }
 
 .inline-block {
@@ -83,10 +97,6 @@
 
 .date-filters {
     width: 60%;
-}
-
-.sorting-filters{
-    width: 40%;
 }
 
 .date-field-input {
@@ -122,6 +132,9 @@
     padding-left: 39px;
 }
 
+.searchAndSortAlginment {
+    float: right;
+}
 .searchIcon {
     position: absolute;
     left: 15px;

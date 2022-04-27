@@ -1,14 +1,20 @@
-import calendarIcon from '../../../../../assets/images/calendar.svg';
+import Form from "react-bootstrap/Form";
 
 interface IDateField {
   placeholder: string;
+  name: string;
 };
 
-const dateField = ({ placeholder } : IDateField) => {
+const dateField = ({ placeholder, name } : IDateField) => {
   return (
     <div className='inline-display'>
-      <input className='date-field-input' placeholder={placeholder} />
-      <img className='calendar-icon' src={calendarIcon} alt='' />
+      <Form.Control
+        required
+        type="date"
+        className="input-date guided-sub-payment-date"
+        placeholder={placeholder}
+        name={name}
+      />
     </div>
   );
 };

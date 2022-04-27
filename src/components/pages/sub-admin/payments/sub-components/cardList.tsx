@@ -5,7 +5,7 @@ interface ICreditCardList {
 
 const creditCardList = ({ showRemoveCardModal }: ICreditCardList) => {
   return (
-    <Row className='ms-3 credit-card-list-rows'>
+    <Row className='credit-card-list-rows'>
       <Col xs={3}>
         <div className='credit-card-div'>
           <img src='cards/black_platinum.png' alt={''} />

@@ -9,7 +9,8 @@ const MostRecent = (props: any) => {
       <Card className="most-recent pb-3">
         <Image
           className="ms-2 mt-2 me-2 most-recent-img "
-          src={`${"data:image/png;base64,"}${mostrecentItem.snapshot_img}`}
+          //src={`${"data:image/png;base64,"}${mostrecentItem.snapshot_img}`}
+          src={mostrecentItem.snapshot_img_url}
           alt=""
         />
         {mostrecentItem.activityBadge && (

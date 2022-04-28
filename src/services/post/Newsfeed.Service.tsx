@@ -8,6 +8,13 @@ const config = (token?: string) => ({
   },
   params: {},
 });
+const deleteNewsfeedImage = (id: string) => {
+  return axios
+    .delete(API_URL + `api/v1/activity-newsfeed-image/${id}`, config())
+    .then((response) => {
+      return response;
+    });
+};
 const patchNewsfeedData = (id: string, data: any) => {
   return axios
     .patch(API_URL + `api/v1/activity-newsfeed/${id}`, data, config())
@@ -22,5 +29,28 @@ const getNewsfeedData = (id: string) => {
       return response;
     });
 };
-const NewsfeedService = { patchNewsfeedData, getNewsfeedData };
+const postOneNewsfeedImage = (data: any) => {
+  return axios
+    .post(API_URL + `api/v1/activity-newsfeed-image/`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const getNewsfeedImages = (id: string) => {
+  return axios
+    .get(
+      API_URL + `api/v1/activity-newsfeed-image/get-by-newsfeed/${id}`,
+      config()
+    )
+    .then((response) => {
+      return response;
+    });
+};
+const NewsfeedService = {
+  postOneNewsfeedImage,
+  patchNewsfeedData,
+  getNewsfeedData,
+  getNewsfeedImages,
+  deleteNewsfeedImage,
+};
 export default NewsfeedService;

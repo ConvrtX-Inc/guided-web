@@ -7,4 +7,7 @@ export interface PostImage {
   snapshot_img: string;
   default_img?: boolean;
   temp_id?: number;
+  img_url?: string;
+  filename?: string;
+  file?: any;
 }

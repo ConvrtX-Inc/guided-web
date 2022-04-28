@@ -20,6 +20,12 @@ import SelectCategoryList from "./SelectCategoryList";
 import SelectBadge from "./SelectBadge";
 import { PostFormsNavigate } from "./PostFormsNavigate";
 
+import { storage } from "../../../firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
+import ArticleService from "../../../services/post/Article.Service";
+import NewsfeedService from "../../../services/post/Newsfeed.Service";
+
 const CreatePostArticleNewsfeed = () => {
   const location = useLocation();
   const state = location.state as CategoryState;
@@ -72,6 +78,7 @@ const CreatePostArticleNewsfeed = () => {
     title: "",
     views: 0,
     snapshot_img: "",
+    snapshot_img_url: "",
     main_badge_id: "",
     activityBadgeId: "",
     premium_user: false,
@@ -88,6 +95,11 @@ const CreatePostArticleNewsfeed = () => {
   const handleBadgeChange = (obj: any) => {
     setMainBadge(obj);
     setsubmitData({ ...submitData, main_badge_id: obj.id });
+    setPostData({
+      ...postData,
+      main_badge_id: obj.id,
+      activityBadgeId: obj.id,
+    });
   };
 
   //Update switch, is premium user true/false
@@ -146,6 +158,7 @@ const CreatePostArticleNewsfeed = () => {
   };
 
   //handle upload multiple files
+  //console.log(uploadFiles);
   const handleUploadFiles = async (event: any) => {
     const fileObj = [];
     //const fileArray = [] as any[];
@@ -159,6 +172,8 @@ const CreatePostArticleNewsfeed = () => {
           temp_id: Math.random(),
           default_img: false,
           snapshot_img: String(base64),
+          file: fileObj[0][i],
+          filename: uuidv4() + fileObj[0][i].name,
         },
       ]);
     }
@@ -180,90 +195,107 @@ const CreatePostArticleNewsfeed = () => {
     }
   };
 
-  //post image source
-  const postImageTo = (category: number, data: any) => {
+  const postOneImageTo = (category: number, data: any) => {
     if (category === 4) {
-      return PostService.postArticleImage(data);
+      return ArticleService.postOneArticleImage(data);
     } else if (category === 2) {
-      return PostService.postNewsFeedImage(data);
+      return NewsfeedService.postOneNewsfeedImage(data);
     } else {
       //default destination
-      return PostService.postArticleImage(data);
+      return ArticleService.postOneArticleImage(data);
     }
   };
 
   //submit form, submit post article/newsfeed
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      setIsLoading(true);
+      try {
+        submitData.sub_badge_ids = subBadges.toString();
+        await postDataTo(postData.category_type, submitData).then(
+          (res) => {
+            if (res.status === 201) {
+              postData.post_id = res.data.id;
+              //set id for image upload
+              for (let i = 0; i < uploadFiles.length; i++) {
+                //remove snapshot_img
+                uploadFiles[i].snapshot_img = "";
 
-    setIsLoading(true);
-
-    let bulkUpload = {};
-    try {
-      submitData.sub_badge_ids = subBadges.toString();
-      await postDataTo(postData.category_type, submitData).then(
-        (res) => {
-          if (res.status === 201) {
-            postData.post_id = res.data.id;
-            postData.main_badge_id = submitData.main_badge_id;
-            postData.activityBadgeId = submitData.main_badge_id;
-
-            //set id for image upload
-            for (let i = 0; i < uploadFiles.length; i++) {
-              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
-                "data:image/png;base64,",
-                ""
-              );
-              if (postData.category_type === 4) {
-                uploadFiles[i].activity_article_id = res.data.id;
-              } else if (postData.category_type === 2) {
-                uploadFiles[i].activity_newsfeed_id = res.data.id;
+                if (postData.category_type === 4) {
+                  //activity article
+                  uploadFiles[i].activity_article_id = res.data.id;
+                } else if (postData.category_type === 2) {
+                  //activity newsfeed
+                  uploadFiles[i].activity_newsfeed_id = res.data.id;
+                }
               }
             }
-
-            //set a default_img
-            if (uploadFiles.length > 0) {
-              uploadFiles[0].default_img = true;
-              postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
-            }
-            bulkUpload = { bulk: uploadFiles };
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-
-      await postImageTo(postData.category_type, bulkUpload).then(
-        (res) => {
-          console.log(res.status);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-
-      await PostService.postToActivityPost(postData).then(
-        (res) => {
-          if (res.status === 201) {
+          },
+          (err) => {
+            console.log("Error in postDataTo: ", err);
             setIsLoading(false);
-            navigate("/post", {
-              state: {
-                status: true,
-                message: "Post successfully created.",
-              },
-              replace: true,
-            });
           }
-        },
-        (err) => {
-          console.log(err);
+        );
+
+        //firebase upload
+        try {
+          for (let i = 0; i < uploadFiles.length; i++) {
+            const imageRef = ref(storage, `web/${uploadFiles[i].filename}`);
+            await uploadBytes(imageRef, uploadFiles[i].file).then(
+              (snapshot) => {
+                getDownloadURL(snapshot.ref).then((url) => {
+                  postOneImageTo(postData.category_type, {
+                    activity_article_id: uploadFiles[i].activity_article_id,
+                    activity_newsfeed_id: uploadFiles[i].activity_newsfeed_id,
+                    img_url: url,
+                    filename: `web/${uploadFiles[i].filename}`, //save filename
+                  }).then(
+                    (res) => {
+                      console.log("postOneImageTo: ", res);
+                    },
+                    (err) => {
+                      console.log("Error in postOneImageTo: ", err);
+                    }
+                  );
+
+                  if (i === uploadFiles.length - 1) {
+                    postData.snapshot_img_url = url;
+                    PostService.postToActivityPost(postData).then(
+                      (res) => {
+                        console.log("postToActivityPost: ", res);
+                        if (res.status === 201) {
+                          setIsLoading(false);
+                          navigate("/post", {
+                            state: {
+                              status: true,
+                              message: "Post successfully created.",
+                            },
+                            replace: true,
+                          });
+                        }
+                      },
+                      (err) => {
+                        console.log("Error in postToActivityPost: ", err);
+                        setIsLoading(false);
+                      }
+                    );
+                  }
+                });
+              }
+            );
+          }
+        } catch (err) {
+          console.log("Error in firebase upload: ", err);
+          setIsLoading(false);
         }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
+      } catch (err) {
+        console.log("Error in handleSubmit: ", err);
+        setIsLoading(false);
+      }
+    },
+    [navigate, postData, submitData, subBadges, uploadFiles]
+  );
 
   //Update badge data with image
   const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
@@ -418,7 +450,7 @@ const CreatePostArticleNewsfeed = () => {
               {uploadFiles.map((img: any) => (
                 <Col
                   className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
-                  key={img.snapshot_img}
+                  key={img.temp_id}
                 >
                   <button
                     type="button"

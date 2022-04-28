@@ -4,7 +4,7 @@ import filter from '../../../../../assets/images/funnel-fill.svg';
 
 const searchSortByField = () => {
   return (
-    <div className='searchAndSort'>
+    <div className='searchAndSort searchAndSortAlginment'>
       <div className='searchAndSort'>
         <input className='searchAndSortField' placeholder='Search' />
         <img className='searchIcon' src={search} alt='' />

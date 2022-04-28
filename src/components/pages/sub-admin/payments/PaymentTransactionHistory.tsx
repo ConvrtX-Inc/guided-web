@@ -1,23 +1,49 @@
 import { Col, Container, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import AddNewCard from './sub-components/addNewCard';
 import CreditCardList from './sub-components/cardList';
 import DateField from './sub-components/dateField';
 import SearchSortByField from './sub-components/searchSortByField';
 import TransactionHistory from './sub-components/transactionHistoryTable';
+import { useLocation } from "react-router-dom";
+import ModalSuccess from "./modals/SuccessPayment";
+
+import TransactionsService from "../../../../services/transaction-history/TrasanctionHistory.Service";
 
 interface ISubPaymentScreen {
-  showPaymentPage: any;
   showAddCardModal: any;
   showRemoveCardModal: any;
+  status: boolean;
+  message: string;
 }
 
 const SubPaymentScreen = ({
-  showPaymentPage,
   showAddCardModal,
   showRemoveCardModal
 }: ISubPaymentScreen) => {
-  const next = '>';
-  const prev = '<';
+  const location = useLocation();
+  const [TransactionHistoryData, setTransactionHistoryData] = useState([] as any[]);
+  const state = location.state as ISubPaymentScreen;
+
+  const loadTransactionHistory = async () => {
+    try {
+      await TransactionsService.getTransactions().then(
+        (res) => {
+          setTransactionHistoryData(res.data);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    loadTransactionHistory();
+  }, []);
 
   return (
     <Container>
@@ -26,72 +52,47 @@ const SubPaymentScreen = ({
       </Row>
       <Row className="mt-5 ms-3 payment-content-header">
         <Col>
-          <button className='pending-payments-button'> Pending Payments </button>
-          <button
-            className='payments-button'
-            onClick={showPaymentPage}
+          <button className='pending-payments-button'>Pending Payments</button>
+          <Link
+            to={`/payment/create`}
+            className="btn payments-button"
           >
+          <span className='sub-payment-button'>
             Payments
-          </button>
+            </span>
+          </Link>
         </Col>
         <Col>
-            <AddNewCard
-              cls={'add-new-card-position'}
-              showAddCardModal={showAddCardModal}
-            />
+          <AddNewCard
+            cls={'add-new-card-position'}
+            showAddCardModal={showAddCardModal}
+          />
         </Col>
       </Row>
-      <Row className="mt-5 ms-3">
+      <Col>
+        {state?.status && <ModalSuccess message={state?.message} />}
+      </Col>
+      <Row className="mt-5">
         <CreditCardList showRemoveCardModal={showRemoveCardModal} />
       </Row>
       <Row className="mt-5 ms-3">
-        <button className='download-csv-button'> Download CSV</button>
+        <Col className="ms-3">
+          <button className='download-csv-button'> Download CSV</button>
+        </Col>
       </Row>
-      <Row className="mt-5 ms-3">
-        <div className='date-filters inline-display'>
-          <DateField placeholder={'Set Start Date'} />
-          <DateField placeholder={'Set End Date'} />
-        </div>
-        <div className='sorting-filters inline-display'>
+      <Row className="ms-3">
+        <Col xs={3}>
+          <DateField placeholder={'Set Start Date'} name={'start_date'} />
+        </Col>
+        <Col xs={3}>
+          <DateField placeholder={'End Date'} name={'end_date'} />
+        </Col>
+        <Col xs={6}>
           <SearchSortByField />
-        </div>
+        </Col>
       </Row>
       <Row className="mt-5 ms-3 payment-transaction-history-table">
-        <Row className=" ms-2 payment-transaction-history-table-row">
-          <Col className='ms-3'> <label className='payment-transaction-history-table-headers'> Transaction Number </label></Col>
-          <Col className='ms-3'> <label className='payment-transaction-history-table-headers'> Date Posted </label></Col>
-          <Col className='ms-3'> <label className='payment-transaction-history-table-headers'> Type of Post </label></Col>
-          <Col className='ms-3'> <label className='payment-transaction-history-table-headers'> Amount </label></Col>
-          <Col className='ms-3'> <label className='payment-transaction-history-table-headers'> Status </label></Col>
-        </Row>
-        <TransactionHistory />
-        <TransactionHistory />
-        <TransactionHistory />
-        <TransactionHistory />
-      </Row>
-      <Row className="mt-5 ms-3">
-        <div className='page-nav-field'>
-          <div className='page-nav'>
-            <div className='inline-display'>
-              <label>Rows Per Page:</label>
-              <select name="number">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-              </select>
-            </div>
-            <div className='inline-display'>
-              <label>1-6 of 150</label>
-              <button>
-                <label>{prev}</label>
-              </button>
-              <button>
-                <label>{next}</label>
-              </button>
-            </div>
-          </div>
-        </div>
+        <TransactionHistory items={TransactionHistoryData} />
       </Row>
     </Container>
   );

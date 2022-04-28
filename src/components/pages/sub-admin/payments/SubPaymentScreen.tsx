@@ -2,16 +2,13 @@ import { useState } from 'react';
 import { Container } from "react-bootstrap";
 import PaymentTransactionHistory from './PaymentTransactionHistory';
 import Backdrop from './sub-components/backdrop';
-import Payment from './Payment';
 import AddCard from './modals/AddCard';
 import RemoveCard from './modals/RemoveCard';
 import './SubPaymentScreen.scss';
 
 const SubPaymentScreen = () => {
-  const [shouldDisplayedPaymentPage, setShouldDisplayedPaymentPage] = useState(false);
   const [shouldDisplayedAddCardModal, setShouldDisplayedAddCardModal] = useState(false);
   const [shouldDisplayedRemoveCardModal, setShouldDisplayedRemoveCardModal] = useState(false);
-  const togglePaymentPage = () => { setShouldDisplayedPaymentPage(!shouldDisplayedPaymentPage) };
   const toggleAddCardModal = () => { setShouldDisplayedAddCardModal(!shouldDisplayedAddCardModal) };
   const toggleRemoveCardModal = () => { setShouldDisplayedRemoveCardModal(!shouldDisplayedRemoveCardModal) };
 
@@ -19,29 +16,25 @@ const SubPaymentScreen = () => {
     <Container>
       {
         shouldDisplayedAddCardModal
-        ? <Backdrop>
+          ? <Backdrop>
             <AddCard showAddCardModal={toggleAddCardModal} />
           </Backdrop>
-        : null
+          : null
       }
       {
         shouldDisplayedRemoveCardModal
-        ? <Backdrop>
+          ? <Backdrop>
             <RemoveCard showRemoveCardModal={toggleRemoveCardModal} />
           </Backdrop>
-        : null
+          : null
       }
       {
-        shouldDisplayedPaymentPage
-        ? <Payment
-            showAddCardModal={toggleAddCardModal}
-            showRemoveCardModal={toggleRemoveCardModal}
-          />
-        : <PaymentTransactionHistory
-            showPaymentPage={togglePaymentPage}
-            showAddCardModal={toggleAddCardModal}
-            showRemoveCardModal={toggleRemoveCardModal}
-          />
+        <PaymentTransactionHistory
+          showAddCardModal={toggleAddCardModal}
+          showRemoveCardModal={toggleRemoveCardModal}
+          status={false}
+          message={''}
+        />
       }
     </Container>
   );

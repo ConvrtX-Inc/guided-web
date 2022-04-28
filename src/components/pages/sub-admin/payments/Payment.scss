@@ -1,6 +1,7 @@
 .sub-payment-content-row {
     width: 85%;
 }
+
 .sub-payment-content {
     width: 425px;
     height: 270px;
@@ -60,7 +61,7 @@
 
     label span {
         background: snow;
-        padding:0 10px;
+        padding: 0 10px;
         font-family: 'Poppins';
         font-style: normal;
         font-weight: 600;
@@ -119,7 +120,7 @@
     }
 
     .unactive-check {
-       display: none;
+        display: none;
     }
 }
 
@@ -130,8 +131,6 @@
     width: 204px;
     height: 60px;
     border: none;
-    position: absolute;
-    right: 14%;
 }
 
 .payment-dollars-1 {
@@ -146,4 +145,9 @@
     font-style: normal;
     font-weight: 600;
     font-size: 25px;
+}
+
+.sub-payment-button {
+    position: relative;
+    top: 13px !important;
 }

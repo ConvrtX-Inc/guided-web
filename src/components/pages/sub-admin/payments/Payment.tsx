@@ -1,15 +1,39 @@
-import { Col, Container, Row } from "react-bootstrap";
-import check from '../../../../assets/images/check-lg.svg';
-import AddNewCard from './sub-components/addNewCard';
-import CreditCardList from './sub-components/cardList';
 import './Payment.scss';
+import { Col, Container, Row, Form } from "react-bootstrap";
+import { useState } from "react";
+import AddNewCard from './sub-components/addNewCard';
+import Button from "react-bootstrap/Button";
+import check from '../../../../assets/images/check-lg.svg';
+import CreditCardList from './sub-components/cardList';
+import { useNavigate } from "react-router-dom";
 
 interface IPayment {
   showAddCardModal: any;
   showRemoveCardModal: any;
 }
 
-const Payment = ({ showAddCardModal, showRemoveCardModal }: IPayment) => {
+const Payment = ({
+  showAddCardModal,
+  showRemoveCardModal
+}: IPayment) => {
+  const navigate = useNavigate();
+  const [isPending, setisPending] = useState(false);
+
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    setisPending(true);
+
+    // TODO: Use API Function instead
+    setisPending(false);
+    navigate("/payment", {
+      state: {
+        status: true,
+        message: "Payment Successfully",
+      },
+      replace: true,
+    });
+  };
+
   return (
     <Container>
       <Row className="mt-5 ms-3">
@@ -58,7 +82,7 @@ const Payment = ({ showAddCardModal, showRemoveCardModal }: IPayment) => {
               <Row className='pay-methods-rows'>
                 <Col>
                   <div className='pay-methods-bank-cards'>
-                    <img src='wallet/google-wallet.png' className="pay-method-bank-cards-align" />
+                    <img src='/wallet/google-wallet.png' className="pay-method-bank-cards-align" />
                     <span className='active-check unactive-check'></span>
                   </div>
                 </Col>
@@ -66,7 +90,7 @@ const Payment = ({ showAddCardModal, showRemoveCardModal }: IPayment) => {
               <Row className='pay-methods-rows'>
                 <Col>
                   <div className='pay-methods-bank-cards'>
-                    <img src='wallet/apple-wallet.png' className="pay-method-bank-cards-align" />
+                    <img src='/wallet/apple-wallet.png' className="pay-method-bank-cards-align" />
                     <span className='active-check unactive-check'></span>
                   </div>
                 </Col>
@@ -81,11 +105,27 @@ const Payment = ({ showAddCardModal, showRemoveCardModal }: IPayment) => {
         />
       </Col>
       <Row className='mt-5 ms-3'>
-        <Col>
+        <Col className="col-7">
           <AddNewCard cls={''} showAddCardModal={showAddCardModal} />
         </Col>
-        <Col>
-          <button className='pay-button'>PAY</button>
+        <Col className="col-4">
+          <Form onSubmit={(e) => onSubmit(e)}>
+            {!isPending && (
+              <Button type="submit" className="pay-button">
+                PAY
+              </Button>
+            )}
+            {isPending && (
+              <Button className="pay-button" type="button" disabled>
+                <span
+                  className="spinner-border spinner-border-sm me-1"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Payy...
+              </Button>
+            )}
+          </Form>
         </Col>
       </Row>
     </Container>

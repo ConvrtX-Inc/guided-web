@@ -259,13 +259,14 @@
 
 .payments-button {
     width: 217px;
-    height: 66px;
+    height: 61px;
     border: 1px solid #EE832C;
     background: #FFFFFF;
     color: #EE832C;
     box-sizing: border-box;
     border-radius: 15px;
     font-weight: 600;
+    margin-top: -6px;
 }
 
 .backdrop {
@@ -416,4 +417,48 @@
     border: 1px solid #FF4848;
     color: #FFF;
     margin-left: 5%
+}
+
+.modal-content {
+    width: 533px;
+    height: 595px;
+    background: #FFFFFF;
+    border-radius: 20px;
+}
+
+.modal-header {
+    border-bottom: 0px;
+}
+
+.sub-payment-modal-label {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
+    text-transform: capitalize;
+    color: #000000;
+    left: 30px;
+    position: relative;
+}
+
+.sub-payment-modal-card {
+    margin-left: 44px;
+    margin-top: 20px;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+
+.sub-payment-modal-card-body {
+    height: 421px;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+
+.sub-payment-modal-card-image-check {
+    margin-left: 129px;
+    margin-top: 41px;
+}
+
+.top-line-border {
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
 }

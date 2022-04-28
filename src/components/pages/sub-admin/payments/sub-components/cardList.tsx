@@ -8,17 +8,17 @@ const creditCardList = ({ showRemoveCardModal }: ICreditCardList) => {
     <Row className='credit-card-list-rows'>
       <Col xs={3}>
         <div className='credit-card-div'>
-          <img src='cards/black_platinum.png' alt={''} />
+          <img src='/cards/black_platinum.png' alt={''} />
         </div>
       </Col>
       <Col xs={3}>
       	<div className='credit-card-div'>
-          <img src='cards/purple_platinum.png' alt={''} />
+          <img src='/cards/purple_platinum.png' alt={''} />
         </div>
       </Col>
       <Col xs={3}>
         <div className='credit-card-div'>
-          <img src='cards/blue_platinum.png' alt={''} />
+          <img src='/cards/blue_platinum.png' alt={''} />
         </div>
       </Col>
     </Row>

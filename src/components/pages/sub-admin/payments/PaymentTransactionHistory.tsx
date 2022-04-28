@@ -1,27 +1,30 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import AddNewCard from './sub-components/addNewCard';
 import CreditCardList from './sub-components/cardList';
 import DateField from './sub-components/dateField';
 import SearchSortByField from './sub-components/searchSortByField';
 import TransactionHistory from './sub-components/transactionHistoryTable';
+import { useLocation } from "react-router-dom";
+import ModalSuccess from "./modals/SuccessPayment";
 
 import TransactionsService from "../../../../services/transaction-history/TrasanctionHistory.Service";
 
 interface ISubPaymentScreen {
-  showPaymentPage: any;
   showAddCardModal: any;
   showRemoveCardModal: any;
+  status: boolean;
+  message: string;
 }
 
 const SubPaymentScreen = ({
-  showPaymentPage,
   showAddCardModal,
   showRemoveCardModal
 }: ISubPaymentScreen) => {
-  const next = '>';
-  const prev = '<';
+  const location = useLocation();
   const [TransactionHistoryData, setTransactionHistoryData] = useState([] as any[]);
+  const state = location.state as ISubPaymentScreen;
 
   const loadTransactionHistory = async () => {
     try {
@@ -49,13 +52,15 @@ const SubPaymentScreen = ({
       </Row>
       <Row className="mt-5 ms-3 payment-content-header">
         <Col>
-          <button className='pending-payments-button'> Pending Payments </button>
-          <button
-            className='payments-button'
-            onClick={showPaymentPage}
+          <button className='pending-payments-button'>Pending Payments</button>
+          <Link
+            to={`/payment/create`}
+            className="btn payments-button"
           >
+          <span className='sub-payment-button'>
             Payments
-          </button>
+            </span>
+          </Link>
         </Col>
         <Col>
           <AddNewCard
@@ -64,6 +69,9 @@ const SubPaymentScreen = ({
           />
         </Col>
       </Row>
+      <Col>
+        {state?.status && <ModalSuccess message={state?.message} />}
+      </Col>
       <Row className="mt-5">
         <CreditCardList showRemoveCardModal={showRemoveCardModal} />
       </Row>

@@ -35,6 +35,7 @@ import SubAdminLayout from "./components/layout/sub-admin/SubAdminLayout";
 import SubDashboardScreen from "./components/pages/sub-admin/dashboard/SubDashboardScreen";
 import SubPostScreen from "./components/pages/sub-admin/post/SubPostScreen";
 import SubPaymentScreen from "./components/pages/sub-admin/payments/SubPaymentScreen";
+import SubCreatePayment from "./components/pages/sub-admin/payments/PaymentScreen";
 import SubSupportScreen from "./components/pages/sub-admin/support/SubSupportScreen";
 import ViewPost from "./components/pages/sub-admin/post/ViewPost";
 import CreatePostArticleNewsfeed from "./components/pages/post/CreatePostArticleNewsfeed";
@@ -228,7 +229,14 @@ function App() {
                 element={<EditPostAdsOutfitter />}
               />
             </Route>
-            <Route path="payment" element={<SubPaymentScreen />} />
+            <Route path="payment">
+              <Route index element={<SubPaymentScreen />} />
+              <Route
+                path="/payment/create"
+                element={<SubCreatePayment />}
+              />
+              </Route>
+
             <Route path="support" element={<SubSupportScreen />} />
 
             <Route path="*" element={<Navigate to="/dashboard" />} />

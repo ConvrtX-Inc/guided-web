@@ -23,10 +23,21 @@ import { ActivityDestination } from "../../../shared/interfaces/ActivityDestinat
 import { PostFormsNavigate } from "./PostFormsNavigate";
 import UserService from "../../../services/users/User.Service";
 import SelectContactPerson from "./SelectContactPerson";
+import ReactGoogleAutocomplete from "react-google-autocomplete";
+//import GooglePlacesAutocomplete, {
+//  geocodeByPlaceId,
+//} from "react-google-places-autocomplete";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
   const state = location.state as CategoryState;
+
+  //const [value, setValue] = useState(null);
+
+  /*const { ref: bootstrapRef } = usePlacesWidget({
+    apiKey: process.env.REACT_APP_GOOGLE,
+    onPlaceSelected: (place) => console.log(place),
+  });*/
 
   const navigate = useNavigate();
 
@@ -106,6 +117,16 @@ const CreatePostActivityPackage = () => {
   const [activityDestination, setActivityDestination] = useState(
     {} as ActivityDestination
   );
+
+  const handleGooglePlaceChange = (obj: any) => {
+    //console.log(obj);
+    const geometry = obj.geometry.location;
+    console.log("lat: ", geometry.lat());
+    console.log("lng: ", geometry.lng());
+    //geocodeByPlaceId(obj.place_id)
+    //  .then((results) => console.log(results))
+    //  .catch((error) => console.error(error));
+  };
 
   const handleInputChange = (event: any) => {
     setsubmitData({ ...submitData, [event.target.name]: event.target.value });
@@ -436,6 +457,8 @@ const CreatePostActivityPackage = () => {
     }
   }, [setContactPersons]);
 
+  //console.log(value);
+  //console.log(value?.label);
   useEffect(() => {
     loadBadgeData();
     getContactPersons();
@@ -703,12 +726,29 @@ const CreatePostActivityPackage = () => {
             </Row>
             <Row className="mt-4">
               <Col className="col-4">
-                <Form.Control
+                {/*<Form.Control
                   autoComplete="off"
                   className="form-loc input-location"
                   type="text"
                   placeholder="Location"
+              />
+                <GooglePlacesAutocomplete
+                  apiKey="AIzaSyAwUdoN4MCQ5YPewlweIc7VUFv4Fu0_e7A"
+                  selectProps={{ value, onChange: setValue }}
+              />*/}
+                <ReactGoogleAutocomplete
+                  apiKey={process.env.REACT_APP_GOOGLE}
+                  onPlaceSelected={(place) => handleGooglePlaceChange(place)}
+                  className="form-control form-loc input-location"
+                  //defaultValue={"Toronto, ON, Canada"}
                 />
+                {/*<Form.Control
+                  autoComplete="off"
+                  className="form-loc input-location"
+                  type="text"
+                  placeholder="Location"
+                  ref={bootstrapRef}
+                />*/}
                 <div className="ms-4 form-text label-pin-loc">
                   Pin location location
                 </div>

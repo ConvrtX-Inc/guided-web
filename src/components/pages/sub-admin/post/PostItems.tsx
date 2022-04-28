@@ -14,7 +14,8 @@ const PostItems = (props: any) => {
             <div className="image-wrapper">
               <img
                 className="post-img"
-                src={`${"data:image/png;base64,"}${postItem.snapshot_img}`}
+                //src={`${"data:image/png;base64,"}${postItem.snapshot_img}`}
+                src={postItem.snapshot_img_url}
                 alt={postItem.title}
               />
               {postItem.activityBadge && (

@@ -23,6 +23,15 @@ import { GetCategoryName } from "./GetCategoryName";
 import ArticleService from "../../../services/post/Article.Service";
 import moment from "moment";
 import NewsfeedService from "../../../services/post/Newsfeed.Service";
+import { v4 as uuidv4 } from "uuid";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import { storage } from "../../../firebase";
 
 const EditPostArticleNewsfeed = () => {
   const location = useLocation();
@@ -55,6 +64,9 @@ const EditPostArticleNewsfeed = () => {
   const [uploadFiles, setUploadFiles] = useState([] as PostImage[]);
   const [isLoading, setIsLoading] = useState(false);
 
+  //
+  const [firebaseFiles, setFirebaseFiles] = useState([] as any[]);
+
   //data for activity-article or activity-newsfeed
   const [submitData, setsubmitData] = useState({
     id: "",
@@ -78,6 +90,7 @@ const EditPostArticleNewsfeed = () => {
     title: "",
     views: 0,
     //snapshot_img: "",
+    snapshot_img_url: "",
     main_badge_id: "",
     activityBadgeId: "",
     premium_user: false,
@@ -94,7 +107,11 @@ const EditPostArticleNewsfeed = () => {
   const handleBadgeChange = (obj: any) => {
     setMainBadge(obj);
     setsubmitData({ ...submitData, main_badge_id: obj.id });
-    setPostData({ ...postData, activityBadgeId: obj.id });
+    setPostData({
+      ...postData,
+      main_badge_id: obj.id,
+      activityBadgeId: obj.id,
+    });
   };
 
   //Update switch, is premium user true/false
@@ -125,7 +142,7 @@ const EditPostArticleNewsfeed = () => {
   };
 
   //Update selected sub-badges
-  //console.log(subBadges);
+  //console.log(subBadges.length);
   const handleSubBadgesChange = (event: any) => {
     /*console.log(
       "Badge id:",
@@ -133,6 +150,12 @@ const EditPostArticleNewsfeed = () => {
       "Checked:",
       event.target.checked
     );*/
+    if (event.target.checked) {
+      if (subBadges.length > 4) {
+        event.target.checked = false;
+        return;
+      }
+    }
     let updatedList = badgeData.map((item) => {
       if (item.id === event.target.value) {
         return { ...item, isChecked: event.target.checked };
@@ -140,7 +163,6 @@ const EditPostArticleNewsfeed = () => {
       return item;
     });
 
-    //console.log(updatedList);
     setBadgeData(updatedList);
 
     if (event.target.checked) {
@@ -168,8 +190,35 @@ const EditPostArticleNewsfeed = () => {
   const removeImage = (id: number) => {
     setUploadFiles((files) => files.filter((f) => f.temp_id !== id));
   };
+  const removeImageFromFirebase = (id: number) => {
+    const removedImage = firebaseFiles.filter((f) => f.id === id);
+    //console.log(removedImage);
+    const storage = getStorage();
+
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, removedImage[0].filename);
+
+    // Delete the file
+    deleteObject(desertRef)
+      .then(() => {
+        console.log("File deleted successfully");
+      })
+      .catch((error) => {
+        console.log("Unable to delete file: ", error);
+      });
+    deleteImageFrom(postData.category_type, removedImage[0].id).then(
+      (res) => {
+        console.log("deleteImageFrom: ", res.status);
+      },
+      (err) => {
+        console.log("Error in deleteImageFrom: ", err);
+      }
+    );
+    setFirebaseFiles((files) => files.filter((f) => f.id !== id));
+  };
 
   //handle upload multiple files
+  //console.log(uploadFiles);
   const handleUploadFiles = async (event: any) => {
     const fileObj = [];
     //const fileArray = [] as any[];
@@ -183,6 +232,8 @@ const EditPostArticleNewsfeed = () => {
           temp_id: Math.random(),
           default_img: false,
           snapshot_img: String(base64),
+          file: fileObj[0][i],
+          filename: uuidv4() + fileObj[0][i].name,
         },
       ]);
     }
@@ -190,6 +241,17 @@ const EditPostArticleNewsfeed = () => {
 
   const handleSelectFile = () => {
     refFileInput?.current?.click();
+  };
+
+  const deleteImageFrom = (category: number, id: string) => {
+    if (category === 4) {
+      return ArticleService.deleteArticleImage(id);
+    } else if (category === 2) {
+      return NewsfeedService.deleteNewsfeedImage(id);
+    } else {
+      //default destination
+      return ArticleService.deleteArticleImage(id);
+    }
   };
 
   //post data source
@@ -204,82 +266,113 @@ const EditPostArticleNewsfeed = () => {
     }
   };
 
-  //post image source
-  const postImageTo = (category: number, data: any) => {
+  const postOneImageTo = (category: number, data: any) => {
     if (category === 4) {
-      return PostService.postArticleImage(data);
+      return ArticleService.postOneArticleImage(data);
     } else if (category === 2) {
-      return PostService.postNewsFeedImage(data);
+      return NewsfeedService.postOneNewsfeedImage(data);
     } else {
       //default destination
-      return PostService.postArticleImage(data);
+      return ArticleService.postOneArticleImage(data);
     }
   };
 
   //submit form, submit post article/newsfeed
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
     setIsLoading(true);
-
-    let bulkUpload = {};
     try {
       submitData.sub_badge_ids = subBadges.toString();
       await patchDataTo(postData.category_type, submitData.id, submitData).then(
         (res) => {
-          if (res.status === 201) {
+          if (res.status === 200) {
             //set id for image upload
             for (let i = 0; i < uploadFiles.length; i++) {
-              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
-                "data:image/png;base64,",
-                ""
-              );
+              //remove snapshot_img
+              uploadFiles[i].snapshot_img = "";
               if (postData.category_type === 4) {
                 uploadFiles[i].activity_article_id = res.data.id;
               } else if (postData.category_type === 2) {
                 uploadFiles[i].activity_newsfeed_id = res.data.id;
               }
+              //console.log(uploadFiles[i]);
             }
-
-            //set a default_img
-            //if (uploadFiles.length > 0) {
-            //  uploadFiles[0].default_img = true;
-            //  postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
-            //}
-            bulkUpload = { bulk: uploadFiles };
           }
         },
         (err) => {
-          console.log(err);
+          console.log("Error patchDataTo: ", err);
         }
       );
 
-      /*await postImageTo(postData.category_type, bulkUpload).then(
-        (res) => {
-          console.log(res.status);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );*/
-      console.log(postData);
-      await PostService.patchActivityPost(postData.id, postData).then(
-        (res) => {
-          if (res.status === 200) {
-            setIsLoading(false);
-            navigate("/post", {
-              state: {
-                status: true,
-                message: "Post successfully updated.",
-              },
-              replace: true,
-            });
+      //firebase upload
+      try {
+        if (uploadFiles.length > 0) {
+          for (let i = 0; i < uploadFiles.length; i++) {
+            const imageRef = ref(storage, `web/${uploadFiles[i].filename}`);
+            await uploadBytes(imageRef, uploadFiles[i].file).then(
+              (snapshot) => {
+                getDownloadURL(snapshot.ref).then((url) => {
+                  postOneImageTo(postData.category_type, {
+                    activity_article_id: uploadFiles[i].activity_article_id,
+                    activity_newsfeed_id: uploadFiles[i].activity_newsfeed_id,
+                    img_url: url,
+                    filename: `web/${uploadFiles[i].filename}`, //save filename
+                  }).then(
+                    (res) => {
+                      console.log("postOneImageTo: ", res);
+                    },
+                    (err) => {
+                      console.log("Error in postOneImageTo: ", err);
+                    }
+                  );
+
+                  if (i === uploadFiles.length - 1) {
+                    postData.snapshot_img_url = url;
+                    PostService.patchActivityPost(postData.id, postData).then(
+                      (res) => {
+                        if (res.status === 200) {
+                          setIsLoading(false);
+                          navigate("/post", {
+                            state: {
+                              status: true,
+                              message: "Post successfully updated.",
+                            },
+                            replace: true,
+                          });
+                        }
+                      },
+                      (err) => {
+                        console.log("Error patchActivityPost: ", err);
+                      }
+                    );
+                  }
+                });
+              }
+            );
           }
-        },
-        (err) => {
-          console.log(err);
+        } else {
+          await PostService.patchActivityPost(postData.id, postData).then(
+            (res) => {
+              if (res.status === 200) {
+                setIsLoading(false);
+                navigate("/post", {
+                  state: {
+                    status: true,
+                    message: "Post successfully updated.",
+                  },
+                  replace: true,
+                });
+              }
+            },
+            (err) => {
+              console.log("Error patchActivityPost: ", err);
+            }
+          );
         }
-      );
+      } catch (err) {
+        console.log("Error in firebase upload: ", err);
+        setIsLoading(false);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -328,22 +421,6 @@ const EditPostArticleNewsfeed = () => {
     []
   );
 
-  //Load badge data
-  /*const loadBadgeData = useCallback(async () => {
-    try {
-      await BadgeService.loadData().then(
-        (res) => {
-          setBadgeWithImg(res.data);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  }, [setBadgeWithImg]);*/
-
   const getDataFrom = (category: number, post_id: string) => {
     if (category === 4) {
       return ArticleService.getArticleData(post_id);
@@ -351,6 +428,15 @@ const EditPostArticleNewsfeed = () => {
       return NewsfeedService.getNewsfeedData(post_id);
     }
     return ArticleService.getArticleData(post_id);
+  };
+
+  const getImageFrom = (category: number, post_id: string) => {
+    if (category === 4) {
+      return ArticleService.getArticleImages(post_id);
+    } else if (category === 2) {
+      return NewsfeedService.getNewsfeedImages(post_id);
+    }
+    return ArticleService.getArticleImages(post_id);
   };
 
   const getData = useCallback(async () => {
@@ -397,7 +483,6 @@ const EditPostArticleNewsfeed = () => {
             main_badge_id: data.main_badge_id,
             activityBadgeId: data.main_badge_id,
             post_id: postServiceData.post_id,
-            //snapshot_img: postServiceData.snapshot_img
           }));
         },
         (err) => {
@@ -411,6 +496,18 @@ const EditPostArticleNewsfeed = () => {
         },
         (error) => {
           console.log("Error BadgeService: ", error);
+        }
+      );
+
+      await getImageFrom(state.category, state?.post_id || "").then(
+        (res) => {
+          //console.log(res.status, " : ", res);
+          if (res.status === 200) {
+            setFirebaseFiles(res.data);
+          }
+        },
+        (err) => {
+          console.log("Error in getImageFrom: ", err);
         }
       );
     } catch (error) {
@@ -534,6 +631,27 @@ const EditPostArticleNewsfeed = () => {
               </Col>
             </Row>
             <Row className="upload-img ps-2 pt-2">
+              {firebaseFiles.map((img: any) => (
+                <Col
+                  className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
+                  key={img.id}
+                >
+                  <button
+                    type="button"
+                    className="btn-close btn-remove-img"
+                    aria-label="Close"
+                    onClick={() => {
+                      removeImageFromFirebase(img.id);
+                    }}
+                  ></button>
+                  <img
+                    className="w-100 prev-img img-fluid rounded mx-auto d-block"
+                    src={img.img_url}
+                    alt="..."
+                  />
+                </Col>
+              ))}
+
               {uploadFiles.map((img: any) => (
                 <Col
                   className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
@@ -554,15 +672,7 @@ const EditPostArticleNewsfeed = () => {
                   />
                 </Col>
               ))}
-              {/*<Col className="col-2 me-2 d-flex justify-content-center align-items-center">
-                <input
-                  type="file"
-                  className="form-control"
-                  onChange={handleUploadFiles}
-                  multiple
-                />
-              </Col>*/}
-              {uploadFiles.length < 5 && (
+              {uploadFiles.length + firebaseFiles.length < 5 && (
                 <Col className="col-2 me-2 d-flex justify-content-center align-items-center">
                   <input
                     accept="image/x-png,image/gif,image/jpeg"

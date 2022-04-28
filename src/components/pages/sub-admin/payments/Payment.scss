@@ -10,6 +10,7 @@
     font-family: 'Poppins';
     font-style: normal;
     color: #000;
+    border: 1px solid #E4E4E4;
 
     label {
         font-size: 12px;
@@ -70,12 +71,27 @@
     .pay-methods-bank-cards {
         width: 142px;
         height: 60px;
-        border: none;
+        border: 1px solid #E4E4E4;
         box-sizing: border-box;
         border-radius: 8px;
-        background-color: #FFF;
+        background-color: #FFFFFF;
         padding: 15px 0px 0px 30px;
         position: relative;
+        margin-bottom: 15px;
+    }
+
+    .pay-method-bank-cards-align {
+        margin-top: -8px;
+        margin-left: 10%;
+    }
+
+    .pay-using-text {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 21px;
+        color: #000000;
     }
 
     .active {
@@ -118,3 +134,16 @@
     right: 14%;
 }
 
+.payment-dollars-1 {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 64px;
+}
+
+.payment-dollars-2 {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+}

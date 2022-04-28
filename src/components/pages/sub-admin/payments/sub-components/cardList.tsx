@@ -5,38 +5,20 @@ interface ICreditCardList {
 
 const creditCardList = ({ showRemoveCardModal }: ICreditCardList) => {
   return (
-    <Row className='ms-3 credit-card-list-rows'>
-    	<Col>
+    <Row className='credit-card-list-rows'>
+      <Col xs={3}>
         <div className='credit-card-div'>
-          <img src='card.png' alt={''} />
-          <button
-            className='credit-card-close-btn'
-            onClick={showRemoveCardModal}
-          >
-            X
-          </button>
+          <img src='/cards/black_platinum.png' alt={''} />
         </div>
       </Col>
-      <Col>
+      <Col xs={3}>
       	<div className='credit-card-div'>
-          <img  src='card.png' alt={''} />
-          <button
-            className='credit-card-close-btn'
-            onClick={showRemoveCardModal}
-          >
-            X
-          </button>
+          <img src='/cards/purple_platinum.png' alt={''} />
         </div>
       </Col>
-      <Col>
-      	<div className='credit-card-div'>
-        	<img src='card.png' alt={''} />
-          <button
-            className='credit-card-close-btn'
-            onClick={showRemoveCardModal}
-          >
-            X
-          </button>
+      <Col xs={3}>
+        <div className='credit-card-div'>
+          <img src='/cards/blue_platinum.png' alt={''} />
         </div>
       </Col>
     </Row>

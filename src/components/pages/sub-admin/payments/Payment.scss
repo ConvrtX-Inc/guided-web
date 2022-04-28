@@ -1,6 +1,7 @@
 .sub-payment-content-row {
     width: 85%;
 }
+
 .sub-payment-content {
     width: 425px;
     height: 270px;
@@ -10,6 +11,7 @@
     font-family: 'Poppins';
     font-style: normal;
     color: #000;
+    border: 1px solid #E4E4E4;
 
     label {
         font-size: 12px;
@@ -59,7 +61,7 @@
 
     label span {
         background: snow;
-        padding:0 10px;
+        padding: 0 10px;
         font-family: 'Poppins';
         font-style: normal;
         font-weight: 600;
@@ -70,12 +72,27 @@
     .pay-methods-bank-cards {
         width: 142px;
         height: 60px;
-        border: none;
+        border: 1px solid #E4E4E4;
         box-sizing: border-box;
         border-radius: 8px;
-        background-color: #FFF;
+        background-color: #FFFFFF;
         padding: 15px 0px 0px 30px;
         position: relative;
+        margin-bottom: 15px;
+    }
+
+    .pay-method-bank-cards-align {
+        margin-top: -8px;
+        margin-left: 10%;
+    }
+
+    .pay-using-text {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 21px;
+        color: #000000;
     }
 
     .active {
@@ -103,7 +120,7 @@
     }
 
     .unactive-check {
-       display: none;
+        display: none;
     }
 }
 
@@ -114,7 +131,23 @@
     width: 204px;
     height: 60px;
     border: none;
-    position: absolute;
-    right: 14%;
 }
 
+.payment-dollars-1 {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 64px;
+}
+
+.payment-dollars-2 {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+}
+
+.sub-payment-button {
+    position: relative;
+    top: 13px !important;
+}

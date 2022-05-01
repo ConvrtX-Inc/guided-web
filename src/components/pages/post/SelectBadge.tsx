@@ -4,10 +4,12 @@ const SelectBadge = ({
   mainBadge,
   badgeData,
   handleBadgeChange,
+  isClearable,
 }: {
   mainBadge: any;
   badgeData: any;
   handleBadgeChange: any;
+  isClearable: boolean;
 }) => {
   const controlStyles = {
     control: (styles: any) => ({
@@ -31,7 +33,7 @@ const SelectBadge = ({
     <Select
       placeholder="Search badges"
       styles={controlStyles}
-      isClearable={true}
+      isClearable={isClearable}
       defaultValue={badgeData[0]}
       getOptionLabel={(e) => e.badge_name}
       getOptionValue={(e) => e.id}

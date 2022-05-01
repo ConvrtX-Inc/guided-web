@@ -153,6 +153,7 @@ const PostScreen = (props: any) => {
             <Container fluid>
               <Nav>
                 <SelectBadge
+                  isClearable={true}
                   mainBadge={mainBadge}
                   badgeData={badgeData}
                   handleBadgeChange={(option: any) =>
@@ -201,7 +202,7 @@ const PostScreen = (props: any) => {
             {isLoading && (
               <tbody>
                 <tr>
-                  <td colSpan={5}  className="pb-5">
+                  <td colSpan={5} className="pb-5">
                     <Spinner />
                   </td>
                 </tr>

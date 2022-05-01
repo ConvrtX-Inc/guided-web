@@ -577,6 +577,7 @@ const CreatePostActivityPackage = () => {
                   onChange={(option) => handleBadgeChange(option)}
                   />*/}
                 <SelectBadge
+                  isClearable={false}
                   mainBadge={mainBadge}
                   badgeData={badgeData}
                   handleBadgeChange={(option: any) => handleBadgeChange(option)}

@@ -580,6 +580,7 @@ const EditPostArticleNewsfeed = () => {
               <Col className="col-4">
                 <Form.Label>Select Main Badge</Form.Label>
                 <SelectBadge
+                  isClearable={false}
                   mainBadge={mainBadge}
                   badgeData={badgeData}
                   handleBadgeChange={(option: any) => handleBadgeChange(option)}

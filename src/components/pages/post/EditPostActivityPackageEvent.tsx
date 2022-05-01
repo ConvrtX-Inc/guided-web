@@ -80,7 +80,9 @@ const EditPostActivityPackageEvent = () => {
     date: "",
     description: "",
     main_badge_id: "",
+    badge_id: "", //for events, same as main_badge_id
     sub_badge_ids: {},
+    sub_activities: "", //for events, same as sub_badge_ids
     premium_user: false,
     is_post: true,
     package_note: "",
@@ -91,6 +93,7 @@ const EditPostActivityPackageEvent = () => {
     max_traveller: "",
     package_total_cost: "",
     activity_date: "",
+    event_date: "", //for event, same as activity date
     address: "1600 Amphitheatre Pkwy,  Mountain View,  California,  94043",
     max_extra_person: 100,
     currency_id: "200339a3-5870-462d-9eb8-4b6cfc788886",
@@ -370,10 +373,16 @@ const EditPostActivityPackageEvent = () => {
 
       submitData.date = postData.post_date;
 
+      //activity event
+      submitData.event_date = submitData.activity_date;
+      submitData.sub_activities = subBadges.toString();
+      submitData.badge_id = submitData.main_badge_id;
+
       //activity post
       postData.title = submitData.name;
       postData.description = submitData.description;
 
+      console.log("submitData: ", submitData);
       await patchDataTo(postData.category_type, submitData.id, submitData).then(
         (res) => {
           console.log("patchDataTo: ", res);
@@ -563,7 +572,7 @@ const EditPostActivityPackageEvent = () => {
     if (category === 1) {
       return ActivityPackageService.getActivityPackageDestination(post_id);
     } else if (category === 3) {
-      return EventService.getEventData(post_id);
+      return EventService.getActivityEventDestination(post_id);
     }
     return ActivityPackageService.getActivityPackageDestination(post_id);
   };
@@ -716,15 +725,16 @@ const EditPostActivityPackageEvent = () => {
       await UserService.getUsers().then(
         (res) => {
           const contacts = res.data.data;
-          //console.log("Contacts: ", contacts);
-          //console.log("Current contact id: ", postServiceData.contact_user_id)
           const currentContact = contacts.filter(
             (contact: any) => contact.id === postServiceData.contact_user_id
           );
           setContactPersons(contacts);
-          //console.log(currentContact);
           if (currentContact.length > 0) {
             setMainContactPerson(currentContact[0]); //set current contact user
+            setPostData((post) => ({
+              ...post,
+              contact_user_id: currentContact[0].id,
+            }));
           }
         },
         (error) => {
@@ -742,9 +752,169 @@ const EditPostActivityPackageEvent = () => {
     setPackageForms,
   ]);
 
+  const getEventData = useCallback(async () => {
+    try {
+      let defaultBadgeId: string | "";
+      let defaultSubBadgeIds: string | "";
+      let postId: string | "" = "";
+      let data: any | {} = {};
+      let destinationData: any | {} = {};
+      let postServiceData: any | {} = {};
+      await getDataFrom(state.category, state?.post_id || "").then(
+        (res) => {
+          if (res.status === 200) {
+            data = res.data;
+            //console.log(data);/
+
+            postId = data.id;
+
+            defaultBadgeId = data.badge_id; //main_badge_id for activity-package
+            defaultSubBadgeIds = data.sub_activities; //sub_badge_ids for activity-package
+
+            setsubmitData((submitData) => ({
+              ...submitData,
+              id: data.id,
+              premium_user: data.premium_user,
+              description: data.description,
+              date: moment(data.date).format("yyyy-MM-DD"),
+              base_price: data.base_price,
+              package_total_cost: data.package_total_cost,
+              extra_cost_per_person: data.extra_cost_per_person,
+              max_price: data.max_price,
+              package_note: data.package_note,
+              activity_date: moment(data.event_date).format("yyyy-MM-DD"), //event date for Events
+              event_date: moment(data.event_date).format("yyyy-MM-DD"), //event date for Events
+              title: data.title, //title for Events, name for Activity-Package
+              max_traveller: data.max_traveller,
+              /*
+              name: data.name,
+              main_badge_id: defaultBadgeId,f
+              */
+            }));
+          }
+        },
+        (err) => {
+          console.log("Error in getDataFrom: ", err);
+        }
+      );
+
+      await getDestinationFrom(state.category, state?.post_id || "").then(
+        (resDestination) => {
+          if (resDestination.status === 200) {
+            destinationData = resDestination.data[0];
+            setActivityDestination((activityDestination) => ({
+              ...activityDestination,
+              id: destinationData.id,
+              activity_event_id: destinationData.activity_event_id,
+              activity_package_id: destinationData.activity_package_id,
+              place_name: destinationData.place_name,
+              place_description: destinationData.place_description,
+              latitude: destinationData.latitude,
+              longitude: destinationData.longitude,
+            }));
+            setDefaultDestination(destinationData.place_name);
+          }
+        },
+        (errDestination) => {
+          console.log("Error in getDestinationFrom: ", errDestination);
+        }
+      );
+
+      //console.log(destinationData.id)
+      await getImageFrom(state.category, destinationData.id).then(
+        (res) => {
+          if (res.status === 200) {
+            setFirebaseFiles(res.data);
+          }
+        },
+        (err) => {
+          console.log("Error in getImageFrom: ", err);
+        }
+      );
+
+      await getFormsFrom(state.category, state?.post_id || "").then(
+        (res) => {
+          if (res.status === 200) {
+            let formsData = res.data[0];
+            setPackageForms((packageForms) => ({
+              ...packageForms,
+              id: formsData.id,
+              activity_package_id: formsData.activity_package_id,
+              local_law_taxes: formsData.local_law_taxes,
+              guide_rules: formsData.guide_rules,
+              release_waiver: formsData.release_waiver,
+            }));
+          }
+        },
+        (err) => {
+          console.log("Error in getDestinationFrom: ", err);
+        }
+      );
+
+      await PostService.getActivityPostByPostId(postId).then(
+        (res) => {
+          postServiceData = res.data;
+          setPostData((postData) => ({
+            ...postData,
+            id: postServiceData.id,
+            title: postServiceData.title,
+            description: postServiceData.description,
+            premium_user: data.premium_user,
+            main_badge_id: data.main_badge_id,
+            activityBadgeId: data.main_badge_id,
+            post_id: postServiceData.post_id,
+            contact_email: postServiceData.contact_email,
+            contact_person: postServiceData.contact_person,
+            contact_website: postServiceData.contact_website,
+            contact_number: postServiceData.contact_number,
+            post_date: moment(postServiceData.post_date).format("yyyy-MM-DD"),
+          }));
+        },
+        (err) => {
+          console.log("Error in getActivityPostByPostId:", err);
+        }
+      );
+
+      await BadgeService.loadData().then(
+        (res) => {
+          setBadgeWithImg(res.data, defaultBadgeId, defaultSubBadgeIds);
+        },
+        (error) => {
+          console.log("Error BadgeService: ", error);
+        }
+      );
+
+      await UserService.getUsers().then(
+        (res) => {
+          const contacts = res.data.data;
+          const currentContact = contacts.filter(
+            (contact: any) => contact.id === postServiceData.contact_user_id
+          );
+          setContactPersons(contacts);
+          if (currentContact.length > 0) {
+            setMainContactPerson(currentContact[0]); //set current contact user
+            setPostData((post) => ({
+              ...post,
+              contact_user_id: currentContact[0].id,
+            }));
+          }
+        },
+        (error) => {
+          console.log("Error in getUsers:", error);
+        }
+      );
+    } catch (error) {
+      console.log("Error in getData:", error);
+    }
+  }, [state.post_id, state.category, setBadgeWithImg, setsubmitData]);
+
   useEffect(() => {
-    getData();
-  }, [getData]);
+    if (state.category === 1) {
+      getData();
+    } else if (state.category === 3) {
+      getEventData();
+    }
+  }, [state.category, getData, getEventData]);
 
   return (
     <Container className="create-post-activitypackage-container mb-5">
@@ -1071,7 +1241,7 @@ const EditPostActivityPackageEvent = () => {
                 <Form.Control
                   autoComplete="off"
                   className="mt-1 form-pack input-traveler-limit"
-                  type="text"
+                  type="number"
                   placeholder="Traveler Limit"
                   name="max_traveller"
                   value={submitData.max_traveller}

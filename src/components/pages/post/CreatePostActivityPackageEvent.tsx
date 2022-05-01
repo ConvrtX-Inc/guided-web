@@ -72,6 +72,7 @@ const CreatePostActivityPackage = () => {
     user_id: userAccess.user_id, //login user id,
     name: "",
     title: "", //for event source, same as name
+
     description: "",
     date: "", //default current date, post date = post_date of activity_post
     main_badge_id: "",

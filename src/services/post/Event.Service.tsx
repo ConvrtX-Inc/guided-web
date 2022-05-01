@@ -17,14 +17,18 @@ const getEventData = (id: string) => {
 };
 const postOneEventImage = (data: any) => {
   return axios
-    .post(API_URL + `api/v1/activity-event-destination-images/`, data, config())
+    .post(API_URL + `api/v1/activity-event-destination-image/`, data, config())
     .then((response) => {
       return response;
     });
 };
 const getEventImages = (id: string) => {
   return axios
-    .get(API_URL + `api/v1/activity-event-image/get-by-article/${id}`, config())
+    .get(
+      API_URL +
+        `api/v1/activity-event-destination-image?filter=activity_event_destination_id||$eq||${id}`,
+      config()
+    )
     .then((response) => {
       return response;
     });
@@ -33,7 +37,7 @@ const getActivityEventDestination = (id: string) => {
   return axios
     .get(
       API_URL +
-        `api/v1/activity-event-destination?filter=activity_package_id||$eq||${id}&limit=1`,
+        `api/v1/activity-event-destination?filter=activity_event_id||$eq||${id}&limit=1`,
       config()
     )
     .then((response) => {
@@ -53,10 +57,7 @@ const getActivityEventForms = (id: string) => {
 };
 const deleteEventDestinationImage = (id: string) => {
   return axios
-    .delete(
-      API_URL + `api/v1/activity-event-destination-images/${id}`,
-      config()
-    )
+    .delete(API_URL + `api/v1/activity-event-destination-image/${id}`, config())
     .then((response) => {
       return response;
     });
@@ -70,14 +71,14 @@ const patchActivityEventsData = (id: string, data: any) => {
 };
 const patchActivityEventDataDestination = (id: string, data: any) => {
   return axios
-    .post(API_URL + `api/v1/activity-event-destinations/${id}`, data, config())
+    .patch(API_URL + `api/v1/activity-event-destination/${id}`, data, config())
     .then((response) => {
       return response;
     });
 };
 const patchActivityEventFormsData = (id: string, data: any) => {
   return axios
-    .post(API_URL + `api/v1/activity-event-forms/${id}`, data, config())
+    .patch(API_URL + `api/v1/activity-event-forms/${id}`, data, config())
     .then((response) => {
       return response;
     });

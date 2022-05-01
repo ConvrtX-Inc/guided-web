@@ -29,7 +29,9 @@ const SelectBadge = ({
   };
   return (
     <Select
+      placeholder="Search badges"
       styles={controlStyles}
+      isClearable={true}
       defaultValue={badgeData[0]}
       getOptionLabel={(e) => e.badge_name}
       getOptionValue={(e) => e.id}

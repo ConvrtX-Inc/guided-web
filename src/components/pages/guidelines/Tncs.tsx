@@ -17,6 +17,7 @@ const Tncs = () => {
     id: "",
     type_name: "",
     text_content: "",
+    updated_date: ""
   });
 
   const { id, text_content } = data;
@@ -138,7 +139,7 @@ const Tncs = () => {
             )}
             {isPending && <Spinner />}
           </Col>
-          <Logs />
+          <Logs items={data}/>
         </Row>
       </Col>
     </Row>

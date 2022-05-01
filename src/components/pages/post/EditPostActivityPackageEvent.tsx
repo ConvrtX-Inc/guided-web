@@ -715,7 +715,17 @@ const EditPostActivityPackageEvent = () => {
 
       await UserService.getUsers().then(
         (res) => {
-          setContactPersons(res.data.data);
+          const contacts = res.data.data;
+          //console.log("Contacts: ", contacts);
+          //console.log("Current contact id: ", postServiceData.contact_user_id)
+          const currentContact = contacts.filter(
+            (contact: any) => contact.id === postServiceData.contact_user_id
+          );
+          setContactPersons(contacts);
+          //console.log(currentContact);
+          if (currentContact.length > 0) {
+            setMainContactPerson(currentContact[0]); //set current contact user
+          }
         },
         (error) => {
           console.log("Error in getUsers:", error);

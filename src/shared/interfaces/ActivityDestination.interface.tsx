@@ -1,4 +1,5 @@
 export interface ActivityDestination {
+  id?: string;
   activity_package_id?: string;
   activity_event_id?: string;
   place_name: string;

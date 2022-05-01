@@ -90,7 +90,7 @@ const EditPostArticleNewsfeed = () => {
     title: "",
     views: 0,
     //snapshot_img: "",
-    snapshot_img_url: "",
+    firebase_snapshot_img: "",
     main_badge_id: "",
     activityBadgeId: "",
     premium_user: false,
@@ -192,7 +192,7 @@ const EditPostArticleNewsfeed = () => {
   };
   const removeImageFromFirebase = (id: number) => {
     const removedImage = firebaseFiles.filter((f) => f.id === id);
-    //console.log(removedImage);
+    console.log(removedImage);
     const storage = getStorage();
 
     // Create a reference to the file to delete
@@ -315,7 +315,7 @@ const EditPostArticleNewsfeed = () => {
                   postOneImageTo(postData.category_type, {
                     activity_article_id: uploadFiles[i].activity_article_id,
                     activity_newsfeed_id: uploadFiles[i].activity_newsfeed_id,
-                    img_url: url,
+                    firebase_snapshot_img: url,
                     filename: `web/${uploadFiles[i].filename}`, //save filename
                   }).then(
                     (res) => {
@@ -327,7 +327,7 @@ const EditPostArticleNewsfeed = () => {
                   );
 
                   if (i === uploadFiles.length - 1) {
-                    postData.snapshot_img_url = url;
+                    postData.firebase_snapshot_img = url;
                     PostService.patchActivityPost(postData.id, postData).then(
                       (res) => {
                         if (res.status === 200) {
@@ -351,6 +351,11 @@ const EditPostArticleNewsfeed = () => {
             );
           }
         } else {
+          //console.log(firebaseFiles);
+          if (firebaseFiles.length > 0) {
+            postData.firebase_snapshot_img = firebaseFiles[0].img_url;
+          }
+          //console.log(postData);
           await PostService.patchActivityPost(postData.id, postData).then(
             (res) => {
               if (res.status === 200) {
@@ -390,10 +395,7 @@ const EditPostArticleNewsfeed = () => {
       await Promise.all(
         badges.map(async (badge: any) => {
           badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
-          //badge.isChecked = true;
-          //console.log(badge.id, "=", defaultSubBadgeIds?.includes(badge.id));
           if (defaultSubBadgeIds?.includes(badge.id)) {
-            //console.log(badge.id, ": ", defaultSubBadgeIds?.includes(badge.id));
             badge.isChecked = true;
           } else {
             badge.isChecked = false;
@@ -646,7 +648,7 @@ const EditPostArticleNewsfeed = () => {
                   ></button>
                   <img
                     className="w-100 prev-img img-fluid rounded mx-auto d-block"
-                    src={img.img_url}
+                    src={img.firebase_snapshot_img}
                     alt="..."
                   />
                 </Col>
@@ -655,7 +657,7 @@ const EditPostArticleNewsfeed = () => {
               {uploadFiles.map((img: any) => (
                 <Col
                   className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
-                  key={img.snapshot_img}
+                  key={img.temp_id}
                 >
                   <button
                     type="button"

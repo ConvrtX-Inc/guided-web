@@ -10,7 +10,7 @@ const MostRecent = (props: any) => {
         <Image
           className="ms-2 mt-2 me-2 most-recent-img "
           //src={`${"data:image/png;base64,"}${mostrecentItem.snapshot_img}`}
-          src={mostrecentItem.snapshot_img_url}
+          src={mostrecentItem.firebase_snapshot_img}
           alt=""
         />
         {mostrecentItem.activityBadge && (

@@ -25,6 +25,18 @@ import { GetCategoryName } from "./GetCategoryName";
 import EventService from "../../../services/post/Event.Service";
 import SelectContactPerson from "./SelectContactPerson";
 import UserService from "../../../services/users/User.Service";
+import ActivityPackageService from "../../../services/post/ActivityPackage.Service";
+import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import ReactGoogleAutocomplete from "react-google-autocomplete";
+import { storage } from "../../../firebase";
 
 const EditPostActivityPackageEvent = () => {
   const location = useLocation();
@@ -34,6 +46,7 @@ const EditPostActivityPackageEvent = () => {
 
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
+
   const services = [
     { id: 1, text: "Foods" },
     { id: 2, text: "Wifi" },
@@ -41,6 +54,7 @@ const EditPostActivityPackageEvent = () => {
     { id: 4, text: "Snacks" },
     { id: 5, text: "Electricity" },
   ];
+
   const refFileInput = useRef<HTMLInputElement | null>(null);
 
   const [postCategory, setPostCategory] = useState(
@@ -48,16 +62,21 @@ const EditPostActivityPackageEvent = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+
   const [contactPersons, setContactPersons] = useState([] as any[]);
   const [mainContactPerson, setMainContactPerson] = useState({});
+
   const [mainBadge, setMainBadge] = useState({});
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [subBadges, setSubBadges] = useState([] as any[]);
+
   const [uploadFiles, setUploadFiles] = useState([] as PostImage[]);
+
   const [submitData, setsubmitData] = useState({
+    id: "",
     user_id: userAccess.user_id, //login user id,
-    //name: "",
     title: "",
+    name: "",
     date: "",
     description: "",
     main_badge_id: "",
@@ -78,6 +97,7 @@ const EditPostActivityPackageEvent = () => {
     services: "",
   });
   const [postData, setPostData] = useState({
+    id: "",
     post_id: "",
     user_id: userAccess.user_id, //login user id
     category_type: state?.category || 1,
@@ -94,16 +114,37 @@ const EditPostActivityPackageEvent = () => {
     snapshot_img: "",
     activityBadgeId: "",
     premium_user: false,
+    firebase_snapshot_img: "",
   });
   const [packageForms, setPackageForms] = useState({
+    id: "",
     activity_package_id: "",
     guide_rules: "",
     local_law_taxes: "",
     release_waiver: "",
   });
+
+  const [defaultDestination, setDefaultDestination] = useState("");
   const [activityDestination, setActivityDestination] = useState(
     {} as ActivityDestination
   );
+  const handleGooglePlaceChange = async (obj: any) => {
+    console.log(obj);
+    const geometry = obj.geometry.location;
+    const lat = geometry.lat();
+    const lng = geometry.lng();
+    setActivityDestination((activityDestination) => ({
+      ...activityDestination,
+      place_name: obj.formatted_address,
+      place_description: obj.formatted_address,
+      latitude: lat,
+      longitude: lng,
+    }));
+    //const getpostcode = await fetch(
+    //  `https://api.postcodes.io/?lon=${lng}&lat=${lat}`
+    //);
+    //console.log(getpostcode);
+  };
 
   const handleInputChange = (event: any) => {
     setsubmitData({ ...submitData, [event.target.name]: event.target.value });
@@ -120,12 +161,50 @@ const EditPostActivityPackageEvent = () => {
     });
   };
 
+  const [firebaseFiles, setFirebaseFiles] = useState([] as any[]);
+
   const handleSelectFile = () => {
     refFileInput?.current?.click();
   };
 
   const removeImage = (id: number) => {
     setUploadFiles((files) => files.filter((f) => f.temp_id !== id));
+  };
+
+  const removeImageFromFirebase = (id: number) => {
+    const removedImage = firebaseFiles.filter((f) => f.id === id);
+    console.log(removedImage);
+    const storage = getStorage();
+
+    const desertRef = ref(storage, removedImage[0].filename);
+
+    deleteObject(desertRef)
+      .then(() => {
+        console.log("File deleted successfully");
+      })
+      .catch((error) => {
+        console.log("Unable to delete file: ", error);
+      });
+    deleteImageFrom(postData.category_type, removedImage[0].id).then(
+      (res) => {
+        console.log("deleteImageFrom: ", res.status);
+      },
+      (err) => {
+        console.log("Error in deleteImageFrom: ", err);
+      }
+    );
+    setFirebaseFiles((files) => files.filter((f) => f.id !== id));
+  };
+
+  const deleteImageFrom = (category: number, id: string) => {
+    if (category === 1) {
+      return ActivityPackageService.deleteActivityPackageDestinationImage(id);
+    } else if (category === 3) {
+      return EventService.deleteEventDestinationImage(id);
+    } else {
+      //default destination
+      return ActivityPackageService.deleteActivityPackageDestinationImage(id);
+    }
   };
 
   const handleUploadFiles = async (event: any) => {
@@ -139,6 +218,8 @@ const EditPostActivityPackageEvent = () => {
           temp_id: Math.random(),
           default_img: false,
           snapshot_img: String(base64),
+          file: fileObj[0][i],
+          filename: uuidv4() + fileObj[0][i].name,
         },
       ]);
     }
@@ -172,8 +253,12 @@ const EditPostActivityPackageEvent = () => {
 
   const handleBadgeChange = (obj: any) => {
     setMainBadge(obj);
-    setPostData({ ...postData, main_badge_id: obj.id });
     setsubmitData({ ...submitData, main_badge_id: obj.id });
+    setPostData({
+      ...postData,
+      main_badge_id: obj.id,
+      activityBadgeId: obj.id,
+    });
   };
 
   const handleSubBadgesChange = (event: any) => {
@@ -182,8 +267,22 @@ const EditPostActivityPackageEvent = () => {
         event.target.checked = false;
         return;
       }
-      setSubBadges(() => [...subBadges, event.target.value]);
+    }
+    let updatedList = badgeData.map((item) => {
+      if (item.id === event.target.value) {
+        return { ...item, isChecked: event.target.checked };
+      }
+      return item;
+    });
 
+    setBadgeData(updatedList);
+
+    if (event.target.checked) {
+      if (subBadges.length > 4) {
+        event.target.checked = false;
+        return;
+      }
+      setSubBadges(() => [...subBadges, event.target.value]);
       setsubmitData({
         ...submitData,
         sub_badge_ids: [...subBadges, event.target.value],
@@ -199,6 +298,7 @@ const EditPostActivityPackageEvent = () => {
       });
     }
   };
+
   const handleServicesChange = (obj: any) => {
     //console.log(obj);
     //console.log(Object.values(obj));
@@ -210,123 +310,112 @@ const EditPostActivityPackageEvent = () => {
     setPostData({ ...postData, contact_user_id: obj.id });
   };
 
-  const postDataTo = (category: number, data: any) => {
+  const patchDataTo = (category: number, id: string, data: any) => {
     if (category === 1) {
-      return PostService.postActivityPackageData(data);
+      return ActivityPackageService.patchActivityPackageData(id, data);
     } else if (category === 3) {
-      return PostService.postEventData(data);
+      return EventService.patchActivityEventsData(id, data);
     } else {
       //default destination
-      return PostService.postActivityPackageData(data);
+      return ActivityPackageService.patchActivityPackageData(id, data);
     }
   };
 
-  const postDestinationTo = (category: number, data: any) => {
+  const patchDestinationTo = (category: number, id: string, data: any) => {
     if (category === 1) {
-      return PostService.postActivityPackageDataDestination(data);
+      return ActivityPackageService.patchActivityPackageDataDestination(
+        id,
+        data
+      );
     } else if (category === 3) {
-      return PostService.postEventDataDestination(data);
+      return EventService.patchActivityEventDataDestination(id, data);
     } else {
       //default destination
-      return PostService.postActivityPackageDataDestination(data);
+      return ActivityPackageService.patchActivityPackageDataDestination(
+        id,
+        data
+      );
     }
   };
 
-  const postImageTo = (category: number, data: any) => {
+  const patchActivityFormsTo = (category: number, id: string, data: any) => {
     if (category === 1) {
-      return PostService.postActivityPackageImage(data);
+      return ActivityPackageService.patchActivityPackageFormsData(id, data);
     } else if (category === 3) {
-      return PostService.postEventDataImage(data);
+      return EventService.patchActivityEventFormsData(id, data);
     } else {
       //default destination
-      return PostService.postActivityPackageImage(data);
+      return ActivityPackageService.patchActivityPackageFormsData(id, data);
     }
   };
 
-  const postActivityFormsTo = (category: number, data: any) => {
+  const postOneImageTo = (category: number, data: any) => {
+    //console.log("postOneImageTo submitted data: ", data);
     if (category === 1) {
-      return PostService.postActivityPackageFormsData(data);
+      return ActivityPackageService.postOneActivityPackageImage(data);
     } else if (category === 3) {
-      return PostService.postEventFormsData(data);
+      return EventService.postOneEventImage(data);
     } else {
       //default destination
-      return PostService.postActivityPackageFormsData(data);
+      return ActivityPackageService.postOneActivityPackageImage(data);
     }
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
     setIsLoading(true);
-
-    let bulkUpload = {};
     try {
       submitData.sub_badge_ids = subBadges.toString();
-      await postDataTo(postData.category_type, submitData).then(
+      submitData.name = submitData.title;
+
+      submitData.date = postData.post_date;
+
+      //activity post
+      postData.title = submitData.name;
+      postData.description = submitData.description;
+
+      await patchDataTo(postData.category_type, submitData.id, submitData).then(
         (res) => {
-          console.log("postDataTo: ", submitData);
-          if (res.status === 201) {
-            postData.post_id = res.data.id;
-            postData.main_badge_id = submitData.main_badge_id;
-            postData.activityBadgeId = submitData.main_badge_id;
-
-            //activity post
-            //postData.title = submitData.name;
-            postData.description = submitData.description;
-
-            //activity package destination
-            activityDestination.activity_package_id = res.data.id;
-
-            //activity package forms
-            packageForms.activity_package_id = res.data.id;
-          }
+          console.log("patchDataTo: ", res);
         },
         (err) => {
-          console.log("Error postDataTo: ", err);
+          console.log("Error patchDataTo: ", err);
         }
       );
 
-      await postDestinationTo(postData.category_type, activityDestination).then(
+      await patchDestinationTo(
+        postData.category_type,
+        activityDestination.id || "",
+        activityDestination
+      ).then(
         (res1) => {
-          console.log("postDestinationTo: ", res1);
-          if (res1.status === 201) {
+          console.log("patchDestinationTo: ", res1);
+          if (res1.status === 200) {
             //set id for image upload
             for (let i = 0; i < uploadFiles.length; i++) {
-              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
-                "data:image/png;base64,",
-                ""
-              );
+              //remove snapshot_img
+              uploadFiles[i].snapshot_img = "";
+
               if (postData.category_type === 1) {
+                //activity-package source
                 uploadFiles[i].activity_package_destination_id = res1.data.id;
               } else if (postData.category_type === 3) {
-                uploadFiles[i].activity_package_destination_id = res1.data.id;
+                //event source
+                uploadFiles[i].activity_event_destination_id = res1.data.id;
               }
             }
-
-            //set a default_img
-            //console.log(uploadFiles);
-            if (uploadFiles.length > 0) {
-              uploadFiles[0].default_img = true;
-              postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
-            }
-            bulkUpload = { bulk: uploadFiles };
           }
         },
         (err1) => {
-          console.log("Error postDestinationTo: ", err1);
+          console.log("Error patchDestinationTo: ", err1);
         }
       );
 
-      await postImageTo(postData.category_type, bulkUpload).then(
-        (res2) => {
-          console.log("postImageTo: ", res2);
-        },
-        (err2) => {
-          console.log("Error postImageTo: ", err2);
-        }
-      );
-
-      await postActivityFormsTo(postData.category_type, packageForms).then(
+      await patchActivityFormsTo(
+        postData.category_type,
+        packageForms.id,
+        packageForms
+      ).then(
         (res4) => {
           console.log("postActivityPackageFormsData: ", res4);
         },
@@ -335,112 +424,317 @@ const EditPostActivityPackageEvent = () => {
         }
       );
 
-      await PostService.postToActivityPost(postData).then(
-        (res3) => {
-          console.log("postToActivityPost: ", res3);
-          if (res3.status === 201) {
-            setIsLoading(false);
-            navigate("/post", {
-              state: {
-                status: true,
-                message: "Post successfully created.",
-              },
-              replace: true,
-            });
+      //firebase upload
+      try {
+        if (uploadFiles.length > 0) {
+          for (let i = 0; i < uploadFiles.length; i++) {
+            const imageRef = ref(storage, `web/${uploadFiles[i].filename}`);
+            await uploadBytes(imageRef, uploadFiles[i].file).then(
+              (snapshot) => {
+                getDownloadURL(snapshot.ref).then((url) => {
+                  postOneImageTo(postData.category_type, {
+                    activity_package_destination_id:
+                      uploadFiles[i].activity_package_destination_id,
+                    activity_event_destination_id:
+                      uploadFiles[i].activity_event_destination_id,
+                    firebase_snapshot_img: url,
+                    filename: `web/${uploadFiles[i].filename}`, //save filename
+                  }).then(
+                    (res) => {
+                      console.log("postOneImageTo: ", res);
+                    },
+                    (err) => {
+                      console.log("Error in postOneImageTo: ", err);
+                    }
+                  );
+
+                  if (i === uploadFiles.length - 1) {
+                    postData.firebase_snapshot_img = url;
+                    PostService.patchActivityPost(postData.id, postData).then(
+                      (res) => {
+                        console.log("patchActivityPost: ", res);
+                        if (res.status === 200) {
+                          setIsLoading(false);
+                          navigate("/post", {
+                            state: {
+                              status: true,
+                              message: "Post successfully updated.",
+                            },
+                            replace: true,
+                          });
+                        }
+                      },
+                      (err) => {
+                        console.log("Error in patchActivityPost: ", err);
+                        setIsLoading(false);
+                      }
+                    );
+                  }
+                });
+              }
+            );
           }
-        },
-        (err3) => {
-          console.log("Error postToActivityPost: ", err3);
+        } else {
+          if (firebaseFiles.length > 0) {
+            postData.firebase_snapshot_img =
+              firebaseFiles[0].firebase_snapshot_img;
+          } else {
+          }
+          PostService.patchActivityPost(postData.id, postData).then(
+            (res) => {
+              console.log("patchActivityPost: ", res);
+              if (res.status === 200) {
+                setIsLoading(false);
+                navigate("/post", {
+                  state: {
+                    status: true,
+                    message: "Post successfully updated.",
+                  },
+                  replace: true,
+                });
+              }
+            },
+            (err) => {
+              console.log("Error in patchActivityPost: ", err);
+              setIsLoading(false);
+            }
+          );
         }
-      );
+      } catch (err) {
+        console.log("Error in firebase upload: ", err);
+        setIsLoading(false);
+      }
     } catch (error) {
       console.log("Error handleSubmit: ", error);
     }
   };
 
   //Update badge data with image
-  const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
-    let badgeWithImg: Badge[] = [];
-
-    const base64Flag = "data:image/png;base64,";
-    await Promise.all(
-      badges.map(async (badge: any) => {
-        badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
-        badgeWithImg.push(badge);
-      })
-    );
-    setBadgeData(badgeWithImg);
-
-    //initial value for react-select
-    setMainBadge(badgeWithImg[0]);
-
-    //initial value for react-select
-    setPostData((postData) => ({
-      ...postData,
-      main_badge_id: badgeWithImg[0].id,
-    }));
-    setsubmitData((submitData) => ({
-      ...submitData,
-      main_badge_id: badgeWithImg[0].id,
-    }));
-  }, []);
-
-  //Load badge data
-  const loadBadgeData = useCallback(async () => {
-    try {
-      await BadgeService.loadData().then(
-        (res) => {
-          setBadgeWithImg(res.data);
-        },
-        (error) => {
-          console.log(error);
-        }
+  const setBadgeWithImg = useCallback(
+    async (
+      badges: Badge[],
+      defaultBadgeId?: string,
+      defaultSubBadgeIds?: string
+    ) => {
+      let badgeWithImg: Badge[] = [];
+      const base64Flag = "data:image/png;base64,";
+      await Promise.all(
+        badges.map(async (badge: any) => {
+          badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
+          if (defaultSubBadgeIds?.includes(badge.id)) {
+            badge.isChecked = true;
+          } else {
+            badge.isChecked = false;
+          }
+          badgeWithImg.push(badge);
+        })
       );
-    } catch (err) {
-      console.log(err);
+      setBadgeData(badgeWithImg);
+
+      const currentBadge = badgeWithImg.filter(
+        (badge) => badge.id === defaultBadgeId
+      );
+
+      //initial/current value for react-select main badge
+      setMainBadge(currentBadge[0]);
+
+      //set current sub badges
+      setSubBadges(defaultSubBadgeIds?.split(",") || []);
+
+      //set current main badge
+      setsubmitData((submitData) => ({
+        ...submitData,
+        main_badge_id: currentBadge[0].id,
+      }));
+    },
+    []
+  );
+
+  const getDataFrom = (category: number, post_id: string) => {
+    if (category === 1) {
+      return ActivityPackageService.getActivityPackageData(post_id);
+    } else if (category === 3) {
+      return EventService.getEventData(post_id);
     }
-  }, [setBadgeWithImg]);
+    return ActivityPackageService.getActivityPackageData(post_id);
+  };
+
+  const getDestinationFrom = (category: number, post_id: string) => {
+    if (category === 1) {
+      return ActivityPackageService.getActivityPackageDestination(post_id);
+    } else if (category === 3) {
+      return EventService.getEventData(post_id);
+    }
+    return ActivityPackageService.getActivityPackageDestination(post_id);
+  };
+
+  const getFormsFrom = (category: number, post_id: string) => {
+    if (category === 1) {
+      return ActivityPackageService.getActivityPackageForms(post_id);
+    } else if (category === 3) {
+      return EventService.getActivityEventForms(post_id);
+    }
+    return ActivityPackageService.getActivityPackageForms(post_id);
+  };
+
+  const getImageFrom = (category: number, post_id: string) => {
+    if (category === 1) {
+      return ActivityPackageService.getActivityPackageImages(post_id);
+    } else if (category === 3) {
+      return EventService.getEventImages(post_id);
+    }
+    return ActivityPackageService.getActivityPackageImages(post_id);
+  };
 
   const getData = useCallback(async () => {
+    let defaultBadgeId: string | "";
+    let defaultSubBadgeIds: string | "";
+    let postId: string | "" = "";
+    let data: any | {} = {};
+    let destinationData: any | {} = {};
+    let postServiceData: any | {} = {};
     try {
-      await EventService.getEventData(state?.post_id || "").then(
+      await getDataFrom(state.category, state?.post_id || "").then(
         (res) => {
-          console.log("getEventData: ", res.status);
           if (res.status === 200) {
-            console.log(res.data);
-            setsubmitData(res.data);
+            data = res.data;
+
+            postId = data.id;
+
+            defaultBadgeId = data.main_badge_id;
+            defaultSubBadgeIds = data.sub_badge_ids;
+
+            setsubmitData((submitData) => ({
+              ...submitData,
+              id: data.id,
+              premium_user: data.premium_user,
+              title: data.name,
+              name: data.name,
+              description: data.description,
+              date: moment(data.date).format("yyyy-MM-DD"),
+              activity_date: moment(data.activity_date).format("yyyy-MM-DD"),
+              main_badge_id: defaultBadgeId,
+              max_traveller: data.max_traveller,
+              base_price: data.base_price,
+              package_total_cost: data.package_total_cost,
+              extra_cost_per_person: data.extra_cost_per_person,
+              max_price: data.max_price,
+              package_note: data.package_note,
+            }));
           }
         },
         (err) => {
-          console.log("Error getEventData: ", err);
+          console.log("Error in getDataFrom: ", err);
         }
       );
-    } catch (error) {
-      console.log("Error in getData:", error);
-    }
-  }, [state.post_id, setsubmitData]);
 
-  const getContactPersons = useCallback(async () => {
-    try {
+      await getDestinationFrom(state.category, state?.post_id || "").then(
+        (res) => {
+          if (res.status === 200) {
+            destinationData = res.data[0];
+            setActivityDestination((activityDestination) => ({
+              ...activityDestination,
+              id: destinationData.id,
+              activity_event_id: destinationData.activity_event_id,
+              activity_package_id: destinationData.activity_package_id,
+              place_name: destinationData.place_name,
+              place_description: destinationData.place_description,
+              latitude: destinationData.latitude,
+              longitude: destinationData.longitude,
+            }));
+            setDefaultDestination(destinationData.place_name);
+          }
+        },
+        (err) => {
+          console.log("Error in getDestinationFrom: ", err);
+        }
+      );
+
+      await getImageFrom(state.category, destinationData.id).then(
+        (res) => {
+          if (res.status === 200) {
+            setFirebaseFiles(res.data);
+          }
+        },
+        (err) => {
+          console.log("Error in getImageFrom: ", err);
+        }
+      );
+
+      await getFormsFrom(state.category, state?.post_id || "").then(
+        (res) => {
+          if (res.status === 200) {
+            let formsData = res.data[0];
+            setPackageForms((packageForms) => ({
+              ...packageForms,
+              id: formsData.id,
+              activity_package_id: formsData.activity_package_id,
+              local_law_taxes: formsData.local_law_taxes,
+              guide_rules: formsData.guide_rules,
+              release_waiver: formsData.release_waiver,
+            }));
+          }
+        },
+        (err) => {
+          console.log("Error in getDestinationFrom: ", err);
+        }
+      );
+
+      await PostService.getActivityPostByPostId(postId).then(
+        (res) => {
+          postServiceData = res.data;
+          setPostData((postData) => ({
+            ...postData,
+            id: postServiceData.id,
+            title: postServiceData.title,
+            description: postServiceData.description,
+            premium_user: data.premium_user,
+            main_badge_id: data.main_badge_id,
+            activityBadgeId: data.main_badge_id,
+            post_id: postServiceData.post_id,
+            contact_email: postServiceData.contact_email,
+            contact_person: postServiceData.contact_person,
+            contact_website: postServiceData.contact_website,
+            contact_number: postServiceData.contact_number,
+            post_date: moment(postServiceData.post_date).format("yyyy-MM-DD"),
+          }));
+        },
+        (err) => {
+          console.log("Error in getActivityPostByPostId:", err);
+        }
+      );
+
+      await BadgeService.loadData().then(
+        (res) => {
+          setBadgeWithImg(res.data, defaultBadgeId, defaultSubBadgeIds);
+        },
+        (error) => {
+          console.log("Error BadgeService: ", error);
+        }
+      );
+
       await UserService.getUsers().then(
         (res) => {
-          //console.log(res.data);
           setContactPersons(res.data.data);
         },
         (error) => {
           console.log("Error in getUsers:", error);
         }
       );
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log("Error in getData:", error);
     }
-  }, [setContactPersons]);
+  }, [
+    state.post_id,
+    state.category,
+    setBadgeWithImg,
+    setsubmitData,
+    setPackageForms,
+  ]);
 
   useEffect(() => {
-    loadBadgeData();
     getData();
-    getContactPersons();
-  }, [loadBadgeData, getData, getContactPersons]);
+  }, [getData]);
 
   return (
     <Container className="create-post-activitypackage-container mb-5">
@@ -482,6 +776,7 @@ const EditPostActivityPackageEvent = () => {
                     className="form-check-input"
                     id="site_state"
                     onChange={(e) => handleSwitchChange(e)}
+                    checked={submitData.premium_user}
                   />
                 </div>
               </Col>
@@ -494,25 +789,6 @@ const EditPostActivityPackageEvent = () => {
             <Row className="mt-3">
               <Col className="col-4">
                 <Form.Label>Select Main Badge</Form.Label>
-                {/*<Select
-                  styles={controlStyles}
-                  defaultValue={badgeData[0]}
-                  getOptionLabel={(e) => e.badge_name}
-                  getOptionValue={(e) => e.id}
-                  options={badgeData}
-                  formatOptionLabel={(badgeData) => (
-                    <div className="badge-option">
-                      <img
-                        src={badgeData.imgBase64}
-                        alt={badgeData.badge_name}
-                        className="me-4"
-                      />
-                      <span>{badgeData.badge_name}</span>
-                    </div>
-                  )}
-                  value={mainBadge}
-                  onChange={(option) => handleBadgeChange(option)}
-                  />*/}
                 <SelectBadge
                   mainBadge={mainBadge}
                   badgeData={badgeData}
@@ -540,6 +816,7 @@ const EditPostActivityPackageEvent = () => {
                       onChange={(checked) => {
                         handleSubBadgesChange(checked);
                       }}
+                      checked={item.isChecked}
                     />
                     <label
                       htmlFor={item.id}
@@ -566,9 +843,29 @@ const EditPostActivityPackageEvent = () => {
               </Col>
             </Row>
             <Row className="upload-img ps-2 pt-2">
+              {firebaseFiles.map((img: any) => (
+                <Col
+                  className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
+                  key={img.id}
+                >
+                  <button
+                    type="button"
+                    className="btn-close btn-remove-img"
+                    aria-label="Close"
+                    onClick={() => {
+                      removeImageFromFirebase(img.id);
+                    }}
+                  ></button>
+                  <img
+                    className="w-100 prev-img img-fluid rounded mx-auto d-block"
+                    src={img.firebase_snapshot_img}
+                    alt="..."
+                  />
+                </Col>
+              ))}
               {uploadFiles.map((img: any) => (
                 <Col
-                  key={img.snapshot_img}
+                  key={img.temp_id}
                   className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
                 >
                   <button
@@ -626,7 +923,7 @@ const EditPostActivityPackageEvent = () => {
                   className="input-date"
                   placeholder="Set Availability"
                   name="post_date"
-                  value={submitData.date}
+                  value={postData.post_date}
                   onChange={(e) => handlePostInputChange(e)}
                 />
               </Col>
@@ -647,14 +944,6 @@ const EditPostActivityPackageEvent = () => {
             </Row>
             <Row className="mt-5">
               <Col className="col-4">
-                {/*<Form.Control
-                  autoComplete="off"
-                  className="input-person"
-                  type="text"
-                  placeholder="Contact Person"
-                  name="contact_person"
-                  onChange={(e) => handlePostInputChange(e)}
-              />*/}
                 <SelectContactPerson
                   mainContact={mainContactPerson}
                   contactPersons={contactPersons}
@@ -668,6 +957,7 @@ const EditPostActivityPackageEvent = () => {
                   type="text"
                   placeholder="Email Address"
                   name="contact_email"
+                  value={postData.contact_email}
                   onChange={(e) => handlePostInputChange(e)}
                 />
               </Col>
@@ -680,6 +970,7 @@ const EditPostActivityPackageEvent = () => {
                   type="text"
                   placeholder="Contact Number"
                   name="contact_number"
+                  value={postData.contact_number}
                   onChange={(e) => handlePostInputChange(e)}
                 />
               </Col>
@@ -690,6 +981,7 @@ const EditPostActivityPackageEvent = () => {
                   type="text"
                   placeholder="Website"
                   name="contact_website"
+                  value={postData.contact_website}
                   onChange={(e) => handlePostInputChange(e)}
                 />
               </Col>
@@ -706,11 +998,11 @@ const EditPostActivityPackageEvent = () => {
             </Row>
             <Row className="mt-4">
               <Col className="col-4">
-                <Form.Control
-                  autoComplete="off"
-                  className="form-loc input-location"
-                  type="text"
-                  placeholder="Location"
+                <ReactGoogleAutocomplete
+                  apiKey={process.env.REACT_APP_GOOGLE}
+                  onPlaceSelected={(place) => handleGooglePlaceChange(place)}
+                  className="form-control form-loc input-location"
+                  defaultValue={defaultDestination || ""}
                 />
                 <div className="ms-4 form-text label-pin-loc">
                   Pin location location
@@ -794,7 +1086,7 @@ const EditPostActivityPackageEvent = () => {
                 <Form.Control
                   autoComplete="off"
                   className="form-pack input-base-price"
-                  type="text"
+                  type="number"
                   name="base_price"
                   placeholder="Base price"
                   value={submitData.base_price}
@@ -822,6 +1114,7 @@ const EditPostActivityPackageEvent = () => {
                   name="extra_cost_per_person"
                   placeholder="Extra cost per person"
                   onChange={handleInputChange}
+                  value={submitData.extra_cost_per_person}
                 />
               </Col>
               <Col className="col-4">
@@ -853,15 +1146,6 @@ const EditPostActivityPackageEvent = () => {
             <Row className="mt-4">
               <Form.Label>Free services (Maximum 5)</Form.Label>
               <Col className="col-4">
-                {/*<Select
-                  placeholder="Search free services"
-                  isMulti
-                  styles={controlStyles}
-                  options={services}
-                  getOptionLabel={(e) => e.text}
-                  getOptionValue={(e) => String(e.id)}
-                  onChange={handleServicesChange}
-              />*/}
                 <SelectServices
                   services={services}
                   handleServicesChange={handleServicesChange}
@@ -878,6 +1162,7 @@ const EditPostActivityPackageEvent = () => {
                   className="input-guide-rules"
                   name="guide_rules"
                   onChange={(e) => handlePackageInputChange(e)}
+                  value={packageForms.guide_rules}
                 />
               </Col>
             </Row>
@@ -891,6 +1176,7 @@ const EditPostActivityPackageEvent = () => {
                   className="input-locallaws"
                   name="local_law_taxes"
                   onChange={(e) => handlePackageInputChange(e)}
+                  value={packageForms.local_law_taxes}
                 />
               </Col>
             </Row>
@@ -904,6 +1190,7 @@ const EditPostActivityPackageEvent = () => {
                   className="input-waiver"
                   name="release_waiver"
                   onChange={(e) => handlePackageInputChange(e)}
+                  value={packageForms.release_waiver}
                 />
               </Col>
             </Row>
@@ -911,7 +1198,7 @@ const EditPostActivityPackageEvent = () => {
               <Col className="mt-5">
                 {!isLoading && (
                   <button type="submit" className="btn-submit">
-                    Cofirm
+                    Confirm
                   </button>
                 )}
                 {isLoading && (

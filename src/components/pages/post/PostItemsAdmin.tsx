@@ -14,7 +14,8 @@ const PostItemsAdmin = (props: any) => {
             <div className="image-wrapper">
               <img
                 className="post-img"
-                src={`${"data:image/png;base64,"}${postItem.snapshot_img}`}
+                //src={`${"data:image/png;base64,"}${postItem.snapshot_img}`}
+                src={postItem.firebase_snapshot_img}
                 alt={postItem.title}
               />
               {postItem.activityBadge && (

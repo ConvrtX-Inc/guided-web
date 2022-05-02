@@ -29,32 +29,18 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../firebase";
 import ActivityPackageService from "../../../services/post/ActivityPackage.Service";
 import EventService from "../../../services/post/Event.Service";
-//import GooglePlacesAutocomplete, {
-//  geocodeByPlaceId,
-//} from "react-google-places-autocomplete";
+import FreeService from "../../../services/post/FreeServices.Service";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
   const state = location.state as CategoryState;
 
-  //const [value, setValue] = useState(null);
-
-  /*const { ref: bootstrapRef } = usePlacesWidget({
-    apiKey: process.env.REACT_APP_GOOGLE,
-    onPlaceSelected: (place) => console.log(place),
-  });*/
-
   const navigate = useNavigate();
 
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
-  const services = [
-    { id: 1, text: "Foods" },
-    { id: 2, text: "Wifi" },
-    { id: 3, text: "Transport" },
-    { id: 4, text: "Snacks" },
-    { id: 5, text: "Electricity" },
-  ];
+  const [services, setServices] = useState([]);
+  const [userServ, setUserServ] = useState(null);
   const refFileInput = useRef<HTMLInputElement | null>(null);
 
   const [postCategory, setPostCategory] = useState(
@@ -64,6 +50,7 @@ const CreatePostActivityPackage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [contactPersons, setContactPersons] = useState([] as any[]);
   const [mainContactPerson, setMainContactPerson] = useState({});
+  const [selServices, setSelServices] = useState("");
   const [mainBadge, setMainBadge] = useState({});
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [subBadges, setSubBadges] = useState([] as any[]);
@@ -134,8 +121,6 @@ const CreatePostActivityPackage = () => {
   const handleGooglePlaceChange = (obj: any) => {
     //console.log(obj);
     const geometry = obj.geometry.location;
-    //console.log("lat: ", geometry.lat());
-    //console.log("lng: ", geometry.lng());
     setActivityDestination({
       ...activityDestination,
       place_name: obj.formatted_address,
@@ -143,7 +128,6 @@ const CreatePostActivityPackage = () => {
       latitude: geometry.lat(),
       longitude: geometry.lng(),
     });
-    //setsubmitData({ ...submitData, address: obj.formatted_address });
 
     if (obj.address_components.length > 0) {
       setDestination({
@@ -152,10 +136,6 @@ const CreatePostActivityPackage = () => {
         province: obj.address_components[1].long_name,
       });
     }
-
-    //geocodeByPlaceId(obj.place_id)
-    //  .then((results) => console.log(results))
-    //  .catch((error) => console.error(error));
   };
 
   const handleInputChange = (event: any) => {
@@ -258,11 +238,18 @@ const CreatePostActivityPackage = () => {
       });
     }
   };
+
+  //console.log(selServices);
   const handleServicesChange = (obj: any) => {
-    //console.log(obj);
-    //console.log(Object.values(obj));
-    //setsubmitData({ ...submitData, services: obj.toString() });
+    //setSelServices(obj);
+    const servObj = [] as any[];
+    for (let i = 0; i < obj.length; i++) {
+      servObj.push(obj[i].name);
+    }
+    setSelServices(servObj.toString());
+    setUserServ(obj);
   };
+
   const handleContactPerson = (obj: any) => {
     setMainContactPerson(obj);
     setPostData({ ...postData, contact_user_id: obj.id });
@@ -320,6 +307,7 @@ const CreatePostActivityPackage = () => {
       submitData.sub_badge_ids = subBadges.toString();
       submitData.date = postData.post_date;
       submitData.address = activityDestination.place_name;
+      submitData.services = selServices; //set services selected
 
       //event different field names
       submitData.title = submitData.name;
@@ -499,12 +487,27 @@ const CreatePostActivityPackage = () => {
     }
   }, [setContactPersons]);
 
+  const loadServices = useCallback(async () => {
+    await FreeService.getServices().then(
+      (res) => {
+        if (res.status === 200) {
+          //console.log(res.data);
+          setServices(res.data);
+        }
+      },
+      (error) => {
+        console.log("Error loadPostCategory: ", error);
+      }
+    );
+  }, [setServices]);
+
   //console.log(value);
   //console.log(value?.label);
   useEffect(() => {
     loadBadgeData();
     getContactPersons();
-  }, [loadBadgeData, getContactPersons]);
+    loadServices();
+  }, [loadServices, loadBadgeData, getContactPersons]);
 
   return (
     <Container className="create-post-activitypackage-container mb-5">
@@ -557,25 +560,6 @@ const CreatePostActivityPackage = () => {
             <Row className="mt-3">
               <Col className="col-4">
                 <Form.Label>Select Main Badge</Form.Label>
-                {/*<Select
-                  styles={controlStyles}
-                  defaultValue={badgeData[0]}
-                  getOptionLabel={(e) => e.badge_name}
-                  getOptionValue={(e) => e.id}
-                  options={badgeData}
-                  formatOptionLabel={(badgeData) => (
-                    <div className="badge-option">
-                      <img
-                        src={badgeData.imgBase64}
-                        alt={badgeData.badge_name}
-                        className="me-4"
-                      />
-                      <span>{badgeData.badge_name}</span>
-                    </div>
-                  )}
-                  value={mainBadge}
-                  onChange={(option) => handleBadgeChange(option)}
-                  />*/}
                 <SelectBadge
                   isClearable={false}
                   mainBadge={mainBadge}
@@ -710,14 +694,6 @@ const CreatePostActivityPackage = () => {
             </Row>
             <Row className="mt-5">
               <Col className="col-4">
-                {/*<Form.Control
-                  autoComplete="off"
-                  className="input-person"
-                  type="text"
-                  placeholder="Contact Person"
-                  name="contact_person"
-                  onChange={(e) => handlePostInputChange(e)}
-                />*/}
                 <SelectContactPerson
                   mainContact={mainContactPerson}
                   contactPersons={contactPersons}
@@ -785,13 +761,6 @@ const CreatePostActivityPackage = () => {
                   className="form-control form-loc input-location"
                   //defaultValue={"Toronto, ON, Canada"}
                 />
-                {/*<Form.Control
-                  autoComplete="off"
-                  className="form-loc input-location"
-                  type="text"
-                  placeholder="Location"
-                  ref={bootstrapRef}
-                />*/}
                 <div className="ms-4 form-text label-pin-loc">
                   Pin location location
                 </div>
@@ -935,16 +904,8 @@ const CreatePostActivityPackage = () => {
             <Row className="mt-4">
               <Form.Label>Free services (Maximum 5)</Form.Label>
               <Col className="col-4">
-                {/*<Select
-                  placeholder="Search free services"
-                  isMulti
-                  styles={controlStyles}
-                  options={services}
-                  getOptionLabel={(e) => e.text}
-                  getOptionValue={(e) => String(e.id)}
-                  onChange={handleServicesChange}
-              />*/}
                 <SelectServices
+                  mainServices={userServ}
                   services={services}
                   handleServicesChange={handleServicesChange}
                 />

@@ -101,7 +101,7 @@ const PostScreen = (props: any) => {
     setBadgeData(badgeWithImg);
   }, []);
 
-  console.log(mainBadge);
+  //console.log(mainBadge);
   const loadBadgeData = useCallback(async () => {
     try {
       await BadgeService.loadData().then(

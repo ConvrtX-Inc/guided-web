@@ -37,6 +37,7 @@ import {
 } from "firebase/storage";
 import ReactGoogleAutocomplete from "react-google-autocomplete";
 import { storage } from "../../../firebase";
+import FreeService from "../../../services/post/FreeServices.Service";
 
 const EditPostActivityPackageEvent = () => {
   const location = useLocation();
@@ -47,13 +48,16 @@ const EditPostActivityPackageEvent = () => {
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
 
-  const services = [
+  /*const services = [
     { id: 1, text: "Foods" },
     { id: 2, text: "Wifi" },
     { id: 3, text: "Transport" },
     { id: 4, text: "Snacks" },
     { id: 5, text: "Electricity" },
-  ];
+  ];*/
+  const [services, setServices] = useState([]);
+  const [selServices, setSelServices] = useState("");
+  const [userServ, setUserServ] = useState(null);
 
   const refFileInput = useRef<HTMLInputElement | null>(null);
 
@@ -98,6 +102,7 @@ const EditPostActivityPackageEvent = () => {
     max_extra_person: 100,
     currency_id: "200339a3-5870-462d-9eb8-4b6cfc788886",
     services: "",
+    free_service: "", //equal to services, for Event only...
   });
   const [postData, setPostData] = useState({
     id: "",
@@ -303,9 +308,12 @@ const EditPostActivityPackageEvent = () => {
   };
 
   const handleServicesChange = (obj: any) => {
-    //console.log(obj);
-    //console.log(Object.values(obj));
-    //setsubmitData({ ...submitData, services: obj.toString() });
+    const servObj = [] as any[];
+    for (let i = 0; i < obj.length; i++) {
+      servObj.push(obj[i].name);
+    }
+    setSelServices(servObj.toString());
+    setUserServ(obj);
   };
 
   const handleContactPerson = (obj: any) => {
@@ -370,6 +378,8 @@ const EditPostActivityPackageEvent = () => {
     try {
       submitData.sub_badge_ids = subBadges.toString();
       submitData.name = submitData.title;
+      submitData.services = selServices; //set services selected
+      submitData.free_service = selServices; //for events, free_services=service
 
       submitData.date = postData.post_date;
 
@@ -629,7 +639,10 @@ const EditPostActivityPackageEvent = () => {
               extra_cost_per_person: data.extra_cost_per_person,
               max_price: data.max_price,
               package_note: data.package_note,
+              services: data.services,
             }));
+
+            setSelServices(data.services);
           }
         },
         (err) => {
@@ -722,6 +735,24 @@ const EditPostActivityPackageEvent = () => {
         }
       );
 
+      await FreeService.getServices().then(
+        (res) => {
+          if (res.status === 200) {
+            const servData = res.data;
+            const filterServ = data.services.toLowerCase();
+            const currentServ = servData.filter(
+              (data: any) =>
+                filterServ.includes(data.name.toLowerCase()) === true
+            );
+            setUserServ(currentServ);
+            setServices(servData);
+          }
+        },
+        (error) => {
+          console.log("Error loadPostCategory: ", error);
+        }
+      );
+
       await UserService.getUsers().then(
         (res) => {
           const contacts = res.data.data;
@@ -786,6 +817,7 @@ const EditPostActivityPackageEvent = () => {
               event_date: moment(data.event_date).format("yyyy-MM-DD"), //event date for Events
               title: data.title, //title for Events, name for Activity-Package
               max_traveller: data.max_traveller,
+              free_service: data.free_service,
               /*
               name: data.name,
               main_badge_id: defaultBadgeId,f
@@ -884,6 +916,28 @@ const EditPostActivityPackageEvent = () => {
         }
       );
 
+      await FreeService.getServices().then(
+        (res) => {
+          if (res.status === 200) {
+            const servData = res.data;
+            if (data.free_service !== undefined) {
+              const filterServ = data.free_service.toLowerCase();
+              const currentServ = servData.filter(
+                (data: any) =>
+                  filterServ.includes(data.name.toLowerCase()) === true
+              );
+              setUserServ(currentServ);
+            } else {
+              //setUserServ(null);
+            }
+            setServices(servData);
+          }
+        },
+        (error) => {
+          console.log("Error getServices: ", error);
+        }
+      );
+
       await UserService.getUsers().then(
         (res) => {
           const contacts = res.data.data;
@@ -904,7 +958,7 @@ const EditPostActivityPackageEvent = () => {
         }
       );
     } catch (error) {
-      console.log("Error in getData:", error);
+      console.log("Error in getEventData:", error);
     }
   }, [state.post_id, state.category, setBadgeWithImg, setsubmitData]);
 
@@ -1328,6 +1382,7 @@ const EditPostActivityPackageEvent = () => {
               <Form.Label>Free services (Maximum 5)</Form.Label>
               <Col className="col-4">
                 <SelectServices
+                  mainServices={userServ}
                   services={services}
                   handleServicesChange={handleServicesChange}
                 />

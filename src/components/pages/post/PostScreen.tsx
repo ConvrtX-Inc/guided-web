@@ -41,13 +41,63 @@ const PostScreen = (props: any) => {
   const [access, setAccess] = useState({
     default_path: "",
   });
+  //const [mainBadge, setMainBadge] = useState(null || ({} as Badge));
   const [mainBadge, setMainBadge] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [postData, setPostData] = useState([] as any[]);
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [isLoading, setIsLoading] = useState(false);
 
   const HandleCategoryChange = (obj: any) => {
     setMainBadge(obj);
+
+    //if (obj) {
+    //} else {
+    //  loadPosts();
+    //}
+  };
+
+  const handleSearch = (e: any) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleFilter = async () => {
+    //console.log(searchTerm);
+    //console.log(mainBadge);
+    let selectedBadge: Badge = mainBadge || ({} as Badge);
+    let queryString: string = "";
+    if (searchTerm !== "") {
+      queryString = `filter=title||$eq||${encodeURIComponent(searchTerm)}`;
+    }
+    if (mainBadge) {
+      if (queryString !== "") {
+        queryString = `${queryString}&`;
+      }
+      queryString = `${queryString}filter=main_badge_id||$eq||${selectedBadge.id}`;
+    }
+    if (queryString === "") {
+      loadPosts();
+      return;
+    }
+    queryString = `${queryString}&user_id=||$eq||${userAccess.user_id}`;
+
+    setIsLoading(true);
+    try {
+      await PostService.filterActivityPost(queryString).then(
+        (res) => {
+          //console.log(res.data);
+          setPostData(res.data);
+          setIsLoading(false);
+        },
+        (err) => {
+          console.log("Error in loadActivityPost: ", err);
+          setIsLoading(false);
+        }
+      );
+    } catch (error) {
+      console.log("Error loadPosts:", error);
+      setIsLoading(false);
+    }
   };
 
   const getUserAccess = useCallback(async () => {
@@ -74,6 +124,7 @@ const PostScreen = (props: any) => {
     try {
       await PostService.loadActivityPost(userAccess.user_id || "").then(
         (res) => {
+          //console.log(res.data);
           setPostData(res.data);
           setIsLoading(false);
         },
@@ -108,7 +159,7 @@ const PostScreen = (props: any) => {
         (res) => {
           setBadgeWithImg(res.data);
           //setMainBadge(res.data[0]); //initial selected badge
-          //setMainBadge(null);
+          setMainBadge(null);
         },
         (error) => {
           console.log(error);
@@ -173,12 +224,13 @@ const PostScreen = (props: any) => {
                     className="input-search"
                     type="text"
                     placeholder="Search"
-                    //onChange={(e) => onSearchChange(e)}
+                    value={searchTerm}
+                    onChange={(e) => handleSearch(e)}
                   />
                 </InputGroup>
                 <Button
                   className="btn btn-light btn-filter"
-                  //onClick={(e) => onClickFilter(e)}
+                  onClick={(e) => handleFilter()}
                 >
                   <Image src={filter} alt="" /> Filter
                 </Button>

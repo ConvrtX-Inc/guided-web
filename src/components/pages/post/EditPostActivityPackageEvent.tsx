@@ -735,24 +735,6 @@ const EditPostActivityPackageEvent = () => {
         }
       );
 
-      await FreeService.getServices().then(
-        (res) => {
-          if (res.status === 200) {
-            const servData = res.data;
-            const filterServ = data.services.toLowerCase();
-            const currentServ = servData.filter(
-              (data: any) =>
-                filterServ.includes(data.name.toLowerCase()) === true
-            );
-            setUserServ(currentServ);
-            setServices(servData);
-          }
-        },
-        (error) => {
-          console.log("Error loadPostCategory: ", error);
-        }
-      );
-
       await UserService.getUsers().then(
         (res) => {
           const contacts = res.data.data;
@@ -770,6 +752,27 @@ const EditPostActivityPackageEvent = () => {
         },
         (error) => {
           console.log("Error in getUsers:", error);
+        }
+      );
+
+      await FreeService.getServices().then(
+        (res) => {
+          if (res.status === 200) {
+            const servData = res.data;
+            let filterServ = "";
+            if (data.services) {
+              filterServ = data.services.toLowerCase();
+            }
+            const currentServ = servData.filter(
+              (data: any) =>
+                filterServ.includes(data.name.toLowerCase()) === true
+            );
+            setUserServ(currentServ);
+            setServices(servData);
+          }
+        },
+        (error) => {
+          console.log("Error loadPostCategory: ", error);
         }
       );
     } catch (error) {
@@ -795,7 +798,7 @@ const EditPostActivityPackageEvent = () => {
         (res) => {
           if (res.status === 200) {
             data = res.data;
-            //console.log(data);/
+            console.log(data);
 
             postId = data.id;
 
@@ -916,28 +919,6 @@ const EditPostActivityPackageEvent = () => {
         }
       );
 
-      await FreeService.getServices().then(
-        (res) => {
-          if (res.status === 200) {
-            const servData = res.data;
-            if (data.free_service !== undefined) {
-              const filterServ = data.free_service.toLowerCase();
-              const currentServ = servData.filter(
-                (data: any) =>
-                  filterServ.includes(data.name.toLowerCase()) === true
-              );
-              setUserServ(currentServ);
-            } else {
-              //setUserServ(null);
-            }
-            setServices(servData);
-          }
-        },
-        (error) => {
-          console.log("Error getServices: ", error);
-        }
-      );
-
       await UserService.getUsers().then(
         (res) => {
           const contacts = res.data.data;
@@ -955,6 +936,32 @@ const EditPostActivityPackageEvent = () => {
         },
         (error) => {
           console.log("Error in getUsers:", error);
+        }
+      );
+
+      await FreeService.getServices().then(
+        (res) => {
+          //console.log("getServices: ", res);
+          if (res.status === 200) {
+            const servData = res.data;
+            if (data.free_service !== undefined) {
+              let filterServ = "";
+              if (data.free_service) {
+                filterServ = data.free_service.toLowerCase();
+              }
+              const currentServ = servData.filter(
+                (data: any) =>
+                  filterServ.includes(data.name.toLowerCase()) === true
+              );
+              setUserServ(currentServ);
+            } else {
+              //setUserServ(null);
+            }
+            setServices(servData);
+          }
+        },
+        (error) => {
+          console.log("Error getServices: ", error);
         }
       );
     } catch (error) {

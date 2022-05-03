@@ -90,7 +90,6 @@ const DUMMY_DATA3 = [
 ];
 
 const DashboardScreen = () => {
-  //const authCtx = useContext(AuthContext);
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
 
@@ -100,121 +99,131 @@ const DashboardScreen = () => {
   const [cntActiveUsers, setCntActiveUsers] = useState([]);
   const [cntOnlineUsers, setCntOnlineUsers] = useState([]);
   const [cntTotalDownloads, setCntTotalDownloads] = useState([]);
-  //const [recentPost, setRecentPost] = useState([]);
 
   const [flagCntAllUsers, setflagCntAllUsers] = useState(true);
   const [flagActiveUsers, setflagActiveUsers] = useState(true);
   const [flagOnlineUsers, setflagOnlineUsers] = useState(true);
   const [flagTotalDownloads, setflagTotalDownloads] = useState(true);
 
-  const loadSubAdminRecentPosts = useCallback(async () => {
+  const loadSubAdminRecentPosts = useCallback(async (cancel?: boolean) => {
     try {
       await DashboardService.loadSubAdminRecentPosts(
         userAccess.user_id || ""
       ).then(
         (res) => {
+          if (cancel) return;
           setPostData(res.data);
         },
         (err) => {
           console.log(err);
+          if (cancel) return;
         }
       );
     } catch (error) {
       console.log("Error loadSubAdminRecentPosts:", error);
+      if (cancel) return;
     }
-  }, [setPostData, userAccess.user_id]);
+  }, [userAccess.user_id]);
 
-  const loadCountAllUsers = async () => {
+  const loadCountAllUsers = useCallback(async (cancel?: boolean) => {
     try {
       await DashboardService.loadCountAllUsers().then(
         (res) => {
+          if (cancel) return;
           setCntAllUsers(res.count);
           setflagCntAllUsers(false);
         },
         (error) => {
+          if (cancel) return;
           setflagCntAllUsers(false);
         }
       );
     } catch (err) {
       console.log(err);
+      if (cancel) return;
       setflagCntAllUsers(false);
     }
-  };
-  const loadCountActiveUsers = async () => {
+  }, []);
+
+  const loadCountActiveUsers = useCallback(async (cancel?: boolean) => {
     try {
       await DashboardService.loadCountActiveUsers().then(
         (res) => {
+          if (cancel) return;
           setCntActiveUsers(res.count);
           setflagActiveUsers(false);
         },
         (error) => {
+          if (cancel) return;
           setflagActiveUsers(false);
         }
       );
     } catch (err) {
       console.log(err);
+      if (cancel) return;
       setflagActiveUsers(false);
     }
-  };
-  const loadCountOnlineUsers = useCallback(async () => {
-    //console.log(authCtx.token);
+  }, []);
+
+  const loadCountOnlineUsers = useCallback(async (cancel?: boolean) => {
     try {
       await DashboardService.loadCountOnlineUsers().then(
         (res) => {
+          if (cancel) return;
           setCntOnlineUsers(res.count);
           setflagOnlineUsers(false);
         },
         (error) => {
+          if (cancel) return;
           setflagOnlineUsers(false);
         }
       );
     } catch (err) {
       console.log(err);
+      if (cancel) return;
       setflagOnlineUsers(false);
     }
-  }, [
-    setCntOnlineUsers,
-    setflagOnlineUsers, //authCtx.token
-  ]);
+  }, []);
 
-  const loadCountTotalDownloads = async () => {
+  const loadCountTotalDownloads = useCallback(async (cancel?: boolean) => {
     try {
       await DashboardService.loadCountTotalDownloads().then(
         (res) => {
+          if (cancel) return;
           setCntTotalDownloads(res.downloads);
           setflagTotalDownloads(false);
         },
         (error) => {
+          if (cancel) return;
           setflagTotalDownloads(false);
         }
       );
     } catch (err) {
-      console.log(err);
+      console.log("Error on loadCountTotalDownloads: ", err);
+      if (cancel) return;
       setflagTotalDownloads(false);
     }
-  };
-  /*const loadRecentPosts = async () => {
-    try {
-      await DashboardService.loadRecentPosts().then(
-        (res) => {
-          console.log(res);
-          setRecentPost(res);
-        },
-        (error) => {}
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };*/
+  }, []);
 
   useEffect(() => {
-    //loadRecentPosts();
-    loadCountOnlineUsers();
-    loadCountTotalDownloads();
-    loadCountAllUsers();
-    loadCountActiveUsers();
-    loadSubAdminRecentPosts();
-  }, [loadCountOnlineUsers, loadSubAdminRecentPosts]);
+    let cancel = false;
+
+    loadCountOnlineUsers(cancel);
+    loadCountTotalDownloads(cancel);
+    loadCountAllUsers(cancel);
+    loadCountActiveUsers(cancel);
+    loadSubAdminRecentPosts(cancel);
+
+    return () => {
+      cancel = true;
+    };
+  }, [
+    loadCountActiveUsers,
+    loadCountOnlineUsers,
+    loadSubAdminRecentPosts,
+    loadCountAllUsers,
+    loadCountTotalDownloads,
+  ]);
 
   return (
     <Container className="dashboard-container">

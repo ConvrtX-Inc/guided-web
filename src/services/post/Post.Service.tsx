@@ -147,6 +147,13 @@ const postToActivityPost = (data: any) => {
       return response;
     });
 };
+const filterActivityPost = (queryString: string) => {
+  return axios
+    .get(API_URL + `api/v1/activity-post?${queryString}`, config())
+    .then((response) => {
+      return response;
+    });
+};
 const patchToUserActivitySummary = (id: string, data: any) => {
   return axios
     .patch(API_URL + `api/v1/user-activity-post-summary/${id}`, data, config())
@@ -186,6 +193,8 @@ const patchActivityPost = (id: string, data: any) => {
     });
 };
 const PostService = {
+  filterActivityPost,
+
   getActivityPostByPostId,
   patchActivityPost,
 

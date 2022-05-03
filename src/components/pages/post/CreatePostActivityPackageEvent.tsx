@@ -81,6 +81,7 @@ const CreatePostActivityPackage = () => {
     max_extra_person: 100,
     currency_id: "200339a3-5870-462d-9eb8-4b6cfc788886",
     services: "",
+    free_service: "", //for event, same as services
   });
   const [postData, setPostData] = useState({
     post_id: "",
@@ -314,8 +315,9 @@ const CreatePostActivityPackage = () => {
       submitData.sub_activities = submitData.sub_badge_ids;
       submitData.badge_id = submitData.main_badge_id;
       submitData.event_date = submitData.activity_date; //set event_date data for event category
+      submitData.free_service = selServices; //for events, free_services=service
 
-      console.log("postDataTo object: ", submitData);
+      //console.log("postDataTo object: ", submitData);
       await postDataTo(postData.category_type, submitData).then(
         (res) => {
           if (res.status === 201) {

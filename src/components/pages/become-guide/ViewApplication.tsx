@@ -32,7 +32,7 @@ const ViewApplication = () => {
               to="/become-guide/all"
               className="btn btn-light btn-bck me-3"
             >
-              <Image className="mb-2" src={app.image_firebase_url} alt="" />
+              <Image className="mb-2" src={left} alt="" />
             </NavLink>
             {app.name}
           </span>
@@ -52,7 +52,7 @@ const ViewApplication = () => {
         </Row>
         <Row className="ms-2 mt-4">
           <Col>
-            <Image className="basic-img" src={userbasic} alt="" />
+            <Image className="basic-img" src={app.image_firebase_url} alt="" />
           </Col>
         </Row>
         <Row className="ms-2">
@@ -60,11 +60,11 @@ const ViewApplication = () => {
             <Row className="mt-4">
               <Col>
                 <Form.Label>First Name</Form.Label>
-                <Form.Control value={app.first_name} type="text"></Form.Control>
+                <Form.Control defaultValue={app.first_name} type="text"></Form.Control>
               </Col>
               <Col>
                 <Form.Label>Last Name</Form.Label>
-                <Form.Control value={app.last_name} type="text"></Form.Control>
+                <Form.Control defaultValue={app.last_name} type="text"></Form.Control>
               </Col>
               <Col></Col>
             </Row>
@@ -88,11 +88,11 @@ const ViewApplication = () => {
             <Row className="mt-4">
               <Col>
                 <Form.Label>Province</Form.Label>
-                <Form.Control value={app.province} type="text"></Form.Control>
+                <Form.Control defaultValue={app.province} type="text"></Form.Control>
               </Col>
               <Col>
                 <Form.Label>City</Form.Label>
-                <Form.Control value={app.city} type="text"></Form.Control>
+                <Form.Control defaultValue={app.city} type="text"></Form.Control>
               </Col>
               <Col></Col>
             </Row>

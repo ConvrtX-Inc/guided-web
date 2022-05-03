@@ -4,6 +4,7 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
+import { useEffect, useState } from "react";
 
 import ApplicationItem from "./ApplicationItem";
 
@@ -11,70 +12,94 @@ import right from "../../../assets/admin/right.png";
 import left from "../../../assets/admin/left2.png";
 import user2 from "../../../assets/admin/user30.png";
 
-const DUMMY_DATA = [
-  {
-    id: 1,
-    name: "Mark Chen",
-    email: "mark@gmail.com",
-    contactnumber: " +1 467 474 9303",
-    img: user2,
-  },
-  {
-    id: 2,
-    name: "John Kristen",
-    email: "johngmail.com",
-    contactnumber: "+1 267 474 9323",
-    img: user2,
-  },
-  {
-    id: 3,
-    name: "Rayan Artecona",
-    email: "rayangmail.com",
-    contactnumber: "+1 437 474 9222",
-    img: user2,
-  },
-  {
-    id: 4,
-    name: "Mark Chen",
-    email: "mark@gmail.com",
-    contactnumber: "+1 698 474 9100",
-    img: user2,
-  },
-  {
-    id: 5,
-    name: "Mark Chen",
-    email: "mark@gmail.com",
-    contactnumber: "+1 698 474 9100",
-    img: user2,
-  },
-  {
-    id: 6,
-    name: "Mark Chen",
-    email: "mark@gmail.com",
-    contactnumber: "+1 698 474 9100",
-    img: user2,
-  },
-  {
-    id: 7,
-    name: "Mark Chen",
-    email: "mark@gmail.com",
-    contactnumber: "+1 698 474 9100",
-    img: user2,
-  },
-  {
-    id: 8,
-    name: "Mark Chen",
-    email: "mark@gmail.com",
-    contactnumber: "+1 698 474 9100",
-    img: user2,
-  },
-];
+import UserGuideRequestService from "../../../services/user-guide-request/UserGuideRequest.Service";
+
+// TODO: remove soon its use for testing
+// const DUMMY_DATA = [
+//   {
+//     id: 1,
+//     name: "Mark Chen",
+//     email: "mark@gmail.com",
+//     contactnumber: " +1 467 474 9303",
+//     img: user2,
+//   },
+//   {
+//     id: 2,
+//     name: "John Kristen",
+//     email: "johngmail.com",
+//     contactnumber: "+1 267 474 9323",
+//     img: user2,
+//   },
+//   {
+//     id: 3,
+//     name: "Rayan Artecona",
+//     email: "rayangmail.com",
+//     contactnumber: "+1 437 474 9222",
+//     img: user2,
+//   },
+//   {
+//     id: 4,
+//     name: "Mark Chen",
+//     email: "mark@gmail.com",
+//     contactnumber: "+1 698 474 9100",
+//     img: user2,
+//   },
+//   {
+//     id: 5,
+//     name: "Mark Chen",
+//     email: "mark@gmail.com",
+//     contactnumber: "+1 698 474 9100",
+//     img: user2,
+//   },
+//   {
+//     id: 6,
+//     name: "Mark Chen",
+//     email: "mark@gmail.com",
+//     contactnumber: "+1 698 474 9100",
+//     img: user2,
+//   },
+//   {
+//     id: 7,
+//     name: "Mark Chen",
+//     email: "mark@gmail.com",
+//     contactnumber: "+1 698 474 9100",
+//     img: user2,
+//   },
+//   {
+//     id: 8,
+//     name: "Mark Chen",
+//     email: "mark@gmail.com",
+//     contactnumber: "+1 698 474 9100",
+//     img: user2,
+//   },
+// ];
 
 const GuideSeeAll = () => {
+  const [postData, setPostData] = useState([] as any[]);
+
+  const loadUserGuideRequest = async () => {
+    try {
+      await UserGuideRequestService.getData().then(
+        (res) => {
+          setPostData(res.data);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    loadUserGuideRequest();
+  }, []);
+
   return (
     <Col>
-      <Table responsive borderless className="mt-4">
-        <thead>
+      <Table responsive borderless className="mt-4 post-table">
+       <thead>
           <tr>
             <th className="ps-4">Application Name</th>
             <th className="ps-4">Email</th>
@@ -84,7 +109,7 @@ const GuideSeeAll = () => {
           </tr>
         </thead>
         <tbody>
-          <ApplicationItem application={DUMMY_DATA} />
+          <ApplicationItem application={postData} />
         </tbody>
       </Table>
       <Navbar className="navigation justify-content-end">

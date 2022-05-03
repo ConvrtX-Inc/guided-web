@@ -7,7 +7,11 @@ const config = (token?: string) => ({
     "Content-Type": "application/json",
     Authorization: AuthHeader(),
   },
-  params: {},
+  params: {
+    /*'s': {
+      badge_name: 'Fishing'
+    }*/
+  },
 });
 
 const postData = (data: any) => {
@@ -27,7 +31,6 @@ const patchData = (id: string, data: any) => {
 };
 
 const loadData = () => {
-  config()["params"] = {};
   return axios.get(API_URL + "api/v1/badges", config()).then((response) => {
     //console.log("from loaddata..");
     //console.log("load data", response);
@@ -36,14 +39,23 @@ const loadData = () => {
 };
 
 const filterData = (data: any) => {
-  config()["params"] = {
-    s: data,
-  };
-  return axios.get(API_URL + "api/v1/badges", config()).then((response) => {
-    console.log("from filterdata..");
-    console.log("filter data", response);
-    return response;
+  const customConfig = () => ({
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: AuthHeader(),
+    },
+    params: {
+      s: data,
+    },
   });
+  //console.log(customConfig());
+  return axios
+    .get(API_URL + "api/v1/badges", customConfig())
+    .then((response) => {
+      console.log("from filterdata..");
+      console.log("filter data", response);
+      return response;
+    });
 };
 
 const BadgeService = {

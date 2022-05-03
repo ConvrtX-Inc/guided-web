@@ -24,32 +24,23 @@ import { PostFormsNavigate } from "./PostFormsNavigate";
 import UserService from "../../../services/users/User.Service";
 import SelectContactPerson from "./SelectContactPerson";
 import ReactGoogleAutocomplete from "react-google-autocomplete";
-//import GooglePlacesAutocomplete, {
-//  geocodeByPlaceId,
-//} from "react-google-places-autocomplete";
+import { v4 as uuidv4 } from "uuid";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../firebase";
+import ActivityPackageService from "../../../services/post/ActivityPackage.Service";
+import EventService from "../../../services/post/Event.Service";
+import FreeService from "../../../services/post/FreeServices.Service";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
   const state = location.state as CategoryState;
 
-  //const [value, setValue] = useState(null);
-
-  /*const { ref: bootstrapRef } = usePlacesWidget({
-    apiKey: process.env.REACT_APP_GOOGLE,
-    onPlaceSelected: (place) => console.log(place),
-  });*/
-
   const navigate = useNavigate();
 
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
-  const services = [
-    { id: 1, text: "Foods" },
-    { id: 2, text: "Wifi" },
-    { id: 3, text: "Transport" },
-    { id: 4, text: "Snacks" },
-    { id: 5, text: "Electricity" },
-  ];
+  const [services, setServices] = useState([]);
+  const [userServ, setUserServ] = useState(null);
   const refFileInput = useRef<HTMLInputElement | null>(null);
 
   const [postCategory, setPostCategory] = useState(
@@ -59,6 +50,7 @@ const CreatePostActivityPackage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [contactPersons, setContactPersons] = useState([] as any[]);
   const [mainContactPerson, setMainContactPerson] = useState({});
+  const [selServices, setSelServices] = useState("");
   const [mainBadge, setMainBadge] = useState({});
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [subBadges, setSubBadges] = useState([] as any[]);
@@ -67,6 +59,7 @@ const CreatePostActivityPackage = () => {
     user_id: userAccess.user_id, //login user id,
     name: "",
     title: "", //for event source, same as name
+
     description: "",
     date: "", //default current date, post date = post_date of activity_post
     main_badge_id: "",
@@ -106,6 +99,7 @@ const CreatePostActivityPackage = () => {
     snapshot_img: "",
     activityBadgeId: "",
     premium_user: false,
+    firebase_snapshot_img: "",
   });
   const [packageForms, setPackageForms] = useState({
     activity_package_id: "",
@@ -117,15 +111,31 @@ const CreatePostActivityPackage = () => {
   const [activityDestination, setActivityDestination] = useState(
     {} as ActivityDestination
   );
+  const [destination, setDestination] = useState({
+    street: "",
+    city: "",
+    province: "",
+  });
 
+  //console.log(activityDestination)
   const handleGooglePlaceChange = (obj: any) => {
     //console.log(obj);
     const geometry = obj.geometry.location;
-    console.log("lat: ", geometry.lat());
-    console.log("lng: ", geometry.lng());
-    //geocodeByPlaceId(obj.place_id)
-    //  .then((results) => console.log(results))
-    //  .catch((error) => console.error(error));
+    setActivityDestination({
+      ...activityDestination,
+      place_name: obj.formatted_address,
+      place_description: obj.formatted_address,
+      latitude: geometry.lat(),
+      longitude: geometry.lng(),
+    });
+
+    if (obj.address_components.length > 0) {
+      setDestination({
+        ...destination,
+        city: obj.address_components[0].long_name,
+        province: obj.address_components[1].long_name,
+      });
+    }
   };
 
   const handleInputChange = (event: any) => {
@@ -162,6 +172,8 @@ const CreatePostActivityPackage = () => {
           temp_id: Math.random(),
           default_img: false,
           snapshot_img: String(base64),
+          file: fileObj[0][i],
+          filename: uuidv4() + fileObj[0][i].name,
         },
       ]);
     }
@@ -195,8 +207,12 @@ const CreatePostActivityPackage = () => {
 
   const handleBadgeChange = (obj: any) => {
     setMainBadge(obj);
-    setPostData({ ...postData, main_badge_id: obj.id });
     setsubmitData({ ...submitData, main_badge_id: obj.id });
+    setPostData({
+      ...postData,
+      main_badge_id: obj.id,
+      activityBadgeId: obj.id,
+    });
   };
 
   const handleSubBadgesChange = (event: any) => {
@@ -222,11 +238,18 @@ const CreatePostActivityPackage = () => {
       });
     }
   };
+
+  //console.log(selServices);
   const handleServicesChange = (obj: any) => {
-    //console.log(obj);
-    //console.log(Object.values(obj));
-    //setsubmitData({ ...submitData, services: obj.toString() });
+    //setSelServices(obj);
+    const servObj = [] as any[];
+    for (let i = 0; i < obj.length; i++) {
+      servObj.push(obj[i].name);
+    }
+    setSelServices(servObj.toString());
+    setUserServ(obj);
   };
+
   const handleContactPerson = (obj: any) => {
     setMainContactPerson(obj);
     setPostData({ ...postData, contact_user_id: obj.id });
@@ -254,17 +277,6 @@ const CreatePostActivityPackage = () => {
     }
   };
 
-  const postImageTo = (category: number, data: any) => {
-    if (category === 1) {
-      return PostService.postActivityPackageImage(data);
-    } else if (category === 3) {
-      return PostService.postEventDataImage(data);
-    } else {
-      //default destination
-      return PostService.postActivityPackageImage(data);
-    }
-  };
-
   const postActivityFormsTo = (category: number, data: any) => {
     if (category === 1) {
       return PostService.postActivityPackageFormsData(data);
@@ -276,15 +288,26 @@ const CreatePostActivityPackage = () => {
     }
   };
 
+  const postOneImageTo = (category: number, data: any) => {
+    if (category === 1) {
+      return ActivityPackageService.postOneActivityPackageImage(data);
+    } else if (category === 3) {
+      return EventService.postOneEventImage(data);
+    } else {
+      //default destination
+      return ActivityPackageService.postOneActivityPackageImage(data);
+    }
+  };
+
+  //console.log(submitData);
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
     setIsLoading(true);
-
-    let bulkUpload = {};
     try {
       submitData.sub_badge_ids = subBadges.toString();
       submitData.date = postData.post_date;
+      submitData.address = activityDestination.place_name;
+      submitData.services = selServices; //set services selected
 
       //event different field names
       submitData.title = submitData.name;
@@ -292,23 +315,15 @@ const CreatePostActivityPackage = () => {
       submitData.badge_id = submitData.main_badge_id;
       submitData.event_date = submitData.activity_date; //set event_date data for event category
 
+      console.log("postDataTo object: ", submitData);
       await postDataTo(postData.category_type, submitData).then(
         (res) => {
-          console.log("postDataTo: ", submitData);
           if (res.status === 201) {
             postData.post_id = res.data.id;
-            postData.main_badge_id = submitData.main_badge_id;
-            postData.activityBadgeId = submitData.main_badge_id;
 
             //activity post
             postData.title = submitData.name;
             postData.description = submitData.description;
-
-            //activity package destination
-            activityDestination.latitude = 0;
-            activityDestination.longitude = 0;
-            activityDestination.place_description = "Place description";
-            activityDestination.place_name = "Place name";
 
             activityDestination.activity_package_id = res.data.id; //for activity-package source
             activityDestination.activity_event_id = res.data.id; //for event source
@@ -329,10 +344,8 @@ const CreatePostActivityPackage = () => {
           if (res1.status === 201) {
             //set id for image upload
             for (let i = 0; i < uploadFiles.length; i++) {
-              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
-                "data:image/png;base64,",
-                ""
-              );
+              //remove snapshot_img
+              uploadFiles[i].snapshot_img = "";
               if (postData.category_type === 1) {
                 //activity-package source
                 uploadFiles[i].activity_package_destination_id = res1.data.id;
@@ -341,27 +354,10 @@ const CreatePostActivityPackage = () => {
                 uploadFiles[i].activity_event_destination_id = res1.data.id;
               }
             }
-
-            //set a default_img
-            console.log(uploadFiles);
-            if (uploadFiles.length > 0) {
-              uploadFiles[0].default_img = true;
-              postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
-            }
-            bulkUpload = { bulk: uploadFiles };
           }
         },
         (err1) => {
           console.log("Error postDestinationTo: ", err1);
-        }
-      );
-
-      await postImageTo(postData.category_type, bulkUpload).then(
-        (res2) => {
-          console.log("postImageTo: ", res2);
-        },
-        (err2) => {
-          console.log("Error postImageTo: ", err2);
         }
       );
 
@@ -374,24 +370,58 @@ const CreatePostActivityPackage = () => {
         }
       );
 
-      await PostService.postToActivityPost(postData).then(
-        (res3) => {
-          console.log("postToActivityPost: ", res3);
-          if (res3.status === 201) {
-            setIsLoading(false);
-            navigate("/post", {
-              state: {
-                status: true,
-                message: "Post successfully created.",
-              },
-              replace: true,
+      //firebase upload
+      try {
+        for (let i = 0; i < uploadFiles.length; i++) {
+          const imageRef = ref(storage, `web/${uploadFiles[i].filename}`);
+          await uploadBytes(imageRef, uploadFiles[i].file).then((snapshot) => {
+            getDownloadURL(snapshot.ref).then((url) => {
+              postOneImageTo(postData.category_type, {
+                activity_package_destination_id:
+                  uploadFiles[i].activity_package_destination_id,
+                activity_event_destination_id:
+                  uploadFiles[i].activity_event_destination_id,
+                firebase_snapshot_img: url,
+                filename: `web/${uploadFiles[i].filename}`, //save filename
+              }).then(
+                (res) => {
+                  console.log("postOneImageTo: ", res);
+                },
+                (err) => {
+                  console.log("Error in postOneImageTo: ", err);
+                }
+              );
+
+              if (i === uploadFiles.length - 1) {
+                postData.firebase_snapshot_img = url;
+                console.log("PostData object: ", postData);
+                PostService.postToActivityPost(postData).then(
+                  (res) => {
+                    console.log("postToActivityPost: ", res);
+                    if (res.status === 201) {
+                      setIsLoading(false);
+                      navigate("/post", {
+                        state: {
+                          status: true,
+                          message: "Post successfully created.",
+                        },
+                        replace: true,
+                      });
+                    }
+                  },
+                  (err) => {
+                    console.log("Error in postToActivityPost: ", err);
+                    setIsLoading(false);
+                  }
+                );
+              }
             });
-          }
-        },
-        (err3) => {
-          console.log("Error postToActivityPost: ", err3);
+          });
         }
-      );
+      } catch (err) {
+        console.log("Error in firebase upload: ", err);
+        setIsLoading(false);
+      }
     } catch (error) {
       console.log("Error handleSubmit: ", error);
     }
@@ -457,12 +487,27 @@ const CreatePostActivityPackage = () => {
     }
   }, [setContactPersons]);
 
+  const loadServices = useCallback(async () => {
+    await FreeService.getServices().then(
+      (res) => {
+        if (res.status === 200) {
+          //console.log(res.data);
+          setServices(res.data);
+        }
+      },
+      (error) => {
+        console.log("Error loadPostCategory: ", error);
+      }
+    );
+  }, [setServices]);
+
   //console.log(value);
   //console.log(value?.label);
   useEffect(() => {
     loadBadgeData();
     getContactPersons();
-  }, [loadBadgeData, getContactPersons]);
+    loadServices();
+  }, [loadServices, loadBadgeData, getContactPersons]);
 
   return (
     <Container className="create-post-activitypackage-container mb-5">
@@ -515,26 +560,8 @@ const CreatePostActivityPackage = () => {
             <Row className="mt-3">
               <Col className="col-4">
                 <Form.Label>Select Main Badge</Form.Label>
-                {/*<Select
-                  styles={controlStyles}
-                  defaultValue={badgeData[0]}
-                  getOptionLabel={(e) => e.badge_name}
-                  getOptionValue={(e) => e.id}
-                  options={badgeData}
-                  formatOptionLabel={(badgeData) => (
-                    <div className="badge-option">
-                      <img
-                        src={badgeData.imgBase64}
-                        alt={badgeData.badge_name}
-                        className="me-4"
-                      />
-                      <span>{badgeData.badge_name}</span>
-                    </div>
-                  )}
-                  value={mainBadge}
-                  onChange={(option) => handleBadgeChange(option)}
-                  />*/}
                 <SelectBadge
+                  isClearable={false}
                   mainBadge={mainBadge}
                   badgeData={badgeData}
                   handleBadgeChange={(option: any) => handleBadgeChange(option)}
@@ -589,7 +616,7 @@ const CreatePostActivityPackage = () => {
             <Row className="upload-img ps-2 pt-2">
               {uploadFiles.map((img: any) => (
                 <Col
-                  key={img.snapshot_img}
+                  key={img.temp_id}
                   className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
                 >
                   <button
@@ -667,14 +694,6 @@ const CreatePostActivityPackage = () => {
             </Row>
             <Row className="mt-5">
               <Col className="col-4">
-                {/*<Form.Control
-                  autoComplete="off"
-                  className="input-person"
-                  type="text"
-                  placeholder="Contact Person"
-                  name="contact_person"
-                  onChange={(e) => handlePostInputChange(e)}
-                />*/}
                 <SelectContactPerson
                   mainContact={mainContactPerson}
                   contactPersons={contactPersons}
@@ -742,13 +761,6 @@ const CreatePostActivityPackage = () => {
                   className="form-control form-loc input-location"
                   //defaultValue={"Toronto, ON, Canada"}
                 />
-                {/*<Form.Control
-                  autoComplete="off"
-                  className="form-loc input-location"
-                  type="text"
-                  placeholder="Location"
-                  ref={bootstrapRef}
-                />*/}
                 <div className="ms-4 form-text label-pin-loc">
                   Pin location location
                 </div>
@@ -769,6 +781,7 @@ const CreatePostActivityPackage = () => {
                   className="form-loc input-city"
                   type="text"
                   placeholder="City"
+                  defaultValue={destination.city}
                 />
               </Col>
               <Col className="col-4">
@@ -777,6 +790,7 @@ const CreatePostActivityPackage = () => {
                   className="form-loc input-province"
                   type="text"
                   placeholder="Province/Territory"
+                  defaultValue={destination.province}
                 />
               </Col>
             </Row>
@@ -831,7 +845,7 @@ const CreatePostActivityPackage = () => {
                 <Form.Control
                   autoComplete="off"
                   className="form-pack input-base-price"
-                  type="text"
+                  type="number"
                   name="base_price"
                   placeholder="Base price"
                   value={submitData.base_price}
@@ -842,7 +856,7 @@ const CreatePostActivityPackage = () => {
                 <Form.Control
                   autoComplete="off"
                   className="form-pack input-package-total-cost"
-                  type="text"
+                  type="number"
                   placeholder="Package total cost"
                   name="package_total_cost"
                   value={submitData.package_total_cost}
@@ -855,7 +869,7 @@ const CreatePostActivityPackage = () => {
                 <Form.Control
                   autoComplete="off"
                   className="form-pack input-extra-cost-per-person"
-                  type="text"
+                  type="number"
                   name="extra_cost_per_person"
                   placeholder="Extra cost per person"
                   onChange={handleInputChange}
@@ -865,7 +879,7 @@ const CreatePostActivityPackage = () => {
                 <Form.Control
                   autoComplete="off"
                   className="form-pack input-max-price"
-                  type="text"
+                  type="number"
                   placeholder="Max price"
                   name="max_price"
                   value={submitData.max_price}
@@ -890,16 +904,8 @@ const CreatePostActivityPackage = () => {
             <Row className="mt-4">
               <Form.Label>Free services (Maximum 5)</Form.Label>
               <Col className="col-4">
-                {/*<Select
-                  placeholder="Search free services"
-                  isMulti
-                  styles={controlStyles}
-                  options={services}
-                  getOptionLabel={(e) => e.text}
-                  getOptionValue={(e) => String(e.id)}
-                  onChange={handleServicesChange}
-              />*/}
                 <SelectServices
+                  mainServices={userServ}
                   services={services}
                   handleServicesChange={handleServicesChange}
                 />

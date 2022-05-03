@@ -15,5 +15,83 @@ const getEventData = (id: string) => {
       return response;
     });
 };
-const EventService = { getEventData };
+const postOneEventImage = (data: any) => {
+  return axios
+    .post(API_URL + `api/v1/activity-event-destination-image/`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const getEventImages = (id: string) => {
+  return axios
+    .get(
+      API_URL +
+        `api/v1/activity-event-destination-image?filter=activity_event_destination_id||$eq||${id}`,
+      config()
+    )
+    .then((response) => {
+      return response;
+    });
+};
+const getActivityEventDestination = (id: string) => {
+  return axios
+    .get(
+      API_URL +
+        `api/v1/activity-event-destination?filter=activity_event_id||$eq||${id}&limit=1`,
+      config()
+    )
+    .then((response) => {
+      return response;
+    });
+};
+const getActivityEventForms = (id: string) => {
+  return axios
+    .get(
+      API_URL +
+        `api/v1/activity-event-forms?filter=activity_event_id||$eq||${id}&limit=1`,
+      config()
+    )
+    .then((response) => {
+      return response;
+    });
+};
+const deleteEventDestinationImage = (id: string) => {
+  return axios
+    .delete(API_URL + `api/v1/activity-event-destination-image/${id}`, config())
+    .then((response) => {
+      return response;
+    });
+};
+const patchActivityEventsData = (id: string, data: any) => {
+  return axios
+    .patch(API_URL + `api/v1/activity-events/${id}`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const patchActivityEventDataDestination = (id: string, data: any) => {
+  return axios
+    .patch(API_URL + `api/v1/activity-event-destination/${id}`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const patchActivityEventFormsData = (id: string, data: any) => {
+  return axios
+    .patch(API_URL + `api/v1/activity-event-forms/${id}`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const EventService = {
+  deleteEventDestinationImage,
+  patchActivityEventsData,
+  getActivityEventForms,
+  getActivityEventDestination,
+  getEventImages,
+  getEventData,
+  postOneEventImage,
+  patchActivityEventDataDestination,
+  patchActivityEventFormsData,
+};
 export default EventService;

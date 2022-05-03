@@ -2,9 +2,11 @@ import Select from "react-select";
 import { Services } from "../../../shared/interfaces/Services.interface";
 
 const SelectServices = ({
+  mainServices,
   services,
   handleServicesChange,
 }: {
+  mainServices: any;
   services: Services[];
   handleServicesChange: any;
 }) => {
@@ -32,9 +34,10 @@ const SelectServices = ({
       isMulti
       styles={controlStyles}
       options={services}
-      getOptionLabel={(e) => e.text || ""}
+      getOptionLabel={(e) => e.name || ""}
       getOptionValue={(e) => String(e.id)}
       onChange={handleServicesChange}
+      value={mainServices}
     />
   );
 };

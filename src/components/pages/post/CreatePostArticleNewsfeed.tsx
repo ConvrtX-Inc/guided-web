@@ -78,7 +78,8 @@ const CreatePostArticleNewsfeed = () => {
     title: "",
     views: 0,
     snapshot_img: "",
-    snapshot_img_url: "",
+    //snapshot_img_url: "",
+    firebase_snapshot_img: "",
     main_badge_id: "",
     activityBadgeId: "",
     premium_user: false,
@@ -248,7 +249,7 @@ const CreatePostArticleNewsfeed = () => {
                   postOneImageTo(postData.category_type, {
                     activity_article_id: uploadFiles[i].activity_article_id,
                     activity_newsfeed_id: uploadFiles[i].activity_newsfeed_id,
-                    img_url: url,
+                    firebase_snapshot_img: url,
                     filename: `web/${uploadFiles[i].filename}`, //save filename
                   }).then(
                     (res) => {
@@ -260,7 +261,7 @@ const CreatePostArticleNewsfeed = () => {
                   );
 
                   if (i === uploadFiles.length - 1) {
-                    postData.snapshot_img_url = url;
+                    postData.firebase_snapshot_img = url;
                     PostService.postToActivityPost(postData).then(
                       (res) => {
                         console.log("postToActivityPost: ", res);
@@ -395,6 +396,7 @@ const CreatePostArticleNewsfeed = () => {
               <Col className="col-4">
                 <Form.Label>Select Main Badge</Form.Label>
                 <SelectBadge
+                  isClearable={false}
                   mainBadge={mainBadge}
                   badgeData={badgeData}
                   handleBadgeChange={(option: any) => handleBadgeChange(option)}

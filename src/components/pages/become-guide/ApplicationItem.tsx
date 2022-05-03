@@ -1,23 +1,62 @@
-import check from "../../../assets/admin/check.png";
 import "./ApplicationItem.scss";
-
-import Button from "react-bootstrap/Button";
+import { Link, useNavigate } from "react-router-dom";
+import check from "../../../assets/admin/check.png";
 import Image from "react-bootstrap/Image";
-import { Link } from "react-router-dom";
+import UserGuideRequestService from "../../../services/user-guide-request/UserGuideRequest.Service";
 
 const ApplicationItem = (props: any) => {
+  const navigate = useNavigate();
+
+  const updateApproved = (id: any) => {
+    const postData = {
+      is_approved: true
+    }
+    UserGuideRequestService.patchData(id, postData).then(
+      (res) => {
+        if (res.status === 200) {
+          navigate("/become-guide/approved", {
+            state: {
+              status: true,
+              message: "Become A Guide successfully Approved.",
+            },
+            replace: true,
+          });
+        }
+      }
+    );
+  }
+
+  const updateReject = (id: any) => {
+    const postData = {
+      is_approved: false
+    }
+    UserGuideRequestService.patchData(id, postData).then(
+      (res) => {
+        if (res.status === 200) {
+          navigate("/become-guide/rejected", {
+            state: {
+              status: true,
+              message: "Become A Guide successfully rejected.",
+            },
+            replace: true,
+          });
+        }
+      }
+    );
+  }
+
   return props.application.map((appItem: any) => (
     <tr key={appItem.id}>
-      <td className="app-name p-4">
+      <td className="app-name p-4 app-application-item-td">
         <Image
-          className="profile-image me-3"
-          src={appItem.img}
-          alt={appItem.name}
+          className="profile-image app-application-item-image"
+          src={appItem.image_firebase_url}
+          alt={''}
         />
-        {appItem.name}
+        {appItem.first_name + ' ' + appItem.last_name}
       </td>
       <td className="p-4">{appItem.email}</td>
-      <td className="p-4">{appItem.contactnumber}</td>
+      <td className="p-4">{appItem.phone_no}</td>
       <td className="p-4">
         <Link
           to={{
@@ -30,10 +69,10 @@ const ApplicationItem = (props: any) => {
         </Link>
       </td>
       <td className="p-4">
-        <Button className="btn btn-approve me-1">
+        <button onClick={() => updateApproved(appItem.id)} className="btn btn-approve me-1">
           <Image className="check-image me-1" src={check} alt="" /> Approve
-        </Button>
-        <Button className="m-1 btn btn-reject">Reject</Button>
+        </button>
+        <button onClick={() => updateReject(appItem.id)} className="m-1 btn btn-reject">Reject</button>
       </td>
     </tr>
   ));

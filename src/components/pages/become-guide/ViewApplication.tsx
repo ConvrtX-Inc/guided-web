@@ -52,7 +52,7 @@ const ViewApplication = () => {
         </Row>
         <Row className="ms-2 mt-4">
           <Col>
-            <Image className="basic-img" src={userbasic} alt="" />
+            <Image className="basic-img" src={app.image_firebase_url} alt="" />
           </Col>
         </Row>
         <Row className="ms-2">
@@ -60,11 +60,11 @@ const ViewApplication = () => {
             <Row className="mt-4">
               <Col>
                 <Form.Label>First Name</Form.Label>
-                <Form.Control defaultValue="Mark" type="text"></Form.Control>
+                <Form.Control defaultValue={app.first_name} type="text"></Form.Control>
               </Col>
               <Col>
                 <Form.Label>Last Name</Form.Label>
-                <Form.Control defaultValue="Chen" type="text"></Form.Control>
+                <Form.Control defaultValue={app.last_name} type="text"></Form.Control>
               </Col>
               <Col></Col>
             </Row>
@@ -72,7 +72,7 @@ const ViewApplication = () => {
               <Col>
                 <Form.Label>Contact Number</Form.Label>
                 <Form.Control
-                  defaultValue={app.contactnumber}
+                  defaultValue={app.phone_no}
                   type="text"
                 ></Form.Control>
               </Col>
@@ -88,11 +88,11 @@ const ViewApplication = () => {
             <Row className="mt-4">
               <Col>
                 <Form.Label>Province</Form.Label>
-                <Form.Control defaultValue="West" type="text"></Form.Control>
+                <Form.Control defaultValue={app.province} type="text"></Form.Control>
               </Col>
               <Col>
                 <Form.Label>City</Form.Label>
-                <Form.Control defaultValue="Toranto" type="text"></Form.Control>
+                <Form.Control defaultValue={app.city} type="text"></Form.Control>
               </Col>
               <Col></Col>
             </Row>
@@ -125,7 +125,7 @@ const ViewApplication = () => {
               <Form.Control
                 as="textarea"
                 rows={3}
-                defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed venenatis volutpat risus vitae iaculis. Duis laoreet molestie efficitur. Aenean arcu velit, vestibulum a libero vel, sollicitudin posuere dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+                defaultValue={app.good_guide_reason}
               ></Form.Control>
             </Col>
             <Col>
@@ -135,7 +135,7 @@ const ViewApplication = () => {
               <Form.Control
                 as="textarea"
                 rows={3}
-                defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed venenatis volutpat risus vitae iaculis. Duis laoreet molestie efficitur. Aenean arcu velit, vestibulum a libero vel, sollicitudin posuere dui. Lorem ipsum dolor sit amet,"
+                defaultValue={app.adventures_to_host}
               ></Form.Control>
             </Col>
             <Col></Col>
@@ -150,7 +150,7 @@ const ViewApplication = () => {
               <Form.Control
                 className="input-gray"
                 type="text"
-                defaultValue="Sample Location goes here"
+                defaultValue={app.adventure_location}
               ></Form.Control>
             </Col>
             <Col>
@@ -158,7 +158,7 @@ const ViewApplication = () => {
               <Form.Control
                 className="input-gray"
                 type="text"
-                defaultValue="Sample adventure stand out goes here"
+                defaultValue={app.standout_reason}
               ></Form.Control>
             </Col>
             <Col></Col>
@@ -171,7 +171,7 @@ const ViewApplication = () => {
               <Form.Control
                 as="textarea"
                 rows={3}
-                defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed venenatis volutpat risus vitae iaculis. Duis laoreet molestie efficitur. Aenean arcu velit, vestibulum a libero vel, sollicitudin posuere dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+                defaultValue={app.guided_reason}
               ></Form.Control>
             </Col>
             <Col>
@@ -179,7 +179,7 @@ const ViewApplication = () => {
               <Form.Control
                 className="input-gray"
                 type="text"
-                defaultValue="Indeed"
+                defaultValue={app.where_did_you_hear_us}
               ></Form.Control>
             </Col>
             <Col></Col>
@@ -190,12 +190,14 @@ const ViewApplication = () => {
             Certificates <Image src={line} alt="" />
           </Col>
         </Row>
+
         <Row className="ms-2">
           <Col className="mt-4">
             <div className="form-check form-switch">
               <input
                 className="form-check-input me-2"
                 type="checkbox"
+                defaultChecked={app.is_first_aid}
                 id="flexSwitchCheckDefault"
               />
               <label className="form-check-label m-1">first aid</label>
@@ -209,21 +211,7 @@ const ViewApplication = () => {
           <Col className="col-certs mt-4">
             <h4>Certificate name</h4>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              venenatis volutpat risus vitae iaculis.{" "}
-            </p>
-          </Col>
-          <Col></Col>
-        </Row>
-        <Row className="ms-2">
-          <Col className="mt-4">
-            <Image src={cert2} alt="" />
-          </Col>
-          <Col className="col-certs mt-4">
-            <h4>Certificate name</h4>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              venenatis volutpat risus vitae iaculis.{" "}
+             {app.certificate_name}
             </p>
           </Col>
           <Col></Col>

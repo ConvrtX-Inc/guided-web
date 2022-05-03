@@ -138,7 +138,7 @@ const GuidedPayment = () => {
             {isPending && <Spinner />}
           </Col>
 
-          <Logs />
+          <Logs items={data} />
         </Row>
       </Col>
     </Row>

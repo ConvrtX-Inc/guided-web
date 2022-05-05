@@ -211,7 +211,7 @@ const ViewApplication = () => {
           <Col className="col-certs mt-4">
             <h4>Certificate name</h4>
             <p>
-             {app.certificate_name}
+              {app.certificate_name}
             </p>
           </Col>
           <Col></Col>

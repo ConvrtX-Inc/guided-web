@@ -1,0 +1,188 @@
+.user-container {
+    font-family: Gilroy;
+    font-style: normal;
+    width: 100%;
+
+    h2 {
+        font-weight: bold;
+        font-size: 36px;
+        line-height: 44px;
+        color: #000000;
+    }
+
+    .user-input-select {
+        width: 254px;
+        height: 57px;
+        left: 339px;
+        top: 163px;
+        background: #FFFFFF;
+        border: 1px solid #000000;
+        box-sizing: border-box;
+        border-radius: 12px;
+    }
+
+    .user-sort-text {
+        height: 40px;
+    }
+
+    .user-sort-icon {
+        margin-left: -8px;
+    }
+
+    .user-input-group-2 {
+        width: 246px;
+    }
+
+    .user-search-input {
+        width: 25px;
+    }
+
+    .user-search-image {
+        padding-right: 25px;
+    }
+
+    .user-button-filter {
+        width: 142px !important;
+    }
+
+    .form-switch input {
+        width: 44.76px;
+        height: 24.55px;
+    }
+
+    .form-switch label {
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 21px;
+        text-transform: capitalize;
+
+        color: #181b1b;
+    }
+
+    .form-switch .form-check-input:focus {
+        border-color: rgba(0, 0, 0, 0.25);
+        outline: 0;
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(0,0,0,0.25)'/></svg>");
+    }
+
+    .form-switch .form-check-input:checked {
+        background-color: #4cd964;
+        border-color: #4cd964;
+        border: none;
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(255,255,255,1.0)'/></svg>");
+    }
+
+    nav {
+        form {
+            justify-content: center;
+            display: flex;
+        }
+
+        .btn-guide {
+            background: #ffffff;
+            border-radius: 15px;
+            height: 66px;
+            width: 141px;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 21px;
+            text-align: center;
+            text-transform: capitalize;
+            color: #898a8d;
+            padding-top: 20px;
+        }
+
+        .active {
+            border: 1px solid #007749;
+            box-sizing: border-box;
+            color: #007749;
+        }
+
+        input,
+        select {
+            background: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+            font-style: normal;
+            height: 42px;
+        }
+
+        .input-group-1 {
+            width: 160px;
+            border-left: none;
+        }
+
+        .input-group-text {
+            background: #ffffff;
+            border: 1px solid #e4e4e4;
+            border-radius: 20px;
+            width: 0px !important;
+        }
+
+        .input-search {
+            border: 1px solid #e4e4e4;
+            border-radius: 20px;
+
+        }
+
+        select {
+            border: 1px solid #e3e3e3;
+            box-sizing: border-box;
+            border-radius: 14px;
+            color: rgba(9, 17, 14, 0.5);
+        }
+
+        .btn-filter {
+            width: 99px;
+            height: 42px;
+            padding-top: 10px;
+            background: #ffffff;
+            border: 1px solid #e3e3e3;
+            box-sizing: border-box;
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.06);
+            border-radius: 14px;
+            color: #007749;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 20px;
+
+            letter-spacing: 0.2px;
+
+            color: #007749;
+        }
+    }
+
+    .table {
+        background: #ffffff;
+        border-radius: 20px;
+
+        th {
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 18px;
+            /* identical to box height, or 129% */
+
+            text-transform: capitalize;
+
+            color: #898a8d;
+
+            padding: 15px;
+        }
+    }
+
+    .navigation {
+        font-family: "Mulish", sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0.3px;
+        color: #9fa2b4;
+
+        select {
+            width: 60px;
+            opacity: 0.5;
+        }
+    }
+}

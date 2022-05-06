@@ -38,6 +38,7 @@ import {
 import ReactGoogleAutocomplete from "react-google-autocomplete";
 import { storage } from "../../../firebase";
 import FreeService from "../../../services/post/FreeServices.Service";
+import { ToastContainer, toast } from "react-toastify";
 
 const EditPostActivityPackageEvent = () => {
   const location = useLocation();
@@ -48,13 +49,6 @@ const EditPostActivityPackageEvent = () => {
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
 
-  /*const services = [
-    { id: 1, text: "Foods" },
-    { id: 2, text: "Wifi" },
-    { id: 3, text: "Transport" },
-    { id: 4, text: "Snacks" },
-    { id: 5, text: "Electricity" },
-  ];*/
   const [services, setServices] = useState([]);
   const [selServices, setSelServices] = useState("");
   const [userServ, setUserServ] = useState(null);
@@ -215,7 +209,30 @@ const EditPostActivityPackageEvent = () => {
     }
   };
 
+  //const notify = () => toast("Wow so easy!");
+  const notifyFileNotValid = () =>
+    toast.error("The file is too large. Allowed maximum size is 2MB.", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+    });
+
   const handleUploadFiles = async (event: any) => {
+    const uploadedFile = event.target.files;
+    const uploadedFileSize = uploadedFile[0].size;
+    const fileSize = Math.round(uploadedFileSize / 1024); //Convert to MB
+    //const validFileSize = 2048;
+    const validFileSize = 50;
+    if (fileSize > validFileSize) {
+      //console.log("The maximum file size allowed is set to: 2MB");
+      notifyFileNotValid();
+      event.target.value = null;
+      return;
+    }
     const fileObj = [];
     fileObj.push(event.target.files);
     for (let i = 0; i < fileObj[0].length; i++) {
@@ -231,6 +248,7 @@ const EditPostActivityPackageEvent = () => {
         },
       ]);
     }
+    event.target.value = null;
   };
 
   const handleSwitchChange = (event: any) => {
@@ -737,7 +755,7 @@ const EditPostActivityPackageEvent = () => {
 
       await UserService.getUsers().then(
         (res) => {
-          const contacts = res.data.data;
+          const contacts = res.data;
           const currentContact = contacts.filter(
             (contact: any) => contact.id === postServiceData.contact_user_id
           );
@@ -821,11 +839,14 @@ const EditPostActivityPackageEvent = () => {
               title: data.title, //title for Events, name for Activity-Package
               max_traveller: data.max_traveller,
               free_service: data.free_service,
+              services: data.free_service,
               /*
               name: data.name,
               main_badge_id: defaultBadgeId,f
               */
             }));
+
+            setSelServices(data.free_service);
           }
         },
         (err) => {
@@ -921,7 +942,8 @@ const EditPostActivityPackageEvent = () => {
 
       await UserService.getUsers().then(
         (res) => {
-          const contacts = res.data.data;
+          //const contacts = res.data.data;
+          const contacts = res.data;
           const currentContact = contacts.filter(
             (contact: any) => contact.id === postServiceData.contact_user_id
           );
@@ -979,6 +1001,7 @@ const EditPostActivityPackageEvent = () => {
 
   return (
     <Container className="create-post-activitypackage-container mb-5">
+      <ToastContainer />
       <Row className="mt-5">
         <Col className="col-6">
           <Row>
@@ -1066,7 +1089,8 @@ const EditPostActivityPackageEvent = () => {
                     >
                       <img
                         className="chk-badge-img"
-                        src={item.imgBase64}
+                        //src={item.imgBase64}
+                        src={item.firebase_snapshot_img}
                         alt={item.badge_name}
                       />
                     </label>

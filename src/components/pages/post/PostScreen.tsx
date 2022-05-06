@@ -25,12 +25,25 @@ import { Badge } from "../../../shared/interfaces/Badge.interface";
 import BadgeService from "../../../services/badge/Badge.Service";
 import SelectBadge from "./SelectBadge";
 import Spinner from "../../ui/Spinner";
+import {
+  ToastContainer, //toast
+} from "react-toastify";
+import ReactPaginate from "react-paginate";
+
 interface LocationState {
   status: boolean;
   message: string;
 }
 
 const PostScreen = (props: any) => {
+  const rowsPerPage = [5, 10];
+  const [userRowsPerPage, setUserRowsPerPage] = useState(5);
+  const [userPageNumber, setUserPageNumber] = useState(5);
+
+  const [pageCount, setPageCount] = useState(0);
+  const [totalPerPage, setTotalPerPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
   const isMounted = useRef(true);
   const location = useLocation();
 
@@ -50,11 +63,6 @@ const PostScreen = (props: any) => {
 
   const HandleCategoryChange = (obj: any) => {
     setMainBadge(obj);
-
-    //if (obj) {
-    //} else {
-    //  loadPosts();
-    //}
   };
 
   const handleSearch = (e: any) => {
@@ -62,30 +70,35 @@ const PostScreen = (props: any) => {
   };
 
   const handleFilter = async () => {
-    //console.log(searchTerm);
-    //console.log(mainBadge);
     let selectedBadge: Badge = mainBadge || ({} as Badge);
     let queryString: string = "";
     if (searchTerm !== "") {
-      queryString = `filter=title||$eq||${encodeURIComponent(searchTerm)}`;
+      //queryString = `filter=title||$eq||${encodeURIComponent(searchTerm)}`;
+      queryString = `title=${encodeURIComponent(searchTerm)}`;
     }
     if (mainBadge) {
       if (queryString !== "") {
         queryString = `${queryString}&`;
       }
-      queryString = `${queryString}filter=main_badge_id||$eq||${selectedBadge.id}`;
+      //queryString = `${queryString}filter=main_badge_id||$eq||${selectedBadge.id}`;
+      queryString = `${queryString}badge_id=${selectedBadge.id}`;
     }
     if (queryString === "") {
       loadPosts();
       return;
+    } else {
+      if (queryString === undefined) {
+        queryString = "";
+      }
+      loadPosts(1, userRowsPerPage, queryString);
+      return;
     }
-    queryString = `${queryString}&user_id=||$eq||${userAccess.user_id}`;
+    /*queryString = `${queryString}&user_id=||$eq||${userAccess.user_id}`;
 
     setIsLoading(true);
     try {
       await PostService.filterActivityPost(queryString).then(
         (res) => {
-          //console.log(res.data);
           setPostData(res.data);
           setIsLoading(false);
         },
@@ -97,7 +110,7 @@ const PostScreen = (props: any) => {
     } catch (error) {
       console.log("Error loadPosts:", error);
       setIsLoading(false);
-    }
+    }*/
   };
 
   const getUserAccess = useCallback(async () => {
@@ -119,45 +132,43 @@ const PostScreen = (props: any) => {
     }
   }, [userAccess]);
 
-  const loadPosts = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      await PostService.loadActivityPost(userAccess.user_id || "").then(
-        (res) => {
-          //console.log(res.data);
-          setPostData(res.data);
-          setIsLoading(false);
-        },
-        (err) => {
-          console.log("Error in loadActivityPost: ", err);
-          setIsLoading(false);
-        }
-      );
-    } catch (error) {
-      console.log("Error loadPosts:", error);
-      setIsLoading(false);
-    }
-  }, [setPostData, userAccess.user_id]);
+  const loadPosts = useCallback(
+    async (pageNumber?: number, limit?: number, queryString?: string) => {
+      setIsLoading(true);
+      try {
+        await PostService.loadActivityPostPagination(
+          userAccess.user_id || "",
+          limit || userRowsPerPage,
+          pageNumber || 1,
+          queryString
+        ).then(
+          (res) => {
+            const getData = res.data;
+            console.log(getData);
+            setTotalCount(getData.total);
+            setPageCount(getData.last_page);
+            setPostData(getData.data);
+            setTotalPerPage(getData.data.length);
+            setIsLoading(false);
+          },
+          (err) => {
+            console.log("Error in loadActivityPost: ", err);
+            setIsLoading(false);
+          }
+        );
+      } catch (error) {
+        console.log("Error loadPosts:", error);
+        setIsLoading(false);
+      }
+    },
+    [setPostData, userAccess.user_id, userRowsPerPage]
+  );
 
-  const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
-    let badgeWithImg: Badge[] = [];
-
-    const base64Flag = "data:image/png;base64,";
-    await Promise.all(
-      badges.map(async (badge: any) => {
-        badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
-        badgeWithImg.push(badge);
-      })
-    );
-    setBadgeData(badgeWithImg);
-  }, []);
-
-  //console.log(mainBadge);
   const loadBadgeData = useCallback(async () => {
     try {
       await BadgeService.loadData().then(
         (res) => {
-          setBadgeWithImg(res.data);
+          setBadgeData(res.data);
           //setMainBadge(res.data[0]); //initial selected badge
           setMainBadge(null);
         },
@@ -168,7 +179,28 @@ const PostScreen = (props: any) => {
     } catch (err) {
       console.log(err);
     }
-  }, [setBadgeWithImg]);
+  }, [setBadgeData]);
+
+  const handlePageClick = async ({ selected }: { selected: any }) => {
+    loadPosts(selected + 1);
+    setUserPageNumber(selected + 1);
+    let start: number = 0;
+    let end: number = 0;
+    if (totalCount > 0) {
+      start = userPageNumber;
+    }
+    if (totalCount - pageCount >= start) {
+      end = userPageNumber + pageCount;
+    } else {
+      end = totalCount;
+    }
+    console.log(start, "-", end);
+  };
+
+  const HandleSelectRowsPerPage = (e: any) => {
+    loadPosts(1, e.target.value);
+    setUserRowsPerPage(e.target.value);
+  };
 
   useEffect(() => {
     if (isMounted) {
@@ -186,6 +218,7 @@ const PostScreen = (props: any) => {
         </Col>
         <Col>
           {state?.status && <ToastNotificationBasic message={state?.message} />}
+          <ToastContainer />
         </Col>
       </Row>
       <Row className="mt-4 create-post-row">
@@ -212,10 +245,7 @@ const PostScreen = (props: any) => {
                   }
                 />
               </Nav>
-              <Form
-                className="d-flex"
-                //onSubmit={(e) => onSubmit(e)}
-              >
+              <Form className="d-flex">
                 <InputGroup className="input-group-1 me-2">
                   <InputGroup.Text>
                     <Image src={search} alt="" />
@@ -262,6 +292,61 @@ const PostScreen = (props: any) => {
             )}
             {!isLoading && <PostItemsAdmin items={postData} />}
           </Table>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="col-10">
+          <div className="row justify-content-end pagination-info">
+            <label
+              htmlFor="SelectRowsPerPage"
+              className="float-end col-2 col-form-label"
+            >
+              Rows per page:
+            </label>
+            <div className="col-1">
+              <select
+                id="SelectRowsPerPage"
+                className="select-rows-per-page form-select mt-1"
+                aria-label="Default select example"
+                onChange={(e) => HandleSelectRowsPerPage(e)}
+              >
+                {rowsPerPage.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <label className="col-2 col-form-label">
+              1-{totalPerPage} of {totalCount}
+            </label>
+          </div>
+        </Col>
+        <Col className="col-2">
+          <nav aria-label="..." className="Page navigation example">
+            <ReactPaginate
+              previousLabel={"<"}
+              nextLabel={">"}
+              breakLabel={"..."}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={6}
+              breakClassName={"page-item"}
+              breakLinkClassName={"page-link"}
+              pageClassName={"page-item"}
+              pageLinkClassName={"page-link"}
+              pageCount={pageCount}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination"}
+              //previousLinkClassName={"previousBttn"}
+              previousLinkClassName={"prevButton page-link"}
+              //nextLinkClassName={"nextBttn"}
+              nextLinkClassName={"nxtButton page-link ms-2"}
+              disabledClassName={"disabled"}
+              className={"pagination"}
+              //subContainerClassName={"pages pagination"}
+              activeClassName={"active"}
+            />
+          </nav>
         </Col>
       </Row>
     </Container>

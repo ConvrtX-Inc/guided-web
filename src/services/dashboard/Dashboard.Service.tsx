@@ -58,6 +58,15 @@ const loadRecentPosts = () => {
       return response.data;
     });
 };
+const loadRecentGuides = () => {
+  config()["params"] = {};
+  return axios
+    .get(API_URL + "api/v1/dashboard-related/recent-guides", config())
+    .then((response) => {
+      //console.log(response);
+      return response;
+    });
+};
 
 const loadUserActivityPostSummary = (id: string) => {
   config()["params"] = {};
@@ -72,6 +81,7 @@ const loadUserActivityPostSummary = (id: string) => {
 };
 
 const DashboardService = {
+  loadRecentGuides,
   loadSubAdminRecentPosts,
   loadRecentPosts,
   loadCountTotalDownloads,

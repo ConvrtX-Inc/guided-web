@@ -15,12 +15,10 @@ const PostItemsAdmin = (props: any) => {
                 src={postItem.firebase_snapshot_img}
                 alt={postItem.title}
               />
-              {postItem.activityBadge && (
+              {postItem.badge_firebase_snapshot_img && (
                 <img
                   className="post-img-badge"
-                  src={`${"data:image/png;base64,"}${
-                    postItem.activityBadge.img_icon
-                  }`}
+                  src={postItem.badge_firebase_snapshot_img}
                   alt={postItem.title}
                 />
               )}
@@ -36,15 +34,6 @@ const PostItemsAdmin = (props: any) => {
         {postItem.premium_user && "Yes"}
       </td>
       <td className="p-4">
-        {/*<Link
-          to={`/post/${postItem.id}`}
-          state={{
-            post: postItem,
-          }}
-          className="btn btn-view-post"
-        >
-          view post
-        </Link>*/}
         <EditPostLinks items={postItem} />
       </td>
     </tr>

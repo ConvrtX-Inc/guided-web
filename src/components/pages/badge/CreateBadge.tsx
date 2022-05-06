@@ -8,11 +8,15 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import left from "../../../assets/admin/left.png";
 
 import "./CreateBadge.scss";
 import BadgeService from "../../../services/badge/Badge.Service";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../firebase";
+import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 
 const CreateBadge = () => {
   const history = useNavigate();
@@ -21,6 +25,8 @@ const CreateBadge = () => {
     badge_description: "",
     imgBase64: "",
     img_icon: "",
+    firebase_snapshot_img: "",
+    filename: "",
     is_main_activity: true,
     is_sub_activity: true,
   });
@@ -31,6 +37,8 @@ const CreateBadge = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [uploadFile, setUploadFile] = useState([]);
+  const [uploadFileName, setUploadFileName] = useState("");
 
   const onInputChange = (e: any) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -39,54 +47,50 @@ const CreateBadge = () => {
   const onSubmit = async (e: any) => {
     e.preventDefault();
     setisPending(true);
-    data.img_icon = data.imgBase64.replace("data:image/png;base64,", "");
+    //data.img_icon = data.imgBase64.replace("data:image/png;base64,", "");
+    data.img_icon = "";
     try {
-      await BadgeService.postData(data).then(
-        (res) => {
-          //console.log(res);
-          if (res.status === 200) {
-            //alert("The record was successfully saved.");
-            setIsSuccess(true);
-            setSuccessMessage("The record was successfully saved.");
-          }
-          setisPending(false);
-          history("/badge");
-        },
-        (err) => {
-          //console.log(err.response);
-          if (err.response.status === 413) {
-            setIsError(true);
-            setErrorMessage(err.response.statusText);
-          }
-          setisPending(false);
-        }
-      );
+      let file: any = uploadFile;
+
+      const imageRef = ref(storage, `web/${uploadFileName}`);
+      await uploadBytes(imageRef, file).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          data.firebase_snapshot_img = url;
+          data.filename = `web/${uploadFileName}`;
+          BadgeService.postData(data).then(
+            (res) => {
+              //console.log(res);
+              if (res.status === 200) {
+                setIsSuccess(true);
+                setSuccessMessage("The record was successfully saved.");
+              }
+              setisPending(false);
+              history("/badge");
+            },
+            (err) => {
+              //console.log(err.response);
+              if (err.response.status === 413) {
+                setIsError(true);
+                setErrorMessage(err.response.statusText);
+              }
+              setisPending(false);
+            }
+          );
+        });
+      });
     } catch (err) {
-      console.log(err);
+      console.log("Error in onSubmit: ", err);
       setisPending(false);
     }
   };
 
+  //console.log(uploadFile);
   const uploadImage = async (e: any) => {
     const file = e.target.files[0];
     const base64 = await convertBase64(file);
-    //setBaseImage(String(base64));
     setData({ ...data, [e.target.name]: String(base64) });
-  };
-
-  const convertBase64 = (file: any) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
+    setUploadFile(file);
+    setUploadFileName(uuidv4() + file.name);
   };
 
   return (

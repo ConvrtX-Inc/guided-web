@@ -44,6 +44,19 @@ const loadActivityPost = (id: string) => {
       return response;
     });
 };
+const loadActivityPostPagination = (
+  id: string,
+  limit: number,
+  page: number,
+  queryString?: string
+) => {
+  config()["params"] = {};
+  const stringUrl = `api/v1/activity-post/pagination?user_id=${id}&limit=${limit}&page=${page}&${queryString}`;
+  //console.log(stringUrl);
+  return axios.get(API_URL + stringUrl, config()).then((response) => {
+    return response;
+  });
+};
 const loadPostCategory = () => {
   config()["params"] = {};
   return axios
@@ -199,6 +212,7 @@ const PostService = {
   patchActivityPost,
 
   loadActivityPost,
+  loadActivityPostPagination,
   loadPostCategory,
   //article
   postArticleData,

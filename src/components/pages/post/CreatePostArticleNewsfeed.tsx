@@ -68,6 +68,7 @@ const CreatePostArticleNewsfeed = () => {
     sub_badge_ids: {},
     premium_user: false,
     is_post: true,
+    is_published: true,
   });
 
   //data for activity-post
@@ -430,7 +431,8 @@ const CreatePostArticleNewsfeed = () => {
                     >
                       <img
                         className="chk-badge-img"
-                        src={item.imgBase64}
+                        //src={item.imgBase64}
+                        src={item.firebase_snapshot_img}
                         alt={item.badge_name}
                       />
                     </label>

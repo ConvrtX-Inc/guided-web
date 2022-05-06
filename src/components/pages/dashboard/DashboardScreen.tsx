@@ -25,38 +25,7 @@ import DashboardService from "../../../services/dashboard/Dashboard.Service";
 import SpinnerSmall from "../../ui/SpinnerSmall";
 import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
 import AuthContext from "../../../context/AuthContext";
-//import AuthContext from "../../../context/AuthContext";
-
-const DUMMY_DATA2 = [
-  {
-    id: 1,
-    name: "Mark Chen",
-    email: "mark@gmail.com",
-    contactnumber: "+1 367 829 3828",
-    img: user,
-  },
-  {
-    id: 2,
-    name: "John Kristen",
-    email: "john@gmail.com",
-    contactnumber: "+1 347 829 3828",
-    img: user_2,
-  },
-  {
-    id: 3,
-    name: "Rayan Artecona",
-    email: "rayan@gmail.com",
-    contactnumber: "+1 257 829 3828",
-    img: user_3,
-  },
-  {
-    id: 4,
-    name: "Smith Jerom",
-    email: "mark@gmail.com",
-    contactnumber: "+1 113 829 3828",
-    img: user,
-  },
-];
+import Spinner from "../../ui/Spinner";
 
 const DUMMY_DATA3 = [
   {
@@ -99,31 +68,67 @@ const DashboardScreen = () => {
   const [cntActiveUsers, setCntActiveUsers] = useState([]);
   const [cntOnlineUsers, setCntOnlineUsers] = useState([]);
   const [cntTotalDownloads, setCntTotalDownloads] = useState([]);
+  const [recentGuides, setRecentGuides] = useState([]);
 
   const [flagCntAllUsers, setflagCntAllUsers] = useState(true);
   const [flagActiveUsers, setflagActiveUsers] = useState(true);
   const [flagOnlineUsers, setflagOnlineUsers] = useState(true);
   const [flagTotalDownloads, setflagTotalDownloads] = useState(true);
+  const [recentPostLoading, setRecentPostLoading] = useState(true);
+  const [recentGuideLoading, setRecentGuideLoading] = useState(true);
 
-  const loadSubAdminRecentPosts = useCallback(async (cancel?: boolean) => {
-    try {
-      await DashboardService.loadSubAdminRecentPosts(
-        userAccess.user_id || ""
-      ).then(
-        (res) => {
-          if (cancel) return;
-          setPostData(res.data);
-        },
-        (err) => {
-          console.log(err);
-          if (cancel) return;
-        }
-      );
-    } catch (error) {
-      console.log("Error loadSubAdminRecentPosts:", error);
-      if (cancel) return;
-    }
-  }, [userAccess.user_id]);
+  const loadSubAdminRecentPosts = useCallback(
+    async (cancel?: boolean) => {
+      setRecentPostLoading(true);
+      try {
+        await DashboardService.loadSubAdminRecentPosts(
+          userAccess.user_id || ""
+        ).then(
+          (res) => {
+            setRecentPostLoading(false);
+            if (cancel) return;
+            setPostData(res.data);
+          },
+          (err) => {
+            console.log(err);
+            setRecentPostLoading(false);
+            if (cancel) return;
+          }
+        );
+      } catch (error) {
+        setRecentPostLoading(false);
+        console.log("Error loadSubAdminRecentPosts:", error);
+        if (cancel) return;
+      }
+    },
+    [userAccess.user_id]
+  );
+
+  const loadRecentGuides = useCallback(
+    async (cancel?: boolean) => {
+      setRecentGuideLoading(true);
+      try {
+        await DashboardService.loadRecentGuides().then(
+          (res) => {
+            setRecentGuideLoading(false);
+            //console.log(res.data);
+            if (cancel) return;
+            setRecentGuides(res.data);
+          },
+          (err) => {
+            setRecentGuideLoading(false);
+            console.log(err);
+            if (cancel) return;
+          }
+        );
+      } catch (error) {
+        setRecentGuideLoading(false);
+        console.log("Error loadRecentGuides:", error);
+        if (cancel) return;
+      }
+    },
+    [setRecentGuides]
+  );
 
   const loadCountAllUsers = useCallback(async (cancel?: boolean) => {
     try {
@@ -213,6 +218,7 @@ const DashboardScreen = () => {
     loadCountAllUsers(cancel);
     loadCountActiveUsers(cancel);
     loadSubAdminRecentPosts(cancel);
+    loadRecentGuides(cancel);
 
     return () => {
       cancel = true;
@@ -223,6 +229,7 @@ const DashboardScreen = () => {
     loadSubAdminRecentPosts,
     loadCountAllUsers,
     loadCountTotalDownloads,
+    loadRecentGuides,
   ]);
 
   return (
@@ -307,8 +314,8 @@ const DashboardScreen = () => {
         </Col>
       </Row>
       <Row className="mb-5">
-        {/*<MostRecent mostrecent={recentPost} />*/}
-        <MostRecent mostrecent={postData} />
+        {!recentPostLoading && <MostRecent mostrecent={postData} />}
+        {recentPostLoading && <Spinner />}
       </Row>
       <Row>
         <Col className="mt-5 col-sm">
@@ -319,7 +326,8 @@ const DashboardScreen = () => {
         </Col>
       </Row>
       <Row>
-        <RecentGuides recentguide={DUMMY_DATA2} />
+        {!recentGuideLoading && <RecentGuides recentguide={recentGuides} />}
+        {recentGuideLoading && <Spinner />}
       </Row>
       <Row>
         <Col className="mt-5 col-sm">

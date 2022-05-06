@@ -41,7 +41,8 @@ const SelectBadge = ({
       formatOptionLabel={(badgeData) => (
         <div className="badge-option">
           <img
-            src={badgeData.imgBase64}
+            //src={badgeData.imgBase64}
+            src={badgeData.firebase_snapshot_img}
             alt={badgeData.badge_name}
             className="me-4"
           />

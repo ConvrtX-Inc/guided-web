@@ -615,7 +615,8 @@ const EditPostArticleNewsfeed = () => {
                     >
                       <img
                         className="chk-badge-img"
-                        src={item.imgBase64}
+                        //src={item.imgBase64}
+                        src={item.firebase_snapshot_img}
                         alt={item.badge_name}
                       />
                     </label>

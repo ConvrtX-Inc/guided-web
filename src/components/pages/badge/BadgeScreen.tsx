@@ -19,13 +19,7 @@ import create_badge from "../../../assets/admin/create-badge.png";
 import "./BadgeScreen.scss";
 import Spinner from "../../ui/Spinner";
 import BadgeService from "../../../services/badge/Badge.Service";
-
-interface Badge {
-  id: string;
-  badge_name: string;
-  badge_description: string;
-  img64: string;
-}
+import { Badge } from "../../../shared/interfaces/Badge.interface";
 
 const BadgeScreen = () => {
   const [data, setData] = useState([] as any[]);
@@ -73,7 +67,7 @@ const BadgeScreen = () => {
   const setDataWithImg = useCallback(async (badges: Badge[]) => {
     let badgeWithImg: Badge[] = [];
 
-    const base64Flag = "data:image/png;base64,";
+    //const base64Flag = "data:image/png;base64,";
 
     await Promise.all(
       badges.map(async (badge: any) => {
@@ -97,7 +91,8 @@ const BadgeScreen = () => {
         //badge.imgBase64 = `${base64Flag}${imgBase64}`;
         //console.log(badge.imgBase64); end comment conversion*/
 
-        badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
+        //badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
+        badge.imgBase64 = null;
         badgeWithImg.push(badge);
         //console.log(badgeWithImg);
       })

@@ -9,7 +9,8 @@ const BadgeItems = (props: any) => {
       <td className="p-4">
         <Image
           className="table-row-img"
-          src={badgeItem.imgBase64}
+          //src={badgeItem.imgBase64}
+          src={badgeItem.firebase_snapshot_img}
           alt="alt text here"
         />
       </td>

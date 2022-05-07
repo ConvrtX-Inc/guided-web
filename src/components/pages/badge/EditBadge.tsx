@@ -13,6 +13,16 @@ import left from "../../../assets/admin/left.png";
 
 import "./CreateBadge.scss";
 import BadgeService from "../../../services/badge/Badge.Service";
+import { v4 as uuidv4 } from "uuid";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import { storage } from "../../../firebase";
+import { convertBase64 } from "../../../shared/helper/ConvertBase64";
 
 const EditBadge = () => {
   const { id } = useParams();
@@ -27,6 +37,8 @@ const EditBadge = () => {
     badge_description: "",
     imgBase64: "",
     img_icon: "",
+    firebase_snapshot_img: "",
+    filename: "",
   });
 
   //const [baseImage, setBaseImage] = useState("");
@@ -35,8 +47,11 @@ const EditBadge = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [uploadFile, setUploadFile] = useState([]);
+  const [uploadFileName, setUploadFileName] = useState("");
 
-  const { badge_name, badge_description, imgBase64 } = data;
+  const { badge_name, badge_description, imgBase64, firebase_snapshot_img } =
+    data;
 
   const onInputChange = (e: any) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -49,34 +64,69 @@ const EditBadge = () => {
     setIsSuccess(false);
     setIsError(false);
 
-    data.img_icon = data.imgBase64.replace("data:image/png;base64,", "");
-
-    //console.log(data);
-
-    //await api.patch(`api/v1/badges/${id}`, data);
+    //data.img_icon = data.imgBase64.replace("data:image/png;base64,", "");
     try {
-      await BadgeService.patchData(id ?? "", data).then(
-        (res) => {
-          //console.log(res);
-          if (res.status === 200) {
-            //alert("The record was successfully saved.");
-            setIsSuccess(true);
-            setSuccessMessage("The record was successfully saved.");
-          }
-          setisPending(false);
-          //history("/badge");
-        },
-        (err) => {
-          //console.log(err.response);
-          if (err.response.status === 413) {
-            setIsError(true);
-            setErrorMessage(err.response.statusText);
-          }
-          setisPending(false);
+      if (data.imgBase64) {
+        let file: any = uploadFile;
+
+        if (data.filename) {
+          const storage3 = getStorage();
+
+          const desertRef = ref(storage3, data.filename);
+
+          deleteObject(desertRef)
+            .then(() => {
+              console.log("File deleted successfully");
+            })
+            .catch((error) => {
+              console.log("Unable to delete file: ", error);
+            });
         }
-      );
+
+        const imageRef = ref(storage, `web/${uploadFileName}`);
+        await uploadBytes(imageRef, file).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((url) => {
+            data.firebase_snapshot_img = url;
+            //console.log(url);
+            data.filename = `web/${uploadFileName}`;
+            BadgeService.patchData(id ?? "", data).then(
+              (res) => {
+                if (res.status === 200) {
+                  setIsSuccess(true);
+                  setSuccessMessage("The record was successfully saved.");
+                }
+                setisPending(false);
+              },
+              (err) => {
+                if (err.response.status === 413) {
+                  setIsError(true);
+                  setErrorMessage(err.response.statusText);
+                }
+                setisPending(false);
+              }
+            );
+          });
+        });
+      } else {
+        await BadgeService.patchData(id ?? "", data).then(
+          (res) => {
+            if (res.status === 200) {
+              setIsSuccess(true);
+              setSuccessMessage("The record was successfully saved.");
+            }
+            setisPending(false);
+          },
+          (err) => {
+            if (err.response.status === 413) {
+              setIsError(true);
+              setErrorMessage(err.response.statusText);
+            }
+            setisPending(false);
+          }
+        );
+      }
     } catch (err) {
-      console.log(err);
+      console.log("Error on onSubmit: ", err);
       setisPending(false);
     }
   };
@@ -88,23 +138,9 @@ const EditBadge = () => {
   const uploadImage = async (e: any) => {
     const file = e.target.files[0];
     const base64 = await convertBase64(file);
-    //setBaseImage(String(base64));
     setData({ ...data, [e.target.name]: String(base64) });
-  };
-
-  const convertBase64 = (file: any) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
+    setUploadFile(file);
+    setUploadFileName(uuidv4() + file.name);
   };
 
   return (
@@ -161,7 +197,8 @@ const EditBadge = () => {
             <div className="img-container text-center">
               <Image
                 className="p-2"
-                src={imgBase64}
+                //src={imgBase64}
+                src={imgBase64 || firebase_snapshot_img}
                 alt=""
                 width={198}
                 height={219}

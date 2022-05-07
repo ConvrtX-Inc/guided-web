@@ -30,6 +30,7 @@ import { storage } from "../../../firebase";
 import ActivityPackageService from "../../../services/post/ActivityPackage.Service";
 import EventService from "../../../services/post/Event.Service";
 import FreeService from "../../../services/post/FreeServices.Service";
+import { ToastContainer, toast } from "react-toastify";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
@@ -59,7 +60,8 @@ const CreatePostActivityPackage = () => {
     user_id: userAccess.user_id, //login user id,
     name: "",
     title: "", //for event source, same as name
-
+    included: "test",
+    not_included: "test",
     description: "",
     date: "", //default current date, post date = post_date of activity_post
     main_badge_id: "",
@@ -120,7 +122,7 @@ const CreatePostActivityPackage = () => {
 
   //console.log(activityDestination)
   const handleGooglePlaceChange = (obj: any) => {
-    //console.log(obj);
+    console.log(obj);
     const geometry = obj.geometry.location;
     setActivityDestination({
       ...activityDestination,
@@ -162,7 +164,38 @@ const CreatePostActivityPackage = () => {
     setUploadFiles((files) => files.filter((f) => f.temp_id !== id));
   };
 
+  //const notify = () => toast("Wow so easy!");
+  const notifyMessage = (error: string) =>
+    toast.error(error, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+    });
+
+  //console.log(uploadFiles);
+  //console.log(fileIsValid);
   const handleUploadFiles = async (event: any) => {
+    //notify();
+    const uploadedFile = event.target.files;
+    const uploadedFileSize = uploadedFile[0].size;
+    const fileSize = Math.round(uploadedFileSize / 1024); //Convert to MB
+    const validFileSize = 2048;
+    //const validFileSize = 50;
+    if (fileSize > validFileSize) {
+      //console.log("The maximum file size allowed is set to: 2MB");
+      notifyMessage("The file is too large. Allowed maximum size is 2MB.");
+      event.target.value = null;
+      return;
+    }
+
+    //allowed files
+    const fileExtension = uploadedFile[0].type.split("/")[1].toLowerCase();
+    console.log(fileExtension);
+
     const fileObj = [];
     fileObj.push(event.target.files);
     for (let i = 0; i < fileObj[0].length; i++) {
@@ -178,6 +211,7 @@ const CreatePostActivityPackage = () => {
         },
       ]);
     }
+    event.target.value = null;
   };
 
   const handleSwitchChange = (event: any) => {
@@ -304,6 +338,13 @@ const CreatePostActivityPackage = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
+
+    if (uploadFiles.length === 0) {
+      notifyMessage("Please select atleast 1 image.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       submitData.sub_badge_ids = subBadges.toString();
       submitData.date = postData.post_date;
@@ -340,6 +381,7 @@ const CreatePostActivityPackage = () => {
         }
       );
 
+      activityDestination.code = "test";
       await postDestinationTo(postData.category_type, activityDestination).then(
         (res1) => {
           console.log("postDestinationTo: ", res1);
@@ -476,8 +518,9 @@ const CreatePostActivityPackage = () => {
     try {
       await UserService.getUsers().then(
         (res) => {
+          //console.log(res);
           //console.log(res.data);
-          setContactPersons(res.data.data);
+          setContactPersons(res.data);
           //setMainContactPerson(res.data.data[0]);
         },
         (error) => {
@@ -513,6 +556,7 @@ const CreatePostActivityPackage = () => {
 
   return (
     <Container className="create-post-activitypackage-container mb-5">
+      <ToastContainer />
       <Row className="mt-5">
         <Col className="col-6">
           <Row>
@@ -597,7 +641,8 @@ const CreatePostActivityPackage = () => {
                     >
                       <img
                         className="chk-badge-img"
-                        src={item.imgBase64}
+                        //src={item.imgBase64}
+                        src={item.firebase_snapshot_img}
                         alt={item.badge_name}
                       />
                     </label>

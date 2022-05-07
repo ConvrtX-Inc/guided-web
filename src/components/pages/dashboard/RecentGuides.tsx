@@ -4,14 +4,14 @@ import Image from "react-bootstrap/Image";
 
 const RecentGuides = (props: any) => {
   return props.recentguide.map((recentguideItem: any) => (
-    <Col className="col-sm" key={recentguideItem.id}>
+    <Col className="col-3" key={recentguideItem.User_id}>
       <Card className="recent-guides">
         <Card.Body>
           <div className="text-center">
-            <Image className="mb-2 mt-1" src={recentguideItem.img} alt="" />
-            <h4>{recentguideItem.name}</h4>
-            <p>{recentguideItem.email}</p>
-            <p>{recentguideItem.contactnumber}</p>
+            <Image className="mb-2 mt-1" src={recentguideItem.User_profile_photo_firebase_url} alt="" />
+            <h4>{recentguideItem.User_full_name}</h4>
+            <p>{recentguideItem.User_email}</p>
+            <p>{recentguideItem.User_phone_no}</p>
           </div>
         </Card.Body>
       </Card>

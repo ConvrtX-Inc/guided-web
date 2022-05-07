@@ -13,6 +13,7 @@ const ToastNotificationBasic = (props: any) => {
       aria-live="assertive"
       aria-atomic="true"
       className="align-items-center position-fixed top-0 end-0 m-4"
+      bg={props.variant || `light`}
     >
       <div className="d-flex">
         <Toast.Body>{props.message}</Toast.Body>

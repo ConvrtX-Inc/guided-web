@@ -17,7 +17,6 @@ import { CategoryState } from "../../../shared/interfaces/CategoryState.interfac
 import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
 import SelectCategoryList from "./SelectCategoryList";
 import SelectBadge from "./SelectBadge";
-import SelectServices from "./SelectServices";
 import PostService from "../../../services/post/Post.Service";
 import { ActivityDestination } from "../../../shared/interfaces/ActivityDestination.interface";
 import { PostFormsNavigate } from "./PostFormsNavigate";
@@ -39,6 +38,7 @@ import ReactGoogleAutocomplete from "react-google-autocomplete";
 import { storage } from "../../../firebase";
 import FreeService from "../../../services/post/FreeServices.Service";
 import { ToastContainer, toast } from "react-toastify";
+import CreatableSelectServices from "./CreatableSelectServices";
 
 const EditPostActivityPackageEvent = () => {
   const location = useLocation();
@@ -49,9 +49,9 @@ const EditPostActivityPackageEvent = () => {
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
 
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState([] as any[]);
   const [selServices, setSelServices] = useState("");
-  const [userServ, setUserServ] = useState(null);
+  const [userServ, setUserServ] = useState([] as any[]);
 
   const refFileInput = useRef<HTMLInputElement | null>(null);
 
@@ -131,7 +131,6 @@ const EditPostActivityPackageEvent = () => {
     {} as ActivityDestination
   );
   const handleGooglePlaceChange = async (obj: any) => {
-    console.log(obj);
     const geometry = obj.geometry.location;
     const lat = geometry.lat();
     const lng = geometry.lng();
@@ -209,7 +208,6 @@ const EditPostActivityPackageEvent = () => {
     }
   };
 
-  //const notify = () => toast("Wow so easy!");
   const notifyFileNotValid = () =>
     toast.error("The file is too large. Allowed maximum size is 2MB.", {
       position: "top-right",
@@ -325,10 +323,10 @@ const EditPostActivityPackageEvent = () => {
     }
   };
 
-  const handleServicesChange = (obj: any) => {
+  const handleServicesChange2 = (obj: any) => {
     const servObj = [] as any[];
     for (let i = 0; i < obj.length; i++) {
-      servObj.push(obj[i].name);
+      servObj.push(obj[i].value);
     }
     setSelServices(servObj.toString());
     setUserServ(obj);
@@ -775,18 +773,33 @@ const EditPostActivityPackageEvent = () => {
 
       await FreeService.getServices().then(
         (res) => {
+          let servicesArr = [];
+          let userServicesArr = [] as any[];
           if (res.status === 200) {
-            const servData = res.data;
+            for (let i = 0; i < res.data.length; i++) {
+              servicesArr.push({
+                label: res.data[i].name,
+                value: res.data[i].name,
+              });
+            }
+
             let filterServ = "";
             if (data.services) {
               filterServ = data.services.toLowerCase();
             }
-            const currentServ = servData.filter(
-              (data: any) =>
-                filterServ.includes(data.name.toLowerCase()) === true
-            );
-            setUserServ(currentServ);
-            setServices(servData);
+
+            for (let i = 0; i < filterServ.split(",").length; i++) {
+              let stringValue = filterServ.split(",")[i];
+              let stringUpperCaseFirst = `${stringValue[0].toUpperCase()}${stringValue
+                .slice(1)
+                .toLowerCase()}`;
+              userServicesArr.push({
+                label: stringUpperCaseFirst,
+                value: stringUpperCaseFirst,
+              });
+            }
+            setUserServ(userServicesArr);
+            setServices(servicesArr);
           }
         },
         (error) => {
@@ -816,7 +829,6 @@ const EditPostActivityPackageEvent = () => {
         (res) => {
           if (res.status === 200) {
             data = res.data;
-            console.log(data);
 
             postId = data.id;
 
@@ -942,7 +954,6 @@ const EditPostActivityPackageEvent = () => {
 
       await UserService.getUsers().then(
         (res) => {
-          //const contacts = res.data.data;
           const contacts = res.data;
           const currentContact = contacts.filter(
             (contact: any) => contact.id === postServiceData.contact_user_id
@@ -963,23 +974,33 @@ const EditPostActivityPackageEvent = () => {
 
       await FreeService.getServices().then(
         (res) => {
-          //console.log("getServices: ", res);
+          let servicesArr = [];
+          let userServicesArr = [] as any[];
           if (res.status === 200) {
-            const servData = res.data;
-            if (data.free_service !== undefined) {
-              let filterServ = "";
-              if (data.free_service) {
-                filterServ = data.free_service.toLowerCase();
-              }
-              const currentServ = servData.filter(
-                (data: any) =>
-                  filterServ.includes(data.name.toLowerCase()) === true
-              );
-              setUserServ(currentServ);
-            } else {
-              //setUserServ(null);
+            for (let i = 0; i < res.data.length; i++) {
+              servicesArr.push({
+                label: res.data[i].name,
+                value: res.data[i].name,
+              });
             }
-            setServices(servData);
+
+            let filterServ = "";
+            if (data.free_service) {
+              filterServ = data.free_service.toLowerCase();
+            }
+
+            for (let i = 0; i < filterServ.split(",").length; i++) {
+              let stringValue = filterServ.split(",")[i];
+              let stringUpperCaseFirst = `${stringValue[0].toUpperCase()}${stringValue
+                .slice(1)
+                .toLowerCase()}`;
+              userServicesArr.push({
+                label: stringUpperCaseFirst,
+                value: stringUpperCaseFirst,
+              });
+            }
+            setUserServ(userServicesArr);
+            setServices(servicesArr);
           }
         },
         (error) => {
@@ -1089,7 +1110,6 @@ const EditPostActivityPackageEvent = () => {
                     >
                       <img
                         className="chk-badge-img"
-                        //src={item.imgBase64}
                         src={item.firebase_snapshot_img}
                         alt={item.badge_name}
                       />
@@ -1412,10 +1432,10 @@ const EditPostActivityPackageEvent = () => {
             <Row className="mt-4">
               <Form.Label>Free services (Maximum 5)</Form.Label>
               <Col className="col-4">
-                <SelectServices
+                <CreatableSelectServices
                   mainServices={userServ}
                   services={services}
-                  handleServicesChange={handleServicesChange}
+                  handleServicesChange={handleServicesChange2}
                 />
               </Col>
             </Row>

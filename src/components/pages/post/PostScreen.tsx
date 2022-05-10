@@ -60,6 +60,7 @@ const PostScreen = (props: any) => {
   const [postData, setPostData] = useState([] as any[]);
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [isLoading, setIsLoading] = useState(false);
+  const [remountComponent, setRemountComponent] = useState(0);
 
   const HandleCategoryChange = (obj: any) => {
     setMainBadge(obj);
@@ -93,24 +94,6 @@ const PostScreen = (props: any) => {
       loadPosts(1, userRowsPerPage, queryString);
       return;
     }
-    /*queryString = `${queryString}&user_id=||$eq||${userAccess.user_id}`;
-
-    setIsLoading(true);
-    try {
-      await PostService.filterActivityPost(queryString).then(
-        (res) => {
-          setPostData(res.data);
-          setIsLoading(false);
-        },
-        (err) => {
-          console.log("Error in loadActivityPost: ", err);
-          setIsLoading(false);
-        }
-      );
-    } catch (error) {
-      console.log("Error loadPosts:", error);
-      setIsLoading(false);
-    }*/
   };
 
   const getUserAccess = useCallback(async () => {
@@ -169,7 +152,6 @@ const PostScreen = (props: any) => {
       await BadgeService.loadData().then(
         (res) => {
           setBadgeData(res.data);
-          //setMainBadge(res.data[0]); //initial selected badge
           setMainBadge(null);
         },
         (error) => {
@@ -200,6 +182,7 @@ const PostScreen = (props: any) => {
   const HandleSelectRowsPerPage = (e: any) => {
     loadPosts(1, e.target.value);
     setUserRowsPerPage(e.target.value);
+    setRemountComponent(Math.random());
   };
 
   useEffect(() => {
@@ -275,10 +258,10 @@ const PostScreen = (props: any) => {
             <thead>
               <tr>
                 <th className="col-4 p-4">Title</th>
-                <th className="p-4">Views</th>
-                <th className="p-4">Created Date</th>
-                <th className="p-4">Paid</th>
-                <th className="p-4">Post</th>
+                <th className="p-4 text-center">Views</th>
+                <th className="p-4 text-center">Created Date</th>
+                <th className="p-4 text-center">Paid</th>
+                <th className="p-4 text-center">Post</th>
               </tr>
             </thead>
             {isLoading && (
@@ -322,7 +305,7 @@ const PostScreen = (props: any) => {
             </label>
           </div>
         </Col>
-        <Col className="col-2">
+        <Col key={remountComponent} className="col-2">
           <nav aria-label="..." className="Page navigation example">
             <ReactPaginate
               previousLabel={"<"}

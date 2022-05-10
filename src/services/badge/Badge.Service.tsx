@@ -37,6 +37,14 @@ const loadData = () => {
     return response;
   });
 };
+const loadDataPagination = (limit: number, page: number) => {
+  config()["params"] = {};
+  return axios
+    .get(API_URL + `api/v1/badges?limit=${limit}&page=${page}`, config())
+    .then((response) => {
+      return response;
+    });
+};
 
 const filterData = (data: any) => {
   const customConfig = () => ({
@@ -62,6 +70,7 @@ const BadgeService = {
   patchData,
   postData,
   loadData,
+  loadDataPagination,
   filterData,
 };
 

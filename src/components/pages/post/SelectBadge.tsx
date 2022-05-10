@@ -44,6 +44,7 @@ const SelectBadge = ({
             //src={badgeData.imgBase64}
             src={badgeData.firebase_snapshot_img}
             alt={badgeData.badge_name}
+            style={{ width: 38.16, height: 38.84 }}
             className="me-4"
           />
           <span>{badgeData.badge_name}</span>

@@ -20,6 +20,18 @@ import { GetCategoryName } from "./GetCategoryName";
 import OutfitterService from "../../../services/post/Outfitter.Service";
 import SelectContactPerson from "./SelectContactPerson";
 import UserService from "../../../services/users/User.Service";
+import moment from "moment";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import AdsService from "../../../services/post/Ads.Service";
+import { NotifyMessage } from "../../ui/NotifyMessage";
+import { storage } from "../../../firebase";
+import { v4 as uuidv4 } from "uuid";
 
 const EditPostAdsOutfitter = () => {
   const authCtx = useContext(AuthContext);
@@ -28,12 +40,14 @@ const EditPostAdsOutfitter = () => {
   const location = useLocation();
   const state = location.state as CategoryState;
   const [isLoading, setIsLoading] = useState(false);
+  const [firebaseFiles, setFirebaseFiles] = useState([] as any[]);
   const [postCategory, setPostCategory] = useState(
     state?.categoryName || GetCategoryName(state?.category || 0)
   );
   const [contactPersons, setContactPersons] = useState([] as any[]);
   const [mainContactPerson, setMainContactPerson] = useState({});
   const [submitData, setsubmitData] = useState({
+    id: "",
     user_id: userAccess.user_id,
     title: "",
     premium_user: false,
@@ -50,8 +64,10 @@ const EditPostAdsOutfitter = () => {
     province: "Davao Del Sur",
     zip_code: 8000,
     product_link: "www.google.com",
+    is_published: true,
   });
   const [postData, setPostData] = useState({
+    id: "",
     premium_user: false,
     category_type: state?.category || 6, //Outfitter is default
     views: 0,
@@ -64,6 +80,7 @@ const EditPostAdsOutfitter = () => {
     contact_number: "",
     contact_email: "",
     contact_website: "",
+    firebase_snapshot_img: "",
   });
 
   const refFileInput = useRef<HTMLInputElement | null>(null);
@@ -89,6 +106,8 @@ const EditPostAdsOutfitter = () => {
           temp_id: Math.random(),
           default_img: false,
           snapshot_img: String(base64),
+          file: fileObj[0][i],
+          filename: uuidv4() + fileObj[0][i].name,
         },
       ]);
     }
@@ -122,23 +141,23 @@ const EditPostAdsOutfitter = () => {
     });
   };
 
-  const postDataTo = (category: number, data: any) => {
+  const patchDataTo = (category: number, id: string, data: any) => {
     if (category === 5) {
-      return PostService.postAdsData(data);
+      return AdsService.patchAdsData(id, data);
     } else if (category === 6) {
-      return PostService.postOutfitterData(data);
+      return OutfitterService.patchOutfitterData(id, data);
     } else {
-      return PostService.postAdsData(data);
+      return AdsService.patchAdsData(id, data);
     }
   };
 
   const postImageTo = (category: number, data: any) => {
     if (category === 5) {
-      return PostService.postAdsDataImage(data);
+      return AdsService.postOneAdsImage(data);
     } else if (category === 6) {
-      return PostService.postOutfitterDataImage(data);
+      return OutfitterService.postOneOutfitterImage(data);
     } else {
-      return PostService.postAdsDataImage(data);
+      return AdsService.postOneAdsImage(data);
     }
   };
 
@@ -147,13 +166,15 @@ const EditPostAdsOutfitter = () => {
     setPostData({ ...postData, contact_user_id: obj.id });
   };
 
+  //console.log("uploadFiles: ", uploadFiles);
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     setIsLoading(true);
-
-    let bulkUpload = {};
     let isSuccess: boolean | false = false;
+
+    //ads is ad_date and outfitter is availability date
+    submitData.ad_date = submitData.availability_date;
 
     try {
       //hard code for category type
@@ -165,25 +186,19 @@ const EditPostAdsOutfitter = () => {
         //nothing else
       }
 
-      await postDataTo(postData.category_type, submitData).then(
+      submitData.price = Number(submitData.price);
+      await patchDataTo(postData.category_type, submitData.id, submitData).then(
         (res) => {
-          if (res.status === 201) {
+          if (res.status === 200) {
             isSuccess = true;
             console.log("postDataTo: ", res.data);
             postData.post_id = res.data.id;
 
             for (let i = 0; i < uploadFiles.length; i++) {
-              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
-                "data:image/png;base64,",
-                ""
-              );
+              uploadFiles[i].snapshot_img = "";
               uploadFiles[i].activity_outfitter_id = res.data.id;
+              uploadFiles[i].activity_advertisement_id = res.data.id;
             }
-            if (uploadFiles.length > 0) {
-              uploadFiles[0].default_img = true;
-              postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
-            }
-            bulkUpload = { bulk: uploadFiles };
           }
         },
         (err) => {
@@ -192,32 +207,82 @@ const EditPostAdsOutfitter = () => {
       );
 
       if (isSuccess) {
-        await postImageTo(postData.category_type, bulkUpload).then(
-          (res) => {
-            console.log("postImageTo: ", res.status);
-          },
-          (err) => {
-            console.log("Error postImageTo: ", err);
-          }
-        );
+        if (uploadFiles.length > 0) {
+          //firebase upload
+          try {
+            for (let i = 0; i < uploadFiles.length; i++) {
+              const imageRef = ref(storage, `web/${uploadFiles[i].filename}`);
+              await uploadBytes(imageRef, uploadFiles[i].file).then(
+                (snapshot) => {
+                  getDownloadURL(snapshot.ref).then((url) => {
+                    postImageTo(postData.category_type, {
+                      activity_outfitter_id:
+                        uploadFiles[i].activity_outfitter_id,
+                      activity_advertisement_id:
+                        uploadFiles[i].activity_advertisement_id,
+                      firebase_snapshot_img: url,
+                      filename: `web/${uploadFiles[i].filename}`, //save filename
+                    }).then(
+                      (res) => {
+                        console.log("postImageTo: ", res);
+                      },
+                      (err) => {
+                        NotifyMessage(`Error in postImageTo: ${err}`);
+                      }
+                    );
 
-        await PostService.postToActivityPost(postData).then(
-          (res) => {
-            if (res.status === 201) {
-              setIsLoading(false);
-              navigate("/post", {
-                state: {
-                  status: true,
-                  message: "Post successfully created.",
-                },
-                replace: true,
-              });
+                    if (i === uploadFiles.length - 1) {
+                      postData.firebase_snapshot_img = url;
+                      PostService.patchActivityPost(postData.id, postData).then(
+                        (res) => {
+                          console.log("postToActivityPost: ", res);
+                          if (res.status === 200) {
+                            setIsLoading(false);
+                            navigate("/post", {
+                              state: {
+                                status: true,
+                                message: "Post successfully created.",
+                              },
+                              replace: true,
+                            });
+                          }
+                        },
+                        (err) => {
+                          NotifyMessage(`Error in postToActivityPost: ${err}`);
+                          setIsLoading(false);
+                        }
+                      );
+                    }
+                  });
+                }
+              );
             }
-          },
-          (err) => {
-            console.log("Error postToActivityPost: ", err);
+          } catch (err) {
+            NotifyMessage(`Error in firebase upload: ${err}`);
+            setIsLoading(false);
           }
-        );
+        } else {
+          if (firebaseFiles.length > 0) {
+            postData.firebase_snapshot_img = firebaseFiles[0].firebase_snapshot_img;
+          }
+          await PostService.patchActivityPost(postData.id, postData).then(
+            (res) => {
+              if (res.status === 200) {
+                setIsLoading(false);
+                navigate("/post", {
+                  state: {
+                    status: true,
+                    message: "Post successfully updated.",
+                  },
+                  replace: true,
+                });
+              }
+            },
+            (err) => {
+              console.log("Error patchActivityPost: ", err);
+            }
+          );
+        }
       }
     } catch (error) {
       console.log("Error in handleSubmit:", error);
@@ -226,6 +291,33 @@ const EditPostAdsOutfitter = () => {
 
   const removeImage = (id: number) => {
     setUploadFiles((files) => files.filter((f) => f.temp_id !== id));
+  };
+
+  const removeImageFromFirebase = (id: number) => {
+    const removedImage = firebaseFiles.filter((f) => f.id === id);
+    console.log(removedImage);
+    const storage = getStorage();
+
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, removedImage[0].filename);
+
+    // Delete the file
+    deleteObject(desertRef)
+      .then(() => {
+        console.log("File deleted successfully");
+      })
+      .catch((error) => {
+        console.log("Unable to delete file: ", error);
+      });
+    deleteImageFrom(postData.category_type, removedImage[0].id).then(
+      (res) => {
+        console.log("deleteImageFrom: ", res.status);
+      },
+      (err) => {
+        console.log("Error in deleteImageFrom: ", err);
+      }
+    );
+    setFirebaseFiles((files) => files.filter((f) => f.id !== id));
   };
 
   const handleSwitchChange = (event: any) => {
@@ -239,41 +331,121 @@ const EditPostAdsOutfitter = () => {
     setPostData({ ...postData, premium_user: premium_user });
   };
 
+  const getImageFrom = (category: number, post_id: string) => {
+    if (category === 6) {
+      return OutfitterService.getOutfitterImages(post_id);
+    } else if (category === 5) {
+      return AdsService.getAdsImages(post_id);
+    }
+    return OutfitterService.getOutfitterImages(post_id);
+  };
+
+  const deleteImageFrom = (category: number, id: string) => {
+    if (category === 6) {
+      return OutfitterService.deleteOutfitterImage(id);
+    } else if (category === 5) {
+      return AdsService.deleteAdsImage(id);
+    } else {
+      //default destination
+      return OutfitterService.deleteOutfitterImage(id);
+    }
+  };
+
+  const getDataFrom = (category: number, post_id: string) => {
+    if (category === 6) {
+      return OutfitterService.getOutfitterData(post_id);
+    } else if (category === 5) {
+      return AdsService.getAdsData(post_id);
+    }
+    return OutfitterService.getOutfitterData(post_id);
+  };
+
   const getData = useCallback(async () => {
+    let postId: string | "" = "";
+    let data: any | {} = {};
+    let postServiceData: any | {} = {};
     try {
-      await OutfitterService.getOutfitterData(state?.post_id || "").then(
+      await getDataFrom(state.category, state?.post_id || "").then(
         (res) => {
-          console.log(res.data);
+          //console.log(res.data);
+          data = res.data;
+          postId = data.id;
+          setsubmitData((submit) => ({
+            ...submit,
+            id: data.id,
+            title: data.title,
+            price: data.price,
+            premium_user: data.premium_user,
+            description: data.description,
+            availability_date: moment(data.ad_date).format("yyyy-MM-DD"),
+            ad_date: moment(data.ad_date).format("yyyy-MM-DD"),
+          }));
         },
         (err) => {
           console.log("Error getOutfitterData: ", err);
         }
       );
-    } catch (error) {
-      console.log("Error in getData:", error);
-    }
-  }, [state.post_id]);
 
-  const getContactPersons = useCallback(async () => {
-    try {
+      await PostService.getActivityPostByPostId(postId).then(
+        (res) => {
+          postServiceData = res.data;
+          setPostData((postData) => ({
+            ...postData,
+            id: postServiceData.id,
+            title: postServiceData.title,
+            description: postServiceData.description,
+            premium_user: data.premium_user,
+            main_badge_id: data.main_badge_id,
+            activityBadgeId: data.main_badge_id,
+            post_id: postServiceData.post_id,
+            contact_email: postServiceData.contact_email,
+            contact_number: postServiceData.contact_number,
+            contact_website: postServiceData.contact_website,
+          }));
+        },
+        (err) => {
+          console.log("Error in getActivityPostByPostId:", err);
+        }
+      );
+
       await UserService.getUsers().then(
         (res) => {
-          //console.log(res.data);
-          setContactPersons(res.data.data);
+          const contacts = res.data;
+          const currentContact = contacts.filter(
+            (contact: any) => contact.id === postServiceData.contact_user_id
+          );
+          setContactPersons(contacts);
+          if (currentContact.length > 0) {
+            setMainContactPerson(currentContact[0]); //set current contact user
+            setPostData((post) => ({
+              ...post,
+              contact_user_id: currentContact[0].id,
+            }));
+          }
         },
         (error) => {
           console.log("Error in getUsers:", error);
         }
       );
-    } catch (err) {
-      console.log(err);
+
+      await getImageFrom(state.category, state?.post_id || "").then(
+        (res) => {
+          if (res.status === 200) {
+            setFirebaseFiles(res.data);
+          }
+        },
+        (err) => {
+          console.log("Error in getImageFrom: ", err);
+        }
+      );
+    } catch (error) {
+      console.log("Error in getData:", error);
     }
-  }, [setContactPersons]);
+  }, [state.post_id, state.category]);
 
   useEffect(() => {
     getData();
-    getContactPersons();
-  }, [getData, getContactPersons]);
+  }, [getData]);
 
   return (
     <Container className="create-post-activitypackage-container">
@@ -314,6 +486,7 @@ const EditPostAdsOutfitter = () => {
                     className="form-check-input"
                     id="site_state"
                     onChange={(e) => handleSwitchChange(e)}
+                    checked={submitData.premium_user}
                   />
                 </div>
               </Col>
@@ -331,6 +504,27 @@ const EditPostAdsOutfitter = () => {
               </Col>
             </Row>
             <Row className="upload-img ps-2 pt-2">
+              {firebaseFiles.map((img: any) => (
+                <Col
+                  className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
+                  key={img.id}
+                >
+                  <button
+                    type="button"
+                    className="btn-close btn-remove-img"
+                    aria-label="Close"
+                    onClick={() => {
+                      removeImageFromFirebase(img.id);
+                    }}
+                  ></button>
+                  <img
+                    className="w-100 prev-img img-fluid rounded mx-auto d-block"
+                    src={img.firebase_snapshot_img}
+                    alt="..."
+                  />
+                </Col>
+              ))}
+
               {uploadFiles.map((img: any) => (
                 <Col
                   className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
@@ -351,7 +545,7 @@ const EditPostAdsOutfitter = () => {
                   />
                 </Col>
               ))}
-              {uploadFiles.length < 5 && (
+              {uploadFiles.length + firebaseFiles.length < 5 && (
                 <Col className="col-2 me-2 d-flex justify-content-center align-items-center">
                   <input
                     accept="image/x-png,image/gif,image/jpeg"
@@ -403,9 +597,10 @@ const EditPostAdsOutfitter = () => {
                   required
                   autoComplete="off"
                   className="mt-1 input-price"
-                  type="text"
+                  type="number"
                   placeholder="Price"
                   name="price"
+                  value={submitData.price}
                   onChange={(e) => handleInputChange(e)}
                 />
               </Col>
@@ -448,6 +643,7 @@ const EditPostAdsOutfitter = () => {
                   placeholder="Email Address"
                   name="contact_email"
                   onChange={(e) => handlePostInputChange(e)}
+                  value={postData.contact_email}
                 />
               </Col>
             </Row>
@@ -460,6 +656,7 @@ const EditPostAdsOutfitter = () => {
                   placeholder="Contact Number"
                   name="contact_number"
                   onChange={(e) => handlePostInputChange(e)}
+                  value={postData.contact_number}
                 />
               </Col>
               <Col className="col-4">
@@ -470,6 +667,7 @@ const EditPostAdsOutfitter = () => {
                   placeholder="Website"
                   name="contact_website"
                   onChange={(e) => handlePostInputChange(e)}
+                  value={postData.contact_website}
                 />
               </Col>
             </Row>

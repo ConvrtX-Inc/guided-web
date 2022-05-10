@@ -1,8 +1,5 @@
 import "./DashboardScreen.scss";
 
-import user from "../../../assets/admin/user.png";
-import user_2 from "../../../assets/admin/user-2.png";
-import user_3 from "../../../assets/admin/user-3.png";
 import user_4 from "../../../assets/admin/user-4.png";
 import user_5 from "../../../assets/admin/user-5.png";
 import user_6 from "../../../assets/admin/user-6.png";

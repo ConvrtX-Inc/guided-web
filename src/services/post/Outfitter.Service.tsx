@@ -22,5 +22,36 @@ const getOutfitterData = (id: string) => {
       return response;
     });
 };
-const OutfitterService = { patchOutfitterData, getOutfitterData };
+const getOutfitterImages = (id: string) => {
+  return axios
+    .get(
+      API_URL +
+        `api/v1/activity-outfitter-image?filter=activity_outfitter_id||$eq||${id}&limit=5`,
+      config()
+    )
+    .then((response) => {
+      return response;
+    });
+};
+const postOneOutfitterImage = (data: any) => {
+  return axios
+    .post(API_URL + `api/v1/activity-outfitter-image`, data, config())
+    .then((response) => {
+      return response;
+    });
+};
+const deleteOutfitterImage = (id: string) => {
+  return axios
+    .delete(API_URL + `api/v1/activity-outfitter-image/${id}`, config())
+    .then((response) => {
+      return response;
+    });
+};
+const OutfitterService = {
+  patchOutfitterData,
+  getOutfitterData,
+  deleteOutfitterImage,
+  postOneOutfitterImage,
+  getOutfitterImages,
+};
 export default OutfitterService;

@@ -4,6 +4,7 @@ export interface PostImage {
   activity_package_destination_id?: string;
   activity_event_destination_id?: string;
   activity_outfitter_id?: string;
+  activity_advertisement_id?: string;
   snapshot_img: string;
   default_img?: boolean;
   temp_id?: number;

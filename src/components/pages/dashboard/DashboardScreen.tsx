@@ -1,9 +1,5 @@
 import "./DashboardScreen.scss";
 
-import user_4 from "../../../assets/admin/user-4.png";
-import user_5 from "../../../assets/admin/user-5.png";
-import user_6 from "../../../assets/admin/user-6.png";
-import user_7 from "../../../assets/admin/user-7.png";
 import user1 from "../../../assets/admin/user1.png";
 import user2 from "../../../assets/admin/user2.png";
 import box from "../../../assets/admin/box.png";
@@ -24,37 +20,6 @@ import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
 import AuthContext from "../../../context/AuthContext";
 import Spinner from "../../ui/Spinner";
 
-const DUMMY_DATA3 = [
-  {
-    id: 1,
-    name: "John Mark",
-    email: "john@gmail.com",
-    contactnumber: "+1 367 829 3828",
-    img: user_4,
-  },
-  {
-    id: 2,
-    name: "Matt Bell",
-    email: "matt@gmail.com",
-    contactnumber: "+1 347 829 3828",
-    img: user_5,
-  },
-  {
-    id: 3,
-    name: "Ann Sasha",
-    email: "ann@gmail.com",
-    contactnumber: "+1 257 829 3828",
-    img: user_6,
-  },
-  {
-    id: 4,
-    name: "Parket Wilson",
-    email: "parker@gmail.com",
-    contactnumber: "+1 113 829 3828",
-    img: user_7,
-  },
-];
-
 const DashboardScreen = () => {
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
@@ -66,6 +31,7 @@ const DashboardScreen = () => {
   const [cntOnlineUsers, setCntOnlineUsers] = useState([]);
   const [cntTotalDownloads, setCntTotalDownloads] = useState([]);
   const [recentGuides, setRecentGuides] = useState([]);
+  const [activeUsers, setActiveUsers] = useState([]);
 
   const [flagCntAllUsers, setflagCntAllUsers] = useState(true);
   const [flagActiveUsers, setflagActiveUsers] = useState(true);
@@ -73,6 +39,7 @@ const DashboardScreen = () => {
   const [flagTotalDownloads, setflagTotalDownloads] = useState(true);
   const [recentPostLoading, setRecentPostLoading] = useState(true);
   const [recentGuideLoading, setRecentGuideLoading] = useState(true);
+  const [activeUsersLoading, setActiveUsersLoading] = useState(true);
 
   const loadSubAdminRecentPosts = useCallback(
     async (cancel?: boolean) => {
@@ -125,6 +92,31 @@ const DashboardScreen = () => {
       }
     },
     [setRecentGuides]
+  );
+
+  const loadMostActiveEndUsers = useCallback(
+    async (cancel?: boolean) => {
+      setActiveUsersLoading(true);
+      try {
+        await DashboardService.loadMostActiveEndUsers(4).then(
+          (res) => {
+            setActiveUsersLoading(false);
+            if (cancel) return;
+            setActiveUsers(res.data);
+          },
+          (err) => {
+            setActiveUsersLoading(false);
+            console.log(err);
+            if (cancel) return;
+          }
+        );
+      } catch (error) {
+        setActiveUsersLoading(false);
+        console.log("Error loadRecentGuides:", error);
+        if (cancel) return;
+      }
+    },
+    [setActiveUsers]
   );
 
   const loadCountAllUsers = useCallback(async (cancel?: boolean) => {
@@ -192,7 +184,7 @@ const DashboardScreen = () => {
       await DashboardService.loadCountTotalDownloads().then(
         (res) => {
           if (cancel) return;
-          setCntTotalDownloads(res.downloads);
+          setCntTotalDownloads(res.downloads || 0);
           setflagTotalDownloads(false);
         },
         (error) => {
@@ -216,6 +208,7 @@ const DashboardScreen = () => {
     loadCountActiveUsers(cancel);
     loadSubAdminRecentPosts(cancel);
     loadRecentGuides(cancel);
+    loadMostActiveEndUsers(cancel);
 
     return () => {
       cancel = true;
@@ -227,6 +220,7 @@ const DashboardScreen = () => {
     loadCountAllUsers,
     loadCountTotalDownloads,
     loadRecentGuides,
+    loadMostActiveEndUsers,
   ]);
 
   return (
@@ -335,7 +329,8 @@ const DashboardScreen = () => {
         </Col>
       </Row>
       <Row>
-        <MostActive mostactive={DUMMY_DATA3} />
+        {!activeUsersLoading && <MostActive mostactive={activeUsers} />}
+        {activeUsersLoading && <Spinner />}
       </Row>
     </Container>
   );

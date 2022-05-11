@@ -5,6 +5,7 @@ import Nav from "react-bootstrap/Nav";
 import Image from "react-bootstrap/Image";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
+import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 //import { NavLink } from "react-router-dom";
@@ -18,19 +19,31 @@ import "./SubPostScreen.scss";
 import PostItems from "./PostItems";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import BadgeService from "../../../../services/badge/Badge.Service";
-import Select from "react-select";
 import { Link, useLocation } from "react-router-dom";
 import ToastNotificationBasic from "../../../ui/ToastNotificationBasic";
-import { Badge } from "../../../../shared/interfaces/Badge.interface";
 import AuthContext from "../../../../context/AuthContext";
 import { UserAccess } from "../../../../shared/interfaces/UserAccess.interface";
 import PostService from "../../../../services/post/Post.Service";
+import SelectBadge from "../../post/SelectBadge";
+import ReactPaginate from "react-paginate";
+import Spinner from "../../../ui/Spinner";
 interface LocationState {
   status: boolean;
   message: string;
 }
 
 const SubPostScreen = (props: any) => {
+  const rowsPerPage = [5, 10];
+  const [userRowsPerPage, setUserRowsPerPage] = useState(5);
+  const [userPageNumber, setUserPageNumber] = useState(5);
+  const [remountComponent, setRemountComponent] = useState(0);
+
+  const [pageCount, setPageCount] = useState(0);
+  const [totalPerPage, setTotalPerPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const isMounted = useRef(true);
   const location = useLocation();
 
@@ -43,7 +56,29 @@ const SubPostScreen = (props: any) => {
   });
   const [postData, setPostData] = useState([] as any[]);
   const [badgeData, setBadgeData] = useState([] as any[]);
-  const [selCategory, setSelCategory] = useState({});
+  const [selCategory, setSelCategory] = useState(null);
+
+  const HandleSelectRowsPerPage = (e: any) => {
+    loadPosts(1, e.target.value);
+    setUserRowsPerPage(e.target.value);
+    setRemountComponent(Math.random());
+  };
+
+  const handlePageClick = async ({ selected }: { selected: any }) => {
+    loadPosts(selected + 1);
+    setUserPageNumber(selected + 1);
+    let start: number = 0;
+    let end: number = 0;
+    if (totalCount > 0) {
+      start = userPageNumber;
+    }
+    if (totalCount - pageCount >= start) {
+      end = userPageNumber + pageCount;
+    } else {
+      end = totalCount;
+    }
+    console.log(start, "-", end);
+  };
 
   const HandleCategoryChange = (obj: any) => {
     setSelCategory(obj);
@@ -66,42 +101,44 @@ const SubPostScreen = (props: any) => {
     }
   }, [userAccess]);
 
-  const loadPosts = useCallback(async () => {
-    try {
-      await PostService.loadActivityPost(userAccess.user_id || "").then(
-        (res) => {
-          //console.log(res.data);
-          setPostData(res.data);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-    } catch (error) {
-      console.log("Error loadPosts:", error);
-    }
-  }, [setPostData, userAccess.user_id]);
-
-  const setBadgeWithImg = useCallback(async (badges: Badge[]) => {
-    let badgeWithImg: Badge[] = [];
-
-    const base64Flag = "data:image/png;base64,";
-    await Promise.all(
-      badges.map(async (badge: any) => {
-        badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
-        badgeWithImg.push(badge);
-      })
-    );
-    setBadgeData(badgeWithImg);
-  }, []);
-  //console.log(badgeData);
+  const loadPosts = useCallback(
+    async (pageNumber?: number, limit?: number, queryString?: string) => {
+      setIsLoading(true);
+      try {
+        await PostService.loadActivityPostPagination(
+          userAccess.user_id || "",
+          limit || userRowsPerPage,
+          pageNumber || 1,
+          queryString
+        ).then(
+          (res) => {
+            const getData = res.data;
+            console.log(getData);
+            setTotalCount(getData.total);
+            setPageCount(getData.last_page);
+            setPostData(getData.data);
+            setTotalPerPage(getData.data.length);
+            setIsLoading(false);
+          },
+          (err) => {
+            console.log("Error in loadActivityPost: ", err);
+            setIsLoading(false);
+          }
+        );
+      } catch (error) {
+        console.log("Error loadPosts:", error);
+        setIsLoading(false);
+      }
+    },
+    [setPostData, userAccess.user_id, userRowsPerPage]
+  );
 
   const loadBadgeData = useCallback(async () => {
     try {
       await BadgeService.loadData().then(
         (res) => {
-          setBadgeWithImg(res.data);
-          setSelCategory(res.data[0]);
+          setBadgeData(res.data);
+          setSelCategory(null);
         },
         (error) => {
           console.log(error);
@@ -110,7 +147,7 @@ const SubPostScreen = (props: any) => {
     } catch (err) {
       console.log(err);
     }
-  }, [setBadgeWithImg]);
+  }, [setBadgeData]);
 
   useEffect(() => {
     if (isMounted) {
@@ -119,25 +156,6 @@ const SubPostScreen = (props: any) => {
       getUserAccess();
     }
   }, [loadPosts, loadBadgeData, getUserAccess]);
-
-  const controlStyles = {
-    control: (styles: any) => ({
-      ...styles,
-      fontFamily: `Gilroy`,
-      fontStyle: `normal`,
-      fontWeight: `700`,
-      fontSize: `18px`,
-      lineHeight: `22px`,
-      color: `#979B9B`,
-      width: `280px`,
-      height: `57px`,
-      border: `1px solid #007749`,
-      background: `#FFFFFF`,
-      ":hover": {
-        border: `1px solid #007749`,
-      },
-    }),
-  };
 
   return (
     <Container className="sub-post-container">
@@ -154,14 +172,7 @@ const SubPostScreen = (props: any) => {
           <p>Filter by category</p>
         </Col>
         <Col className="d-flex flex-row-reverse">
-          {/*<button type="button" className="btn me-5 message={state?.message} btn-create-post">
-            <Image className="me-2" src={create_badge} alt="" /> Create Post
-  </button>*/}
-          <Link
-            //to={`/post/activity-package`}
-            to={access.default_path}
-            className="btn btn-create-post me-5"
-          >
+          <Link to={access.default_path} className="btn btn-create-post me-5">
             <Image className="me-1" src={create_badge} alt="" /> Create post
           </Link>
         </Col>
@@ -171,34 +182,13 @@ const SubPostScreen = (props: any) => {
           <Navbar expand="lg">
             <Container fluid>
               <Nav>
-                {/*<Form.Select aria-label="Default select example">
-                  badgeData.map((item: any) => (
-                    <option key={item.id}>
-                      <img src={item.img_icon} alt={item.badge_name} />
-                      {item.badge_name}
-                    </option>
-                  ))
-                </Form.Select>*/}
-                <Select
-                  styles={controlStyles}
-                  //value={badgeData[0]}
-                  defaultValue={badgeData[0]}
-                  //defaultInputValue={badgeData[0]}
-                  getOptionLabel={(e) => e.badge_name}
-                  getOptionValue={(e) => e.id}
-                  options={badgeData}
-                  formatOptionLabel={(badgeData) => (
-                    <div className="badge-option">
-                      <img
-                        src={badgeData.imgBase64}
-                        alt={badgeData.badge_name}
-                        className="me-4"
-                      />
-                      <span>{badgeData.badge_name}</span>
-                    </div>
-                  )}
-                  value={selCategory}
-                  onChange={(option) => HandleCategoryChange(option)}
+                <SelectBadge
+                  isClearable={true}
+                  mainBadge={selCategory}
+                  badgeData={badgeData}
+                  handleBadgeChange={(option: any) =>
+                    HandleCategoryChange(option)
+                  }
                 />
               </Nav>
               <Form
@@ -228,7 +218,84 @@ const SubPostScreen = (props: any) => {
         </Col>
       </Row>
       <Row className="post-items">
-        <PostItems items={postData} />
+        <Col>
+          <Table responsive borderless className="mt-4 post-table">
+            <thead>
+              <tr>
+                <th className="col-4 p-4">Title</th>
+                <th className="p-4 text-center">Views</th>
+                <th className="p-4 text-center">Created Date</th>
+                <th className="p-4 text-center">Paid</th>
+                <th className="p-4 text-center">Post</th>
+              </tr>
+            </thead>
+            {isLoading && (
+              <tbody>
+                <tr>
+                  <td colSpan={5} className="pb-5">
+                    <Spinner />
+                  </td>
+                </tr>
+              </tbody>
+            )}
+            {!isLoading && <PostItems items={postData} />}
+          </Table>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="col-10">
+          <div className="row justify-content-end pagination-info">
+            <label
+              htmlFor="SelectRowsPerPage"
+              className="float-end col-2 col-form-label"
+            >
+              Rows per page:
+            </label>
+            <div className="col-1">
+              <select
+                id="SelectRowsPerPage"
+                className="select-rows-per-page form-select mt-1"
+                aria-label="Default select example"
+                onChange={(e) => HandleSelectRowsPerPage(e)}
+              >
+                {rowsPerPage.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <label className="col-2 col-form-label">
+              1-{totalPerPage} of {totalCount}
+            </label>
+          </div>
+        </Col>
+        <Col key={remountComponent} className="col-2">
+          <nav aria-label="..." className="Page navigation example">
+            <ReactPaginate
+              previousLabel={"<"}
+              nextLabel={">"}
+              breakLabel={"..."}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={6}
+              breakClassName={"page-item"}
+              breakLinkClassName={"page-link"}
+              pageClassName={"page-item"}
+              pageLinkClassName={"page-link"}
+              pageCount={pageCount}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination"}
+              //previousLinkClassName={"previousBttn"}
+              previousLinkClassName={"prevButton page-link"}
+              //nextLinkClassName={"nextBttn"}
+              nextLinkClassName={"nxtButton page-link ms-2"}
+              disabledClassName={"disabled"}
+              className={"pagination"}
+              //subContainerClassName={"pages pagination"}
+              activeClassName={"active"}
+            />
+          </nav>
+        </Col>
       </Row>
     </Container>
   );

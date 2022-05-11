@@ -1,3 +1,7 @@
+import blackPlatinum from '../../../../../assets/images/cards/black_platinum.png';
+import purplePlatinum from '../../../../../assets/images/cards/purple_platinum.png';
+import bluePlatinum from '../../../../../assets/images/cards/blue_platinum.png';
+
 import { Col, Row } from "react-bootstrap";
 interface ICreditCardList {
   showRemoveCardModal: any;
@@ -8,17 +12,17 @@ const creditCardList = ({ showRemoveCardModal }: ICreditCardList) => {
     <Row className='credit-card-list-rows'>
       <Col xs={3}>
         <div className='credit-card-div'>
-          <img src='/cards/black_platinum.png' alt={''} />
+          <img src={blackPlatinum} alt={''} />
         </div>
       </Col>
       <Col xs={3}>
       	<div className='credit-card-div'>
-          <img src='/cards/purple_platinum.png' alt={''} />
+          <img src={purplePlatinum} alt={''} />
         </div>
       </Col>
       <Col xs={3}>
         <div className='credit-card-div'>
-          <img src='/cards/blue_platinum.png' alt={''} />
+          <img src={bluePlatinum} alt={''} />
         </div>
       </Col>
     </Row>

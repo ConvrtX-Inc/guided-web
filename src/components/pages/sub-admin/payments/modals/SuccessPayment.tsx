@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
 import Image from "react-bootstrap/Image";
+import checkComplete from '../../../../../assets/images/check-complete.png';
 
 interface IModal {
     message: string
@@ -25,7 +26,7 @@ const SuccessPayment = ({ message }: IModal) => {
                         <Card.Body className="sub-payment-modal-card-body">
                                 <Row className="mt-2">
                                     <Col className="col-sm-2 sub-payment-modal-card-image-check">
-                                        <Image src='/check-complete.png' alt="" />
+                                    <Image src={checkComplete} alt="" />
                                     </Col>
                                 </Row>
                             <Col className='top-line-border mt-5'> </Col>

@@ -15,14 +15,13 @@ const UserTable = (props: any) => {
             <td className="p-4">
                 <Image
                 className="profile-image app-application-item-image ml-3"
-                src={user.profile_photo_firebase_url}
+                    src={`${"data:image/png;base64,"}${user.badge.badge_img_icon}`}
                 alt={''}
                 />
             </td>
             <td className="p-4">{user.phone_no}</td>
             <td className="p-4">{user.email}</td>
-            {/* TODO: Add Total Book Numbers In API */}
-            <td className="p-4">0</td>
+            <td className="p-4">{user.total_booking}</td>
             <td className="p-4">
                 <div className="form-check form-switch">
                     <input

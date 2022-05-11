@@ -11,7 +11,6 @@ const PostItemsAdmin = (props: any) => {
             <div className="image-wrapper">
               <img
                 className="post-img"
-                //src={`${"data:image/png;base64,"}${postItem.snapshot_img}`}
                 src={postItem.firebase_snapshot_img}
                 alt={postItem.title}
               />
@@ -27,13 +26,15 @@ const PostItemsAdmin = (props: any) => {
           <Col>{postItem.title}</Col>
         </Row>
       </td>
-      <td className="p-4">{postItem.views}</td>
-      <td className="p-4">{String(postItem.created_date).substring(0, 10)}</td>
-      <td className="p-4">
+      <td className="p-4 text-center">{postItem.views}</td>
+      <td className="p-4 text-center">
+        {String(postItem.created_date).substring(0, 10)}
+      </td>
+      <td className="p-4 text-center">
         {!postItem.premium_user && "No"}
         {postItem.premium_user && "Yes"}
       </td>
-      <td className="p-4">
+      <td className="p-4 text-center">
         <EditPostLinks items={postItem} />
       </td>
     </tr>

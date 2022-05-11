@@ -17,7 +17,6 @@ import { CategoryState } from "../../../shared/interfaces/CategoryState.interfac
 import { UserAccess } from "../../../shared/interfaces/UserAccess.interface";
 import SelectCategoryList from "./SelectCategoryList";
 import SelectBadge from "./SelectBadge";
-import SelectServices from "./SelectServices";
 import PostService from "../../../services/post/Post.Service";
 import { ActivityDestination } from "../../../shared/interfaces/ActivityDestination.interface";
 import { PostFormsNavigate } from "./PostFormsNavigate";
@@ -31,6 +30,7 @@ import ActivityPackageService from "../../../services/post/ActivityPackage.Servi
 import EventService from "../../../services/post/Event.Service";
 import FreeService from "../../../services/post/FreeServices.Service";
 import { ToastContainer, toast } from "react-toastify";
+import CreatableSelectServices from "./CreatableSelectServices";
 
 const CreatePostActivityPackage = () => {
   const location = useLocation();
@@ -40,7 +40,7 @@ const CreatePostActivityPackage = () => {
 
   const authCtx = useContext(AuthContext);
   const userAccess: UserAccess = authCtx.userRole;
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState([] as any[]);
   const [userServ, setUserServ] = useState(null);
   const refFileInput = useRef<HTMLInputElement | null>(null);
 
@@ -176,8 +176,6 @@ const CreatePostActivityPackage = () => {
       progress: undefined,
     });
 
-  //console.log(uploadFiles);
-  //console.log(fileIsValid);
   const handleUploadFiles = async (event: any) => {
     //notify();
     const uploadedFile = event.target.files;
@@ -275,11 +273,20 @@ const CreatePostActivityPackage = () => {
   };
 
   //console.log(selServices);
-  const handleServicesChange = (obj: any) => {
+  /*const handleServicesChange = (obj: any) => {
     //setSelServices(obj);
     const servObj = [] as any[];
     for (let i = 0; i < obj.length; i++) {
       servObj.push(obj[i].name);
+    }
+    setSelServices(servObj.toString());
+    setUserServ(obj);
+  };*/
+
+  const handleServicesChange2 = (obj: any) => {
+    const servObj = [] as any[];
+    for (let i = 0; i < obj.length; i++) {
+      servObj.push(obj[i].value);
     }
     setSelServices(servObj.toString());
     setUserServ(obj);
@@ -491,6 +498,7 @@ const CreatePostActivityPackage = () => {
     setPostData((postData) => ({
       ...postData,
       main_badge_id: badgeWithImg[0].id,
+      activityBadgeId: badgeWithImg[0].id,
     }));
     setsubmitData((submitData) => ({
       ...submitData,
@@ -518,26 +526,32 @@ const CreatePostActivityPackage = () => {
     try {
       await UserService.getUsers().then(
         (res) => {
-          //console.log(res);
-          //console.log(res.data);
           setContactPersons(res.data);
-          //setMainContactPerson(res.data.data[0]);
         },
         (error) => {
           console.log("Error in getUsers:", error);
         }
       );
     } catch (err) {
-      console.log(err);
+      console.log("Error in getContactPersons: ", err);
     }
   }, [setContactPersons]);
 
   const loadServices = useCallback(async () => {
     await FreeService.getServices().then(
       (res) => {
+        let servicesArr = [];
         if (res.status === 200) {
           //console.log(res.data);
-          setServices(res.data);
+          for (let i = 0; i < res.data.length; i++) {
+            //console.log(res.data[i]);
+            servicesArr.push({
+              label: res.data[i].name,
+              value: res.data[i].name,
+            });
+          }
+          //setServices(res.data);
+          setServices(servicesArr);
         }
       },
       (error) => {
@@ -951,10 +965,23 @@ const CreatePostActivityPackage = () => {
             <Row className="mt-4">
               <Form.Label>Free services (Maximum 5)</Form.Label>
               <Col className="col-4">
-                <SelectServices
+                {/*<SelectServices
                   mainServices={userServ}
                   services={services}
                   handleServicesChange={handleServicesChange}
+            />*/}
+                {/*<CreatableSelect
+                  placeholder="Search free services"
+                  isMulti
+                  onChange={handleServicesChange2}
+                  options={services}
+                  getOptionLabel={(e: any) => e.label}
+                  getOptionValue={(e: any) => String(e.value)}
+          />*/}
+                <CreatableSelectServices
+                  mainServices={userServ}
+                  services={services}
+                  handleServicesChange={handleServicesChange2}
                 />
               </Col>
             </Row>

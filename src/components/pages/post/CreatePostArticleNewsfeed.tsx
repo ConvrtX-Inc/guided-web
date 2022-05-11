@@ -25,6 +25,8 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import ArticleService from "../../../services/post/Article.Service";
 import NewsfeedService from "../../../services/post/Newsfeed.Service";
+import { NotifyMessage } from "../../ui/NotifyMessage";
+import { ToastContainer } from "react-toastify";
 
 const CreatePostArticleNewsfeed = () => {
   const location = useLocation();
@@ -162,6 +164,17 @@ const CreatePostArticleNewsfeed = () => {
   //handle upload multiple files
   //console.log(uploadFiles);
   const handleUploadFiles = async (event: any) => {
+    const uploadedFile = event.target.files;
+    const uploadedFileSize = uploadedFile[0].size;
+    const fileSize = Math.round(uploadedFileSize / 1024); //Convert to MB
+    const validFileSize = 2048;
+    //const validFileSize = 50;
+    if (fileSize > validFileSize) {
+      //console.log("The maximum file size allowed is set to: 2MB");
+      NotifyMessage("The file is too large. Allowed maximum size is 2MB.");
+      event.target.value = null;
+      return;
+    }
     const fileObj = [];
     //const fileArray = [] as any[];
     fileObj.push(event.target.files);
@@ -213,6 +226,13 @@ const CreatePostArticleNewsfeed = () => {
     async (e: any) => {
       e.preventDefault();
       setIsLoading(true);
+
+      if (uploadFiles.length === 0) {
+        NotifyMessage("Please select atleast 1 image.");
+        setIsLoading(false);
+        return;
+      }
+
       try {
         submitData.sub_badge_ids = subBadges.toString();
         await postDataTo(postData.category_type, submitData).then(
@@ -235,7 +255,7 @@ const CreatePostArticleNewsfeed = () => {
             }
           },
           (err) => {
-            console.log("Error in postDataTo: ", err);
+            NotifyMessage(`Error in postDataTo: ${err}`);
             setIsLoading(false);
           }
         );
@@ -257,7 +277,7 @@ const CreatePostArticleNewsfeed = () => {
                       console.log("postOneImageTo: ", res);
                     },
                     (err) => {
-                      console.log("Error in postOneImageTo: ", err);
+                      NotifyMessage(`Error in postOneImageTo: ${err}`);
                     }
                   );
 
@@ -278,7 +298,7 @@ const CreatePostArticleNewsfeed = () => {
                         }
                       },
                       (err) => {
-                        console.log("Error in postToActivityPost: ", err);
+                        NotifyMessage(`Error in postToActivityPost: ${err}`);
                         setIsLoading(false);
                       }
                     );
@@ -288,11 +308,11 @@ const CreatePostArticleNewsfeed = () => {
             );
           }
         } catch (err) {
-          console.log("Error in firebase upload: ", err);
+          NotifyMessage(`Error in firebase upload: ${err}`);
           setIsLoading(false);
         }
       } catch (err) {
-        console.log("Error in handleSubmit: ", err);
+        NotifyMessage(`Error in handleSubmit: ${err}`);
         setIsLoading(false);
       }
     },
@@ -320,6 +340,13 @@ const CreatePostArticleNewsfeed = () => {
       ...submitData,
       main_badge_id: badgeWithImg[0].id,
     }));
+
+    //initial value for react-select
+    setPostData((postData) => ({
+      ...postData,
+      main_badge_id: badgeWithImg[0].id,
+      activityBadgeId: badgeWithImg[0].id,
+    }));
   }, []);
 
   //Load badge data
@@ -329,12 +356,12 @@ const CreatePostArticleNewsfeed = () => {
         (res) => {
           setBadgeWithImg(res.data);
         },
-        (error) => {
-          console.log(error);
+        (err) => {
+          NotifyMessage(`Error in BadgeService: ${err}`);
         }
       );
     } catch (err) {
-      console.log(err);
+      NotifyMessage(`Error in loadBadgeData: ${err}`);
     }
   }, [setBadgeWithImg]);
 
@@ -348,6 +375,7 @@ const CreatePostArticleNewsfeed = () => {
 
   return (
     <Container className="create-post-container">
+      <ToastContainer />
       <Row className="mt-5">
         <Col className="col-6">
           <Row>
@@ -431,7 +459,6 @@ const CreatePostArticleNewsfeed = () => {
                     >
                       <img
                         className="chk-badge-img"
-                        //src={item.imgBase64}
                         src={item.firebase_snapshot_img}
                         alt={item.badge_name}
                       />

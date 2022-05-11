@@ -19,12 +19,31 @@ import create_badge from "../../../assets/admin/create-badge.png";
 import "./BadgeScreen.scss";
 import Spinner from "../../ui/Spinner";
 import BadgeService from "../../../services/badge/Badge.Service";
-import { Badge } from "../../../shared/interfaces/Badge.interface";
+import ReactPaginate from "react-paginate";
+//import { Badge } from "../../../shared/interfaces/Badge.interface";
 
 const BadgeScreen = () => {
   const [data, setData] = useState([] as any[]);
   const [isPending, setisPending] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const rowsPerPage = [5, 10];
+  const [pageCount, setPageCount] = useState(0);
+  const [userPageNumber, setUserPageNumber] = useState(5);
+  const [remountComponent, setRemountComponent] = useState(0);
+  const [userRowsPerPage, setUserRowsPerPage] = useState(5);
+  const [totalPerPage, setTotalPerPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const handlePageClick = async ({ selected }: { selected: any }) => {
+    console.log(selected + 1);
+    setUserPageNumber(selected + 1);
+  };
+
+  const HandleSelectRowsPerPage = (e: any) => {
+    setUserRowsPerPage(e.target.value);
+    setRemountComponent(Math.random());
+  };
 
   const onSearchChange = (e: any) => {
     setSearchTerm(e.target.value);
@@ -45,7 +64,8 @@ const BadgeScreen = () => {
           badge_name: searchTerm,
         }).then(
           (res) => {
-            setDataWithImg(res.data);
+            //setDataWithImg(res.data);
+            setData(res.data);
             setisPending(false);
           },
           (error) => {
@@ -64,23 +84,23 @@ const BadgeScreen = () => {
     return b64;
   };*/
 
-  const setDataWithImg = useCallback(async (badges: Badge[]) => {
-    let badgeWithImg: Badge[] = [];
+  //const setDataWithImg = useCallback(async (badges: Badge[]) => {
+  //  let badgeWithImg: Badge[] = [];
 
-    //const base64Flag = "data:image/png;base64,";
+  //const base64Flag = "data:image/png;base64,";
 
-    await Promise.all(
-      badges.map(async (badge: any) => {
-        //console.log(badge);
-        //console.log(badge.img_icon.data);
+  //   await Promise.all(
+  //     badges.map(async (badge: any) => {
+  //console.log(badge);
+  //console.log(badge.img_icon.data);
 
-        //const img64 = bufferToBase64(badge.img_icon.data);
-        //console.log(img64)
+  //const img64 = bufferToBase64(badge.img_icon.data);
+  //console.log(img64)
 
-        //badge.img64 = `${base64Flag}${img64}`;
-        //console.log(badge.img64);
+  //badge.img64 = `${base64Flag}${img64}`;
+  //console.log(badge.img64);
 
-        /*comment conversion
+  /*comment conversion
         //const imgBuffer = badge.img_icon.data;
         //console.log(imgBuffer);
 
@@ -91,22 +111,28 @@ const BadgeScreen = () => {
         //badge.imgBase64 = `${base64Flag}${imgBase64}`;
         //console.log(badge.imgBase64); end comment conversion*/
 
-        //badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
-        badge.imgBase64 = null;
-        badgeWithImg.push(badge);
-        //console.log(badgeWithImg);
-      })
-    );
+  //badge.imgBase64 = `${base64Flag}${badge.img_icon}`;
+  //      badge.imgBase64 = null;
+  //      badgeWithImg.push(badge);
+  //console.log(badgeWithImg);
+  //    })
+  //  );
 
-    setData(badgeWithImg);
-  }, []);
+  //  setData(badgeWithImg);
+  //}, []);
 
   const loadData = useCallback(async () => {
     try {
       setisPending(true);
-      await BadgeService.loadData().then(
+      await BadgeService.loadDataPagination(5, 1).then(
         (res) => {
-          setDataWithImg(res.data);
+          //setDataWithImg(res.data);
+          let result = res.data;
+          console.log(result);
+          setPageCount(result.pageCount);
+          setTotalPerPage(result.data.length);
+          setTotalCount(result.total);
+          setData(result.data);
           setisPending(false);
         },
         (error) => {
@@ -117,7 +143,7 @@ const BadgeScreen = () => {
       console.log(err);
       setisPending(false);
     }
-  }, [setDataWithImg]);
+  }, [setData]);
 
   useEffect(() => {
     loadData();
@@ -178,6 +204,61 @@ const BadgeScreen = () => {
       <Row className="badge-items">
         {!isPending && <BadgeItems items={data} />}
         {isPending && <Spinner />}
+      </Row>
+      <Row>
+        <Col className="col-10">
+          <div className="row justify-content-end pagination-info">
+            <label
+              htmlFor="SelectRowsPerPage"
+              className="float-end col-2 col-form-label"
+            >
+              Rows per page:
+            </label>
+            <div className="col-1">
+              <select
+                id="SelectRowsPerPage"
+                className="select-rows-per-page form-select mt-1"
+                aria-label="Default select example"
+                onChange={(e) => HandleSelectRowsPerPage(e)}
+              >
+                {rowsPerPage.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <label className="col-2 col-form-label">
+              1-{totalPerPage} of {totalCount}
+            </label>
+          </div>
+        </Col>
+        <Col key={remountComponent} className="col-2">
+          <nav aria-label="..." className="Page navigation example">
+            <ReactPaginate
+              previousLabel={"<"}
+              nextLabel={">"}
+              breakLabel={"..."}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={6}
+              breakClassName={"page-item"}
+              breakLinkClassName={"page-link"}
+              pageClassName={"page-item"}
+              pageLinkClassName={"page-link"}
+              pageCount={pageCount}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination"}
+              //previousLinkClassName={"previousBttn"}
+              previousLinkClassName={"prevButton page-link"}
+              //nextLinkClassName={"nextBttn"}
+              nextLinkClassName={"nxtButton page-link ms-2"}
+              disabledClassName={"disabled"}
+              className={"pagination"}
+              //subContainerClassName={"pages pagination"}
+              activeClassName={"active"}
+            />
+          </nav>
+        </Col>
       </Row>
     </Container>
   );

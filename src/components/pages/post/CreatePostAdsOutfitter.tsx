@@ -18,6 +18,13 @@ import PostService from "../../../services/post/Post.Service";
 import { PostFormsNavigate } from "./PostFormsNavigate";
 import UserService from "../../../services/users/User.Service";
 import SelectContactPerson from "./SelectContactPerson";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
+import AdsService from "../../../services/post/Ads.Service";
+import OutfitterService from "../../../services/post/Outfitter.Service";
+import { NotifyMessage } from "../../ui/NotifyMessage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../firebase";
 
 const CreatePostAdsOutfitter = () => {
   const authCtx = useContext(AuthContext);
@@ -48,6 +55,7 @@ const CreatePostAdsOutfitter = () => {
     province: "Davao Del Sur",
     zip_code: 8000,
     product_link: "www.google.com",
+    is_published: true,
   });
   const [postData, setPostData] = useState({
     premium_user: false,
@@ -62,6 +70,7 @@ const CreatePostAdsOutfitter = () => {
     contact_number: "",
     contact_email: "",
     contact_website: "",
+    firebase_snapshot_img: "",
   });
 
   const refFileInput = useRef<HTMLInputElement | null>(null);
@@ -85,15 +94,14 @@ const CreatePostAdsOutfitter = () => {
     try {
       await UserService.getUsers().then(
         (res) => {
-          //console.log(res.data);
-          setContactPersons(res.data.data);
+          setContactPersons(res.data);
         },
         (error) => {
           console.log("Error in getUsers:", error);
         }
       );
     } catch (err) {
-      console.log(err);
+      console.log("Error in getContactPersons: ", err);
     }
   }, [setContactPersons]);
 
@@ -101,7 +109,34 @@ const CreatePostAdsOutfitter = () => {
     getContactPersons();
   }, [getContactPersons]);
 
+  const notifyMessage = (error: string) =>
+    toast.error(error, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+    });
+
   const handleUploadFiles = async (event: any) => {
+    const uploadedFile = event.target.files;
+    const uploadedFileSize = uploadedFile[0].size;
+    const fileSize = Math.round(uploadedFileSize / 1024); //Convert to MB
+    const validFileSize = 2048;
+    //const validFileSize = 50;
+    if (fileSize > validFileSize) {
+      //console.log("The maximum file size allowed is set to: 2MB");
+      notifyMessage("The file is too large. Allowed maximum size is 2MB.");
+      event.target.value = null;
+      return;
+    }
+
+    //allowed files
+    const fileExtension = uploadedFile[0].type.split("/")[1].toLowerCase();
+    console.log(fileExtension);
+
     const fileObj = [];
     fileObj.push(event.target.files);
     for (let i = 0; i < fileObj[0].length; i++) {
@@ -112,9 +147,12 @@ const CreatePostAdsOutfitter = () => {
           temp_id: Math.random(),
           default_img: false,
           snapshot_img: String(base64),
+          file: fileObj[0][i],
+          filename: uuidv4() + fileObj[0][i].name,
         },
       ]);
     }
+    event.target.value = null;
   };
 
   const handleInputChange = (event: any) => {
@@ -157,11 +195,11 @@ const CreatePostAdsOutfitter = () => {
 
   const postImageTo = (category: number, data: any) => {
     if (category === 5) {
-      return PostService.postAdsDataImage(data);
+      return AdsService.postOneAdsImage(data);
     } else if (category === 6) {
-      return PostService.postOutfitterDataImage(data);
+      return OutfitterService.postOneOutfitterImage(data);
     } else {
-      return PostService.postAdsDataImage(data);
+      return AdsService.postOneAdsImage(data);
     }
   };
 
@@ -170,7 +208,11 @@ const CreatePostAdsOutfitter = () => {
 
     setIsLoading(true);
 
-    let bulkUpload = {};
+    if (uploadFiles.length === 0) {
+      notifyMessage("Please select atleast 1 image.");
+      setIsLoading(false);
+      return;
+    }
     let isSuccess: boolean | false = false;
 
     try {
@@ -191,17 +233,10 @@ const CreatePostAdsOutfitter = () => {
             postData.post_id = res.data.id;
 
             for (let i = 0; i < uploadFiles.length; i++) {
-              uploadFiles[i].snapshot_img = uploadFiles[i].snapshot_img.replace(
-                "data:image/png;base64,",
-                ""
-              );
+              uploadFiles[i].snapshot_img = "";
               uploadFiles[i].activity_outfitter_id = res.data.id;
+              uploadFiles[i].activity_advertisement_id = res.data.id;
             }
-            if (uploadFiles.length > 0) {
-              uploadFiles[0].default_img = true;
-              postData.snapshot_img = uploadFiles[0].snapshot_img; //add to activity-post table
-            }
-            bulkUpload = { bulk: uploadFiles };
           }
         },
         (err) => {
@@ -210,32 +245,57 @@ const CreatePostAdsOutfitter = () => {
       );
 
       if (isSuccess) {
-        await postImageTo(postData.category_type, bulkUpload).then(
-          (res) => {
-            console.log("postImageTo: ", res.status);
-          },
-          (err) => {
-            console.log("Error postImageTo: ", err);
-          }
-        );
+        //firebase upload
+        try {
+          for (let i = 0; i < uploadFiles.length; i++) {
+            const imageRef = ref(storage, `web/${uploadFiles[i].filename}`);
+            await uploadBytes(imageRef, uploadFiles[i].file).then(
+              (snapshot) => {
+                getDownloadURL(snapshot.ref).then((url) => {
+                  postImageTo(postData.category_type, {
+                    activity_outfitter_id: uploadFiles[i].activity_outfitter_id,
+                    activity_advertisement_id: uploadFiles[i].activity_advertisement_id,
+                    firebase_snapshot_img: url,
+                    filename: `web/${uploadFiles[i].filename}`, //save filename
+                  }).then(
+                    (res) => {
+                      console.log("postImageTo: ", res);
+                    },
+                    (err) => {
+                      NotifyMessage(`Error in postImageTo: ${err}`);
+                    }
+                  );
 
-        await PostService.postToActivityPost(postData).then(
-          (res) => {
-            if (res.status === 201) {
-              setIsLoading(false);
-              navigate("/post", {
-                state: {
-                  status: true,
-                  message: "Post successfully created.",
-                },
-                replace: true,
-              });
-            }
-          },
-          (err) => {
-            console.log("Error postToActivityPost: ", err);
+                  if (i === uploadFiles.length - 1) {
+                    postData.firebase_snapshot_img = url;
+                    PostService.postToActivityPost(postData).then(
+                      (res) => {
+                        console.log("postToActivityPost: ", res);
+                        if (res.status === 201) {
+                          setIsLoading(false);
+                          navigate("/post", {
+                            state: {
+                              status: true,
+                              message: "Post successfully created.",
+                            },
+                            replace: true,
+                          });
+                        }
+                      },
+                      (err) => {
+                        NotifyMessage(`Error in postToActivityPost: ${err}`);
+                        setIsLoading(false);
+                      }
+                    );
+                  }
+                });
+              }
+            );
           }
-        );
+        } catch (err) {
+          NotifyMessage(`Error in firebase upload: ${err}`);
+          setIsLoading(false);
+        }
       }
     } catch (error) {
       console.log("Error in handleSubmit:", error);
@@ -314,7 +374,7 @@ const CreatePostAdsOutfitter = () => {
               {uploadFiles.map((img: any) => (
                 <Col
                   className="col-2 d-flex justify-content-center align-items-center me-1 p-0"
-                  key={img.snapshot_img}
+                  key={img.temp_id}
                 >
                   <button
                     type="button"

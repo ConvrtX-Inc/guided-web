@@ -79,8 +79,17 @@ const loadUserActivityPostSummary = (id: string) => {
       return response;
     });
 };
+const loadMostActiveEndUsers = (limit: number) => {
+  config()["params"] = {};
+  return axios
+    .get(API_URL + `api/v1/users?limit=${limit}`, config())
+    .then((response) => {
+      return response;
+    });
+};
 
 const DashboardService = {
+  loadMostActiveEndUsers,
   loadRecentGuides,
   loadSubAdminRecentPosts,
   loadRecentPosts,

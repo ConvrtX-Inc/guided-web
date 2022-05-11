@@ -29,15 +29,16 @@ const BadgeScreen = () => {
 
   const rowsPerPage = [5, 10];
   const [pageCount, setPageCount] = useState(0);
-  const [userPageNumber, setUserPageNumber] = useState(5);
+  //const [userPageNumber, setUserPageNumber] = useState(5);
   const [remountComponent, setRemountComponent] = useState(0);
   const [userRowsPerPage, setUserRowsPerPage] = useState(5);
   const [totalPerPage, setTotalPerPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
 
   const handlePageClick = async ({ selected }: { selected: any }) => {
-    console.log(selected + 1);
-    setUserPageNumber(selected + 1);
+    //console.log(selected + 1);
+    loadData(selected + 1, userRowsPerPage);
+    //setUserPageNumber(selected + 1);
   };
 
   const HandleSelectRowsPerPage = (e: any) => {
@@ -121,29 +122,34 @@ const BadgeScreen = () => {
   //  setData(badgeWithImg);
   //}, []);
 
-  const loadData = useCallback(async () => {
-    try {
-      setisPending(true);
-      await BadgeService.loadDataPagination(5, 1).then(
-        (res) => {
-          //setDataWithImg(res.data);
-          let result = res.data;
-          console.log(result);
-          setPageCount(result.pageCount);
-          setTotalPerPage(result.data.length);
-          setTotalCount(result.total);
-          setData(result.data);
-          setisPending(false);
-        },
-        (error) => {
-          setisPending(false);
-        }
-      );
-    } catch (err) {
-      console.log(err);
-      setisPending(false);
-    }
-  }, [setData]);
+  const loadData = useCallback(
+    async (pageNumber?: number, limit?: number) => {
+      try {
+        setisPending(true);
+        await BadgeService.loadDataPagination(
+          limit || userRowsPerPage,
+          pageNumber || 1
+        ).then(
+          (res) => {
+            let result = res.data;
+            //console.log(result);
+            setPageCount(result.pageCount);
+            setTotalPerPage(result.data.length);
+            setTotalCount(result.total);
+            setData(result.data);
+            setisPending(false);
+          },
+          (error) => {
+            setisPending(false);
+          }
+        );
+      } catch (err) {
+        console.log(err);
+        setisPending(false);
+      }
+    },
+    [setData, userRowsPerPage]
+  );
 
   useEffect(() => {
     loadData();

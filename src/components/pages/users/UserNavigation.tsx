@@ -26,8 +26,8 @@ const UserNavigation = () => {
         try {
             await UserService.getUsers().then(
                 (res) => {
-                    setUserData(res.data.data);
-                    setCntAllUsers(res.data.data.length);
+                    setUserData(res.data);
+                    setCntAllUsers(res.data.length);
                     setflagCntAllUsers(false);
                 },
                 (error) => {

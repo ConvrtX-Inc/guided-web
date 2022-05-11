@@ -39,9 +39,7 @@ const Logs = (props: any) => {
 
   const displayData = data.map((item: any) => {
     if (item.type_name === 'FAQ') {
-      const faq_date = props.items.updated_date === 'FAQ'
-        ? props.items.updated_data
-        : item.updated_data;
+      const faq_date = props.items.type_name === 'FAQ' ? props.items.update_date : item.update_date;
 
       return (<Row key={item.id}>
         <Col>
@@ -52,10 +50,9 @@ const Logs = (props: any) => {
       </Row>
       )
     }
+
     if (item.type_name === 'Terms & Conditions') {
-      const tnc_date = props.items.updated_date === 'Terms & Conditions'
-        ? props.items.updated_data
-        : item.updated_data;
+      const tnc_date = props.items.type_name === 'Terms & Conditions' ? props.items.update_date : item.update_date;
 
       return (<Row key={item.id}>
         <Col>
@@ -67,9 +64,7 @@ const Logs = (props: any) => {
       )
     }
     if (item.type_name === 'Traveler Release & Waiver Form') {
-      const trwf_date = props.items.updated_date === 'Traveler Release & Waiver Form'
-        ? props.items.updated_data
-        : item.updated_data;
+      const trwf_date = props.items.type_name === 'Traveler Release & Waiver Form' ? props.items.update_date : item.update_date;
 
       return (<Row key={item.id}>
         <Col>
@@ -81,9 +76,7 @@ const Logs = (props: any) => {
       )
     }
     if (item.type_name === 'Cancellation Policy') {
-      const cancellation_date = props.items.updated_date === 'Cancellation Policy'
-        ? props.items.updated_data
-        : item.updated_data;
+      const cancellation_date = props.items.type_name === 'Cancellation Policy' ? props.items.update_date : item.update_date;
 
       return (<Row key={item.id}>
         <Col>
@@ -95,9 +88,7 @@ const Logs = (props: any) => {
       )
     }
     if (item.type_name === 'Guided Payment') {
-      const gp_date = props.items.updated_date === 'Guided Payment'
-        ? props.items.updated_data
-        : item.updated_data;
+      const gp_date = props.items.type_name === 'Guided Payment' ? props.items.update_date : item.update_date;
 
       return (<Row key={item.id}>
         <Col>
@@ -109,9 +100,9 @@ const Logs = (props: any) => {
       )
     }
     if (item.type_name === 'Local Laws') {
-      const local_law_date = props.items.updated_date === 'Local Laws'
-        ? props.items.updated_data
-        : item.updated_data;
+      const local_law_date = props.items.type_name === 'Local Laws'
+        ? props.items.update_date
+        : item.updated_date;
 
       return (<Row key={item.id}>
         <Col>
@@ -129,7 +120,7 @@ const Logs = (props: any) => {
       <Row className="mt-5" >
         <Row>
           <Col>
-            <h2>{moment(props.items.updated_date).format("MMMM DD Y")}</h2>
+            <h2>{moment(props.items.update_date).format("MMMM DD Y")}</h2>
           </Col>
         </Row>
         <Row>

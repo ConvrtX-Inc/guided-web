@@ -6,6 +6,8 @@ import Button from "react-bootstrap/Button";
 import check from '../../../../assets/images/check-lg.svg';
 import CreditCardList from './sub-components/cardList';
 import { useNavigate } from "react-router-dom";
+import googleWallet from '../../../../assets/images/wallet/google-wallet.png';
+import appleWallet from '../../../../assets/images/wallet/apple-wallet.png';
 
 interface IPayment {
   showAddCardModal: any;
@@ -82,7 +84,7 @@ const Payment = ({
               <Row className='pay-methods-rows'>
                 <Col>
                   <div className='pay-methods-bank-cards'>
-                    <img src='/wallet/google-wallet.png' className="pay-method-bank-cards-align" />
+                    <img src={googleWallet} className="pay-method-bank-cards-align" />
                     <span className='active-check unactive-check'></span>
                   </div>
                 </Col>
@@ -90,7 +92,7 @@ const Payment = ({
               <Row className='pay-methods-rows'>
                 <Col>
                   <div className='pay-methods-bank-cards'>
-                    <img src='/wallet/apple-wallet.png' className="pay-method-bank-cards-align" />
+                    <img src={appleWallet} className="pay-method-bank-cards-align" />
                     <span className='active-check unactive-check'></span>
                   </div>
                 </Col>

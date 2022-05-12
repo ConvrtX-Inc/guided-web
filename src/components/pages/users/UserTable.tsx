@@ -15,7 +15,7 @@ const UserTable = (props: any) => {
             <td className="p-4">
                 <Image
                 className="profile-image app-application-item-image ml-3"
-                    src={`${"data:image/png;base64,"}${user.badge.badge_img_icon}`}
+                    src={`${"data:image/png;base64,"}${user.badge ? user.badge.firebase_snapshot_img : null}`}
                 alt={''}
                 />
             </td>

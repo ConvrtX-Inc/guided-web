@@ -51,8 +51,10 @@ const SubPaymentScreen = ({
         <Col><h2>Payment & Transaction History</h2></Col>
       </Row>
       <Row className="mt-5 ms-3 payment-content-header">
-        <Col>
+        <Col className="col">
           <button className='pending-payments-button'>Pending Payments</button>
+          </Col>
+        <Col className="col">
           <Link
             to={`/payment/create`}
             className="btn payments-button"
@@ -62,7 +64,9 @@ const SubPaymentScreen = ({
             </span>
           </Link>
         </Col>
-        <Col>
+        <Col className="col"></Col>
+        <Col className="col"></Col>
+        <Col className="col">
           <AddNewCard
             cls={'add-new-card-position'}
             showAddCardModal={showAddCardModal}
@@ -81,13 +85,13 @@ const SubPaymentScreen = ({
         </Col>
       </Row>
       <Row className="ms-3">
-        <Col xs={3}>
+        <Col className="col-sm-3">
           <DateField placeholder={'Set Start Date'} name={'start_date'} />
         </Col>
-        <Col xs={3}>
+        <Col className="col-sm-3">
           <DateField placeholder={'End Date'} name={'end_date'} />
         </Col>
-        <Col xs={6}>
+        <Col className="col-sm-6">
           <SearchSortByField />
         </Col>
       </Row>

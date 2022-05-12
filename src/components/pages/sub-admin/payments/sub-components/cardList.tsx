@@ -10,20 +10,14 @@ interface ICreditCardList {
 const creditCardList = ({ showRemoveCardModal }: ICreditCardList) => {
   return (
     <Row className='credit-card-list-rows'>
-      <Col xs={3}>
-        <div className='credit-card-div'>
-          <img src={blackPlatinum} alt={''} />
-        </div>
+      <Col className="col-md-4 col-lg-4">
+        <img src={blackPlatinum} className="img-fluid" alt="image" />
       </Col>
-      <Col xs={3}>
-      	<div className='credit-card-div'>
-          <img src={purplePlatinum} alt={''} />
-        </div>
+      <Col className="col-md-4 col-lg-4">
+        <img src={purplePlatinum} className="img-fluid" alt="image" />
       </Col>
-      <Col xs={3}>
-        <div className='credit-card-div'>
-          <img src={bluePlatinum} alt={''} />
-        </div>
+      <Col className="col-md-4 col-lg-4">
+        <img src={bluePlatinum} className="img-fluid" alt="image" />
       </Col>
     </Row>
   );

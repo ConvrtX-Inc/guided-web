@@ -3,7 +3,6 @@ import SignInForm from "./components/pages/login/signin";
 import ResetPassword from "./components/pages/login/ResetPassword";
 import ConfirmResetPassword from "./components/pages/login/ConfirmResetPassword";
 import DashboardScreen from "./components/pages/dashboard/DashboardScreen";
-import GuidesScreen from "./components/pages/guides/GuidesScreen";
 import PostScreen from "./components/pages/post/PostScreen";
 import PaymentScreen from "./components/pages/payments/PaymentScreen";
 import TransactionScreen from "./components/pages/transactions/TransactionScreen";
@@ -47,6 +46,8 @@ import ScrollToTop from "./components/layout/ScrollToTop";
 import CreatePostAdsOutfitter from "./components/pages/post/CreatePostAdsOutfitter";
 import EditPostAdsOutfitter from "./components/pages/post/EditPostAdsOutfitter";
 import EditPostActivityPackageEvent from "./components/pages/post/EditPostActivityPackageEvent";
+import GuidesAndOutfittersScreen from "./components/pages/guides/GuidesAndOutfittersScreen";
+import CreateSubAdmin from "./components/pages/guides/CreateSubAdmin";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -76,7 +77,10 @@ function App() {
         {authCtx.isLoggedIn && userAccess.user_type_name === "Admin" && (
           <Route element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardScreen />} />
-            <Route path="guides" element={<GuidesScreen />} />
+            <Route path="guides">
+              <Route index element={<GuidesAndOutfittersScreen />} />
+              <Route path="/guides/create" element={<CreateSubAdmin />} />
+            </Route>
             <Route path="post">
               <Route index element={<PostScreen />} />
               <Route path="/post/:id" element={<ViewPost />} />
@@ -231,11 +235,8 @@ function App() {
             </Route>
             <Route path="payment">
               <Route index element={<SubPaymentScreen />} />
-              <Route
-                path="/payment/create"
-                element={<SubCreatePayment />}
-              />
-              </Route>
+              <Route path="/payment/create" element={<SubCreatePayment />} />
+            </Route>
 
             <Route path="support" element={<SubSupportScreen />} />
 

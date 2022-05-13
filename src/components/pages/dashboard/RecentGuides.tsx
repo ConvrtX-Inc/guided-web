@@ -8,7 +8,7 @@ const RecentGuides = (props: any) => {
       <Card className="recent-guides">
         <Card.Body>
           <div className="text-center">
-            <Image className="mb-2 mt-1" src={recentguideItem.User_profile_photo_firebase_url} alt="" />
+            <Image className="mb-2 mt-1" style={{borderRadius: 50}} src={recentguideItem.User_profile_photo_firebase_url} alt="" />
             <h4>{recentguideItem.User_full_name}</h4>
             <p>{recentguideItem.User_email}</p>
             <p>{recentguideItem.User_phone_no}</p>

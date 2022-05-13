@@ -10,6 +10,7 @@ const MostActive = (props: any) => {
           <div className="text-center">
             <Image
               className="mb-2 mt-1"
+              style={{ borderRadius: 50 }}
               src={mostactive.profile_photo_firebase_url}
               //alt={mostactive.full_name}
             />

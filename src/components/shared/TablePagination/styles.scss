@@ -1,0 +1,27 @@
+.table-pagination {
+    display: flex;
+    justify-content: flex-end;
+    font-family: 'Mulish';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+
+    letter-spacing: 0.3px;
+
+
+    color: #9FA2B4;
+
+    .pagination-icons {
+        .nav-pagination {
+            cursor: pointer;
+            padding: 5px;
+        }
+    }
+
+
+    select {
+        border: 0;
+        color: #9FA2B4;
+    }
+}

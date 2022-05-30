@@ -1,0 +1,28 @@
+.table {
+    border-radius: 15px 15px 0 0;
+    background-color: transparent;
+    color: #000000;
+    font-family: 'Gilroy';
+    table-layout: fixed;
+    padding-bottom: 85px !important;
+
+    th,
+    td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    th {
+        padding: 20px 33px;
+    }
+
+    >:not(:first-child),
+    tbody {
+        border-top: 2px solid #C4C4C4;
+    }
+
+    td {
+        height: 68px;
+        color: #181B1B;
+    }
+}

@@ -2,11 +2,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./index.scss";
-import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import { AuthContextProvider } from "./context/AuthContext";
+import { Provider as ReduxProvider } from "react-redux";
+import store from "./redux/store";
 
 import "./fonts/Gilroy/GilroyBold.ttf";
 import "./fonts/Gilroy/GilroyExtraBold.ttf";
@@ -15,9 +16,11 @@ import "./fonts/Gilroy/GilroyRegular.ttf";
 import "./fonts/Gilroy/GilroySemibold.ttf";
 
 ReactDOM.render(
-  <AuthContextProvider>
-    <App />
-  </AuthContextProvider>,
+  <ReduxProvider store={store}>
+    <AuthContextProvider>
+      <App />
+    </AuthContextProvider>
+  </ReduxProvider>,
   document.getElementById("root")
 );
 

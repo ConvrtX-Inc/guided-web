@@ -1,0 +1,43 @@
+.btn-group {
+    .btn {
+        background-color: #fff;
+        color: gray;
+        margin: 0 24px;
+        border: 0;
+        border-radius: 15px !important;
+        padding: 22px 30px;
+        font-weight: 700;
+        height: 66px;
+        width: 217px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-check:checked+.btn-primary {
+        background-color: #fff;
+        color: #007749;
+        border: 1px solid #007749;
+    }
+
+}
+
+
+#csv-download {
+    background: #FFFFFF;
+    border: 1px solid #007749;
+    border-radius: 29px;
+    height: 39px;
+    width: 136.05px;
+
+
+    font-family: 'Gilroy';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    letter-spacing: -0.01em;
+
+    color: #066028;
+}

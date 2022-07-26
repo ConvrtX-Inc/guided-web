@@ -1,0 +1,25 @@
+.table-wrapper {
+    padding: 0 14px;
+    padding-bottom: 85px;
+
+    background-color: #fff;
+    border-radius: 15px;
+
+
+    .user-avatar {
+        border-radius: 50%;
+        object-fit: cover;
+        height: 30px;
+        width: 30px;
+    }
+
+    .user-status {
+        &.approved {
+            color: #31A650;
+        }
+
+        &.denied {
+            color: #FF6A6A;
+        }
+    }
+}

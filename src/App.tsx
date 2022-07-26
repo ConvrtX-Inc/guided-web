@@ -5,7 +5,7 @@ import ConfirmResetPassword from "./components/pages/login/ConfirmResetPassword"
 import DashboardScreen from "./components/pages/dashboard/DashboardScreen";
 import PostScreen from "./components/pages/post/PostScreen";
 import PaymentScreen from "./components/pages/payments/PaymentScreen";
-import TransactionScreen from "./components/pages/transactions/TransactionScreen";
+import TransactionScreen from "./components/pages/transactions/TransactionScreen/";
 import SupportScreen from "./components/pages/support/SupportScreen";
 import UserScreen from "./components/pages/users/UserScreen";
 import BadgeScreen from "./components/pages/badge/BadgeScreen";

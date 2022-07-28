@@ -1,0 +1,219 @@
+.sub-payment-container {
+    h2 {
+      font-family: "Gilroy";
+      font-style: normal;
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 44px;
+    }
+    nav {
+        
+
+      form {
+        justify-content: center;
+        display: flex;
+      }
+      .active {
+        border: 1px solid #007749;
+        box-sizing: border-box;
+        color: #007749;
+      }
+  
+      input {
+        background: #ffffff;
+        font-weight: 600;
+        font-size: 14px;
+        font-style: normal;
+        height: 42px;
+      }
+
+      
+      .input-group-1 {
+        //width: 208px;
+        border-left: none;
+      }
+  
+      .input-group-2 {
+        width: 142px;
+      }
+  
+      .input-group-text {
+        background: #ffffff;
+        border: 1px solid #e4e4e4;
+        border-radius: 20px;
+      }
+  
+      .input-search {
+        border: 1px solid #e4e4e4;
+        border-radius: 20px;
+        width: 200px;
+  
+        .input-group-text {
+          border-right: none;
+        }
+      }
+
+      .btn-approve-all {
+        width: 165px;
+        margin-left: 10px;
+        background: #007749;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 28px;
+        /* identical to box height, or 143% */
+  
+        color: #ffffff;
+      }
+
+      .btn-reject-all {
+        width: 165px;
+        margin-left: 10px;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 28px;
+        border-color: red;
+        /* identical to box height, or 143% */
+  
+        color: red;
+      }
+  
+  
+      select {
+        border: 1px solid #e3e3e3;
+        box-sizing: border-box;
+        border-radius: 14px;
+        color: rgba(9, 17, 14, 0.5);
+      }
+  
+      .btn-filter {
+        width: 99px;
+        height: 42px;
+        background: #ffffff;
+        border: 1px solid #e3e3e3;
+        box-sizing: border-box;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.06);
+        border-radius: 14px;
+        color: #007749;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 20px;
+  
+        letter-spacing: 0.2px;
+  
+        color: #007749;
+      }
+      .badge-option {
+        font-family: "Gilroy";
+        font-style: normal;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 22px;
+        /* identical to box height */
+  
+        color: #979b9b;
+      }
+    }
+    .create-post-row {
+      font-family: "Gilroy";
+      font-style: normal;
+      p {
+        font-weight: 400;
+        font-size: 18px;
+        text-transform: capitalize;
+        color: #8e8e8e;
+      }
+      
+    }
+    .post-items {
+      table {
+        color: #000000;
+        background: #ffffff;
+        //border: 1px solid #c4c4c4;
+        border-radius: 9px;
+        font-family: "Gilroy";
+        font-style: normal;
+        th {
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 18px;
+        }
+        td {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 24px;
+          .btn-view-post {
+            height: 34px;
+            width: 86px;
+            background: #ffffff;
+            border: 1px solid #adb1b1;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 20px;
+            /* identical to box height, or 167% */
+  
+            color: #007749;
+          }
+          .image-wrapper {
+            position: relative;
+            width: fit-content;
+            height: fit-content;
+          }
+          .post-img {
+            width: 30px;
+            height: 30px;
+            margin-right: 5px;
+          }
+          .btn-view {
+            border-radius: 16px;
+            border-width: 1px;
+            border-color: #9fa2b4;
+            color: green;
+            text-decoration: none;
+            line-height: 28px;
+          }
+        }
+      }
+    }
+    .pagination-info,
+    .select-rows-per-page {
+      font-family: "Mulish";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      /* or 143% */
+  
+      letter-spacing: 0.3px;
+  
+      /* grayscale / gray */
+  
+      color: #9fa2b4;
+    }
+    .select-rows-per-page {
+      border: none;
+      width: 70px !important;
+    }
+    .page-link {
+      border: none !important;
+      background-color: transparent;
+    }
+    .page-item {
+      display: none;
+    }
+    /*.next {
+      background: transparent;
+      background-image: url("../../../assets/admin/right.png");
+      background-repeat: no-repeat;
+      background-position: 100% center;
+    }
+    .previous {
+      background: transparent;
+      background-image: url("../../../assets/admin/left.png");
+      background-repeat: no-repeat;
+      background-position: 100% center;
+    }*/
+  }
+  

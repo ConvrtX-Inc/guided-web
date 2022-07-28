@@ -1,14 +1,12 @@
 import "./ViewApplication.scss";
 
 import line from "../../../assets/admin/line.png";
-import userbasic from "../../../assets/admin/user_basic.png";
 import left from "../../../assets/admin/left.png";
 import check from "../../../assets/admin/check.png";
 import camp from "../../../assets/admin/camp.png";
 import hiking from "../../../assets/admin/hiking.png";
 import active from "../../../assets/admin/active.png";
 import cert1 from "../../../assets/admin/cert1.png";
-import cert2 from "../../../assets/admin/cert2.png";
 
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";

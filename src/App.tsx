@@ -6,7 +6,6 @@ import DashboardScreen from "./components/pages/dashboard/DashboardScreen";
 import PostScreen from "./components/pages/post/PostScreen";
 import PaymentScreen from "./components/pages/payments/PaymentScreen";
 import TransactionScreen from "./components/pages/transactions/TransactionScreen/";
-import SupportScreen from "./components/pages/support/SupportScreen";
 import UserScreen from "./components/pages/users/UserScreen";
 import BadgeScreen from "./components/pages/badge/BadgeScreen";
 import GuidelinesScreen from "./components/pages/guidelines/GuidelinesScreen";
@@ -48,6 +47,7 @@ import EditPostAdsOutfitter from "./components/pages/post/EditPostAdsOutfitter";
 import EditPostActivityPackageEvent from "./components/pages/post/EditPostActivityPackageEvent";
 import GuidesAndOutfittersScreen from "./components/pages/guides/GuidesAndOutfittersScreen";
 import CreateSubAdmin from "./components/pages/guides/CreateSubAdmin";
+import Support from "./components/pages/support/Support";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -135,7 +135,7 @@ function App() {
             </Route>
             <Route path="payment" element={<PaymentScreen />} />
             <Route path="transaction" element={<TransactionScreen />} />
-            <Route path="support" element={<SupportScreen />} />
+            <Route path="support" element={<Support />} />
             <Route path="end-users" element={<UserScreen />} />
             <Route path="badge">
               <Route index element={<BadgeScreen />} />

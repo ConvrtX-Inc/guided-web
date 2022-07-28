@@ -10,7 +10,6 @@ import ApplicationItem from "./ApplicationItem";
 
 import right from "../../../assets/admin/right.png";
 import left from "../../../assets/admin/left2.png";
-import user2 from "../../../assets/admin/user30.png";
 
 import UserGuideRequestService from "../../../services/user-guide-request/UserGuideRequest.Service";
 

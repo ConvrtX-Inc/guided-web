@@ -1,0 +1,211 @@
+.support-container {
+  font-family: "Gilroy";
+  h2 {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 44px;
+  }
+  .content {
+    height: 737px;
+    background: #ffffff;
+    border-radius: 15px;
+
+    .row-nav {
+      border-bottom: 1px solid #eaeaea;
+    }
+    .inbox {
+      border-right: 1px solid #eaeaea;
+
+      .custom-rounded-pill {
+        background: #007749 !important;
+      }
+      .message {
+        .name {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 100%;
+          /* identical to box height, or 16px */
+
+          text-transform: capitalize;
+
+          color: #09110e;
+        }
+        .text {
+          font-style: normal;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 100%;
+          /* identical to box height, or 14px */
+
+          text-transform: lowercase;
+
+          color: #09110e;
+
+          opacity: 0.4;
+        }
+      }
+    }
+
+    .input-group-text {
+      background: #fafafa;
+      border: 1px solid #e4e4e4;
+      border-radius: 20px;
+    }
+    .input-search {
+      background: #fafafa;
+      border: 1px solid #e4e4e4;
+      border-radius: 20px;
+    }
+    .timestamp {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 10px;
+      line-height: 100%;
+      /* identical to box height, or 10px */
+
+      text-align: right;
+      text-transform: lowercase;
+
+      color: #09110e;
+
+      opacity: 0.4;
+    }
+
+    .nav-thread {
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 17px;
+      /* identical to box height */
+    }
+    .active {
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 17px;
+      /* identical to box height */
+
+      color: #45a7a5;
+    }
+    .chat-active {
+      background: #eafff7;
+      border-radius: 20px;
+    }
+    .name-2 {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 100%;
+      /* identical to box height, or 16px */
+
+      text-transform: capitalize;
+
+      color: #09110e;
+    }
+    .email {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 100%;
+      /* identical to box height, or 14px */
+
+      text-transform: lowercase;
+
+      color: #09110e;
+
+      opacity: 0.4;
+    }
+    .contact {
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 100%;
+      /* identical to box height, or 14px */
+
+      text-transform: lowercase;
+
+      color: #007749;
+    }
+  }
+  .row-thread,
+  .row-chats {
+    height: 480px;
+    .timestamp-chat {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 10px;
+      line-height: 20px;
+      /* identical to box height, or 200% */
+
+      text-transform: lowercase;
+
+      color: #09110e;
+
+      opacity: 0.3;
+    }
+  }
+  .thread1 {
+    background: #007749;
+    border-radius: 20px;
+
+    //font-family: "Axiforma";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+    /* identical to box height, or 154% */
+
+    text-transform: capitalize;
+
+    color: #ffffff;
+  }
+  .thread2 {
+    background: #f3f3f3;
+    border-radius: 20px;
+
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+    /* or 154% */
+
+    text-transform: capitalize;
+
+    color: #808191;
+  }
+  .thread3 {
+    width: 216px;
+    height: 96px;
+    background: #e3f4d7;
+    mix-blend-mode: normal;
+    border: 1px solid #8bcc5f;
+    border-radius: 16px;
+    img {
+      border-radius: 16px;
+    }
+  }
+  .row-reply {
+    border-top: 1px solid #eaeaea;
+    //height: 100px;
+    .input-reply {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      /* identical to box height, or 143% */
+
+      color: #09110e;
+
+      opacity: 0.4;
+      border: none;
+    }
+  }
+  .btn-send {
+    background: #007749;
+    border-radius: 100px;
+    width: 50px;
+    height: 50px;
+  }
+}

@@ -15,11 +15,52 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
-import { NavLink, useLocation } from "react-router-dom";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
+import UserGuideRequestService from "../../../services/user-guide-request/UserGuideRequest.Service";
 
 const ViewApplication = () => {
   const location = useLocation();
-  const { app }: any = location.state;
+  const navigate = useNavigate();
+
+  const { app: guideApplication }: any = location.state;
+
+  const approveApplication = () => {
+    const postData = {
+      is_approved: true
+    }
+    UserGuideRequestService.patchData(guideApplication.id, postData).then(
+        (res) => {
+          if (res.status === 200) {
+            navigate("/become-guide/approved", {
+              state: {
+                status: true,
+                message: "Become A Guide successfully Approved.",
+              },
+              replace: true,
+            });
+          }
+        }
+    );
+  }
+
+  const rejectApplication = () => {
+    const postData = {
+      is_approved: false
+    }
+    UserGuideRequestService.patchData(guideApplication.id, postData).then(
+        (res) => {
+          if (res.status === 200) {
+            navigate("/become-guide/rejected", {
+              state: {
+                status: true,
+                message: "Become A Guide successfully rejected.",
+              },
+              replace: true,
+            });
+          }
+        }
+    );
+  }
 
   return (
     <Container className="viewapp-container">
@@ -32,13 +73,16 @@ const ViewApplication = () => {
             >
               <Image className="mb-2" src={left} alt="" />
             </NavLink>
-            {app.name}
+            {guideApplication.name}
           </span>
           <Form className="d-flex">
-            <Button className="btn-approve me-2">
-              <Image className="me-3" src={check} alt="" /> Approve
+            <Button className="btn-approve me-2" onClick={approveApplication}>
+              <Image className="me-3" src={check} alt="" />
+              Approve
             </Button>
-            <Button className="btn-reject">Reject</Button>
+            <Button className="btn-reject" onClick={rejectApplication}>
+              Reject
+            </Button>
           </Form>
         </div>
       </Navbar>
@@ -50,7 +94,7 @@ const ViewApplication = () => {
         </Row>
         <Row className="ms-2 mt-4">
           <Col>
-            <Image className="basic-img" src={app.image_firebase_url} alt="" />
+            <Image className="basic-img" src={guideApplication.image_firebase_url} alt="" />
           </Col>
         </Row>
         <Row className="ms-2">
@@ -58,11 +102,11 @@ const ViewApplication = () => {
             <Row className="mt-4">
               <Col>
                 <Form.Label>First Name</Form.Label>
-                <Form.Control defaultValue={app.first_name} type="text"></Form.Control>
+                <Form.Control defaultValue={guideApplication.first_name} type="text"></Form.Control>
               </Col>
               <Col>
                 <Form.Label>Last Name</Form.Label>
-                <Form.Control defaultValue={app.last_name} type="text"></Form.Control>
+                <Form.Control defaultValue={guideApplication.last_name} type="text"></Form.Control>
               </Col>
               <Col></Col>
             </Row>
@@ -70,14 +114,14 @@ const ViewApplication = () => {
               <Col>
                 <Form.Label>Contact Number</Form.Label>
                 <Form.Control
-                  defaultValue={app.phone_no}
+                  defaultValue={guideApplication.phone_no}
                   type="text"
                 ></Form.Control>
               </Col>
               <Col>
                 <Form.Label>Email</Form.Label>
                 <Form.Control
-                  defaultValue={app.email}
+                  defaultValue={guideApplication.email}
                   type="text"
                 ></Form.Control>
               </Col>
@@ -86,11 +130,11 @@ const ViewApplication = () => {
             <Row className="mt-4">
               <Col>
                 <Form.Label>Province</Form.Label>
-                <Form.Control defaultValue={app.province} type="text"></Form.Control>
+                <Form.Control defaultValue={guideApplication.province} type="text"></Form.Control>
               </Col>
               <Col>
                 <Form.Label>City</Form.Label>
-                <Form.Control defaultValue={app.city} type="text"></Form.Control>
+                <Form.Control defaultValue={guideApplication.city} type="text"></Form.Control>
               </Col>
               <Col></Col>
             </Row>
@@ -123,7 +167,7 @@ const ViewApplication = () => {
               <Form.Control
                 as="textarea"
                 rows={3}
-                defaultValue={app.good_guide_reason}
+                defaultValue={guideApplication.good_guide_reason}
               ></Form.Control>
             </Col>
             <Col>
@@ -133,7 +177,7 @@ const ViewApplication = () => {
               <Form.Control
                 as="textarea"
                 rows={3}
-                defaultValue={app.adventures_to_host}
+                defaultValue={guideApplication.adventures_to_host}
               ></Form.Control>
             </Col>
             <Col></Col>
@@ -148,7 +192,7 @@ const ViewApplication = () => {
               <Form.Control
                 className="input-gray"
                 type="text"
-                defaultValue={app.adventure_location}
+                defaultValue={guideApplication.adventure_location}
               ></Form.Control>
             </Col>
             <Col>
@@ -156,7 +200,7 @@ const ViewApplication = () => {
               <Form.Control
                 className="input-gray"
                 type="text"
-                defaultValue={app.standout_reason}
+                defaultValue={guideApplication.standout_reason}
               ></Form.Control>
             </Col>
             <Col></Col>
@@ -169,7 +213,7 @@ const ViewApplication = () => {
               <Form.Control
                 as="textarea"
                 rows={3}
-                defaultValue={app.guided_reason}
+                defaultValue={guideApplication.guided_reason}
               ></Form.Control>
             </Col>
             <Col>
@@ -177,7 +221,7 @@ const ViewApplication = () => {
               <Form.Control
                 className="input-gray"
                 type="text"
-                defaultValue={app.where_did_you_hear_us}
+                defaultValue={guideApplication.where_did_you_hear_us}
               ></Form.Control>
             </Col>
             <Col></Col>
@@ -195,7 +239,7 @@ const ViewApplication = () => {
               <input
                 className="form-check-input me-2"
                 type="checkbox"
-                defaultChecked={app.is_first_aid}
+                defaultChecked={guideApplication.is_first_aid}
                 id="flexSwitchCheckDefault"
               />
               <label className="form-check-label m-1">first aid</label>
@@ -209,7 +253,7 @@ const ViewApplication = () => {
           <Col className="col-certs mt-4">
             <h4>Certificate name</h4>
             <p>
-              {app.certificate_name}
+              {guideApplication.certificate_name}
             </p>
           </Col>
           <Col></Col>

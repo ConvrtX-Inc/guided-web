@@ -28,7 +28,7 @@ import Spinner from "../../ui/Spinner";
 import {
   ToastContainer, //toast
 } from "react-toastify";
-import ReactPaginate from "react-paginate";
+import {Paginator} from "../../helper/Paginator";
 
 interface LocationState {
   status: boolean;
@@ -36,13 +36,12 @@ interface LocationState {
 }
 
 const PostScreen = (props: any) => {
-  const rowsPerPage = [5, 10];
   const [userRowsPerPage, setUserRowsPerPage] = useState(5);
-  const [userPageNumber, setUserPageNumber] = useState(5);
 
+  const [itemPerPage, setItemPerPage] = useState(5);
+  const [currentPage, setCurentPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  const [totalPerPage, setTotalPerPage] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
   const isMounted = useRef(true);
   const location = useLocation();
@@ -60,7 +59,6 @@ const PostScreen = (props: any) => {
   const [postData, setPostData] = useState([] as any[]);
   const [badgeData, setBadgeData] = useState([] as any[]);
   const [isLoading, setIsLoading] = useState(false);
-  const [remountComponent, setRemountComponent] = useState(0);
 
   const HandleCategoryChange = (obj: any) => {
     setMainBadge(obj);
@@ -121,17 +119,16 @@ const PostScreen = (props: any) => {
       try {
         await PostService.loadActivityPostPagination(
           userAccess.user_id || "",
-          limit || userRowsPerPage,
+          limit || itemPerPage,
           pageNumber || 1,
           queryString
         ).then(
           (res) => {
             const getData = res.data;
             console.log(getData);
-            setTotalCount(getData.total);
+            setTotalItems(getData.total);
             setPageCount(getData.last_page);
             setPostData(getData.data);
-            setTotalPerPage(getData.data.length);
             setIsLoading(false);
           },
           (err) => {
@@ -144,7 +141,7 @@ const PostScreen = (props: any) => {
         setIsLoading(false);
       }
     },
-    [setPostData, userAccess.user_id, userRowsPerPage]
+    [setPostData, userAccess.user_id, itemPerPage, currentPage]
   );
 
   const loadBadgeData = useCallback(async () => {
@@ -162,28 +159,6 @@ const PostScreen = (props: any) => {
       console.log(err);
     }
   }, [setBadgeData]);
-
-  const handlePageClick = async ({ selected }: { selected: any }) => {
-    loadPosts(selected + 1);
-    setUserPageNumber(selected + 1);
-    let start: number = 0;
-    let end: number = 0;
-    if (totalCount > 0) {
-      start = userPageNumber;
-    }
-    if (totalCount - pageCount >= start) {
-      end = userPageNumber + pageCount;
-    } else {
-      end = totalCount;
-    }
-    console.log(start, "-", end);
-  };
-
-  const HandleSelectRowsPerPage = (e: any) => {
-    loadPosts(1, e.target.value);
-    setUserRowsPerPage(e.target.value);
-    setRemountComponent(Math.random());
-  };
 
   useEffect(() => {
     if (isMounted) {
@@ -277,60 +252,16 @@ const PostScreen = (props: any) => {
           </Table>
         </Col>
       </Row>
+
       <Row>
-        <Col className="col-10">
-          <div className="row justify-content-end pagination-info">
-            <label
-              htmlFor="SelectRowsPerPage"
-              className="float-end col-2 col-form-label"
-            >
-              Rows per page:
-            </label>
-            <div className="col-1">
-              <select
-                id="SelectRowsPerPage"
-                className="select-rows-per-page form-select mt-1"
-                aria-label="Default select example"
-                onChange={(e) => HandleSelectRowsPerPage(e)}
-              >
-                {rowsPerPage.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <label className="col-2 col-form-label">
-              1-{totalPerPage} of {totalCount}
-            </label>
-          </div>
-        </Col>
-        <Col key={remountComponent} className="col-2">
-          <nav aria-label="..." className="Page navigation example">
-            <ReactPaginate
-              previousLabel={"<"}
-              nextLabel={">"}
-              breakLabel={"..."}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={6}
-              breakClassName={"page-item"}
-              breakLinkClassName={"page-link"}
-              pageClassName={"page-item"}
-              pageLinkClassName={"page-link"}
-              pageCount={pageCount}
-              onPageChange={handlePageClick}
-              containerClassName={"pagination"}
-              //previousLinkClassName={"previousBttn"}
-              previousLinkClassName={"prevButton page-link"}
-              //nextLinkClassName={"nextBttn"}
-              nextLinkClassName={"nxtButton page-link ms-2"}
-              disabledClassName={"disabled"}
-              className={"pagination"}
-              //subContainerClassName={"pages pagination"}
-              activeClassName={"active"}
-            />
-          </nav>
-        </Col>
+        <Paginator
+            itemPerPage={itemPerPage}
+            currentPage={currentPage}
+            pageCount={pageCount}
+            totalItems={totalItems}
+            setItemPerPage={setItemPerPage}
+            setCurentPage={setCurentPage}
+        />
       </Row>
     </Container>
   );

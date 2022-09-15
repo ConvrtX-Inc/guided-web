@@ -16,22 +16,28 @@ import { useEffect, useState } from "react";
 
 import SpinnerSmall from "../../ui/SpinnerSmall";
 import UserService from "../../../services/users/User.Service";
+import {Paginator} from "../../helper/Paginator";
 
 const UserNavigation = () => {
     const [UserData, setUserData] = useState([] as any[]);
     const [flagCntAllUsers, setflagCntAllUsers] = useState(true);
-    const [cntAllUsers, setCntAllUsers] = useState([]);
+    const [cntAllUsers, setCntAllUsers] = useState(0);
+    const [itemPerPage, setItemPerPage] = useState(5);
+    const [currentPage, setCurentPage] = useState(1);
+    const [pageCount, setPageCount] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
 
     const loadEndUser = async () => {
         try {
-            await UserService.getUsers().then(
+            await UserService.getUsers(itemPerPage, (currentPage * itemPerPage), currentPage).then(
                 (res) => {
                     setUserData(res.data);
                     setCntAllUsers(res.data.length);
                     setflagCntAllUsers(false);
+                    setPageCount(res.data.pageCount);
+                    setTotalItems(res.data.total);
                 },
                 (error) => {
-                    console.log(error);
                     setflagCntAllUsers(false);
                 }
             );
@@ -43,7 +49,7 @@ const UserNavigation = () => {
 
     useEffect(() => {
         loadEndUser();
-    }, []);
+    }, [itemPerPage, currentPage]);
 
     return (
         <Container className="sub-post-container">
@@ -52,12 +58,12 @@ const UserNavigation = () => {
                     <Navbar expand="lg">
                         <Container fluid>
                             <Nav>
-                                <Col className="col-md-3">
+                                <Col className="col-md-12">
                                     {!flagCntAllUsers &&
-                                        <Form.Control type="text"
-                                        defaultValue={cntAllUsers + " " + "End Users"}
-                                        className="form-control user-input-select"
-                                    />}
+                                        <h4>
+                                            {cntAllUsers + " " + "End Users"}
+                                        </h4>
+                                    }
                                     {flagCntAllUsers && <SpinnerSmall />}
 
                                 </Col>
@@ -95,7 +101,19 @@ const UserNavigation = () => {
                 </Col>
             </Row>
             <Row className="post-items">
-                <UserTable items={UserData} />
+                <UserTable
+                    items={UserData}
+                    PaginatorComponent={
+                        <Paginator
+                            itemPerPage={itemPerPage}
+                            currentPage={currentPage}
+                            pageCount={pageCount}
+                            totalItems={totalItems}
+                            setItemPerPage={setItemPerPage}
+                            setCurentPage={setCurentPage}
+                        />
+                    }
+                />
             </Row>
         </Container>
     );

@@ -26,7 +26,7 @@ export const Paginator = (props: Props) => {
 
     const goToNextPage = () => {
         const nextPage: number = props.currentPage + 1;
-        if (nextPage > 0) {
+        if (nextPage <= props.pageCount) {
             props.setCurentPage(nextPage);
         }
     };

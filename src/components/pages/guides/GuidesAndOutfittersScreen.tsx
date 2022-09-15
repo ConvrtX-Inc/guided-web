@@ -20,34 +20,23 @@ import { useCallback, useEffect, useState } from "react";
 import GuidesServices from "../../../services/guides/Guides.Service";
 import Spinner from "../../ui/Spinner";
 import SubAdminItems from "./SubAdminItems";
-import ReactPaginate from "react-paginate";
+import {Paginator} from "../../helper/Paginator";
 
 const GuidesAndOutfittersScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([] as any[]);
 
-  const rowsPerPage = [5, 10];
+  const [itemPerPage, setItemPerPage] = useState(5);
+  const [currentPage, setCurentPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
-  const [remountComponent, setRemountComponent] = useState(0);
-  const [userRowsPerPage, setUserRowsPerPage] = useState(5);
-  const [totalPerPage, setTotalPerPage] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
-
-  const handlePageClick = async ({ selected }: { selected: any }) => {
-    getSubAdminUsers(false, selected + 1, userRowsPerPage);
-  };
-
-  const HandleSelectRowsPerPage = (e: any) => {
-    setUserRowsPerPage(e.target.value);
-    setRemountComponent(Math.random());
-  };
+  const [totalItems, setTotalItems] = useState(0);
 
   const getSubAdminUsers = useCallback(
     async (cancel?: boolean, pageNumber?: number, limit?: number) => {
       setIsLoading(true);
       try {
         await GuidesServices.getSubAdminUsers(
-          limit || userRowsPerPage,
+          limit || itemPerPage,
           pageNumber || 1
         ).then(
           (res) => {
@@ -55,8 +44,7 @@ const GuidesAndOutfittersScreen = () => {
             console.log(result);
             if (cancel) return;
             setPageCount(result.last_page);
-            setTotalPerPage(result.data.length);
-            setTotalCount(result.total);
+            setTotalItems(result.total);
             setUsers(result.data);
             setIsLoading(false);
           },
@@ -70,7 +58,7 @@ const GuidesAndOutfittersScreen = () => {
         setIsLoading(false);
       }
     },
-    [userRowsPerPage]
+      [itemPerPage, currentPage]
   );
 
   useEffect(() => {
@@ -153,60 +141,16 @@ const GuidesAndOutfittersScreen = () => {
           </Table>
         </Col>
       </Row>
+
       <Row>
-        <Col className="col-10">
-          <div className="row justify-content-end pagination-info">
-            <label
-              htmlFor="SelectRowsPerPage"
-              className="float-end col-2 col-form-label"
-            >
-              Rows per page:
-            </label>
-            <div className="col-1">
-              <select
-                id="SelectRowsPerPage"
-                className="select-rows-per-page form-select mt-1"
-                aria-label="Default select example"
-                onChange={(e) => HandleSelectRowsPerPage(e)}
-              >
-                {rowsPerPage.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <label className="col-2 col-form-label">
-              1-{totalPerPage} of {totalCount}
-            </label>
-          </div>
-        </Col>
-        <Col key={remountComponent} className="col-2">
-          <nav aria-label="..." className="Page navigation example">
-            <ReactPaginate
-              previousLabel={"<"}
-              nextLabel={">"}
-              breakLabel={"..."}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={6}
-              breakClassName={"page-item"}
-              breakLinkClassName={"page-link"}
-              pageClassName={"page-item"}
-              pageLinkClassName={"page-link"}
-              pageCount={pageCount}
-              onPageChange={handlePageClick}
-              containerClassName={"pagination"}
-              //previousLinkClassName={"previousBttn"}
-              previousLinkClassName={"prevButton page-link"}
-              //nextLinkClassName={"nextBttn"}
-              nextLinkClassName={"nxtButton page-link ms-2"}
-              disabledClassName={"disabled"}
-              className={"pagination"}
-              //subContainerClassName={"pages pagination"}
-              activeClassName={"active"}
-            />
-          </nav>
-        </Col>
+        <Paginator
+            itemPerPage={itemPerPage}
+            currentPage={currentPage}
+            pageCount={pageCount}
+            totalItems={totalItems}
+            setItemPerPage={setItemPerPage}
+            setCurentPage={setCurentPage}
+        />
       </Row>
     </Container>
   );

@@ -24,18 +24,22 @@ const UserNavigation = () => {
     const [cntAllUsers, setCntAllUsers] = useState(0);
     const [itemPerPage, setItemPerPage] = useState(5);
     const [currentPage, setCurentPage] = useState(1);
-    const [pageCount, setPageCount] = useState(0);
-    const [totalItems, setTotalItems] = useState(0);
+    const [pageCount, setPageCount] = useState(1_000); //TODO: EDA - Fix this
+    const [totalItems, setTotalItems] = useState(1_000_000); //TODO: EDA - Fix this
 
     const loadEndUser = async () => {
         try {
-            await UserService.getUsers(itemPerPage, (currentPage * itemPerPage), currentPage).then(
+            await UserService.getUsers(
+                itemPerPage,
+                (currentPage * itemPerPage) - itemPerPage + 1,
+                currentPage
+            ).then(
                 (res) => {
                     setUserData(res.data);
                     setCntAllUsers(res.data.length);
                     setflagCntAllUsers(false);
-                    setPageCount(res.data.pageCount);
-                    setTotalItems(res.data.total);
+                    //TODO: Fix add this field to Guided-API - setPageCount(res.data.pageCount);
+                    //TODO: Fix add this field to Guided-API - setTotalItems(res.data.total);
                 },
                 (error) => {
                     setflagCntAllUsers(false);

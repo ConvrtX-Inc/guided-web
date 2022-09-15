@@ -35,7 +35,10 @@ export const Paginator = (props: Props) => {
         <Navbar className="navigation justify-content-end">
             <Form.Label className="me-2 mt-2">Rows per page:</Form.Label>
             <Col xs={1}>
-                <Form.Select className="me-1" as="select" onChange={event => props.setItemPerPage(+event.target.value)}>
+                <Form.Select className="me-1" as="select" onChange={event => {
+                    props.setItemPerPage(+event.target.value);
+                    props.setCurentPage(1);
+                }}>
                     <option value={5}>5</option>
                     <option value={10}>10</option>
                     <option value={20}>20</option>

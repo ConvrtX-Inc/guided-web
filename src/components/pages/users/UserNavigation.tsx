@@ -31,7 +31,6 @@ const UserNavigation = () => {
         try {
             await UserService.getUsers(
                 itemPerPage,
-                (currentPage * itemPerPage) - itemPerPage + 1,
                 currentPage
             ).then(
                 (res) => {

@@ -10,9 +10,9 @@ const config = {
   params: {},
 };
 
-const getUsers = (limit: number = 5, offset: number = 1, page: number = 1) => {
+const getUsers = (limit: number = 5, page: number = 1) => {
   return axios
-    .get(API_URL + `api/v1/users?limit=${limit}&offset=${offset}&page=${page}`, config)
+    .get(API_URL + `api/v1/users?limit=${limit}&page=${page}`, config)
     .then((response) => {
       return response;
     });

@@ -45,13 +45,13 @@ export const Paginator = (props: Props) => {
                 </Form.Select>
             </Col>
             <Form.Label className="ms-5 mt-2 me-2">
-                {props.currentPage} - {props.pageCount} of {props.totalItems}:
+                Page {props.currentPage} - {props.pageCount} of {props.totalItems} items:
             </Form.Label>
             <Button className="btn btn-light me-1" onClick={goToPreviousPage}>
                 <Image src={left} alt="" />
             </Button>
-            <Button className="btn btn-light me-4">
-                <Image src={right} alt="" onClick={goToNextPage}/>
+            <Button className="btn btn-light me-4" onClick={goToNextPage}>
+                <Image src={right} alt=""/>
             </Button>
         </Navbar>
     );

@@ -28,7 +28,7 @@ const getUserTypeID = (name: string) => {
       return response;
     });
 };
-const getSubAdminUsers = (limit: number, page: number) => {
+const getSubAdminUsers = (limit: number = 5, page: number = 1) => {
   config()["params"] = {};
   return axios
     .get(

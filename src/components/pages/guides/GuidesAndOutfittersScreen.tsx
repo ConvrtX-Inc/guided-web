@@ -36,12 +36,11 @@ const GuidesAndOutfittersScreen = () => {
       setIsLoading(true);
       try {
         await GuidesServices.getSubAdminUsers(
-          limit || itemPerPage,
+          itemPerPage,
           pageNumber || 1
         ).then(
           (res) => {
             let result = res.data;
-            console.log(result);
             if (cancel) return;
             setPageCount(result.last_page);
             setTotalItems(result.total);

@@ -79,24 +79,20 @@ const GuideSeeAll = () => {
 
     const [itemPerPage, setItemPerPage] = useState(5);
     const [currentPage, setCurentPage] = useState(1);
-    const [pageCount, setPageCount] = useState(0); //TODO: EDA - Fix this
-    const [totalItems, setTotalItems] = useState(0); //TODO: EDA - Fix this
-
+    const [pageCount, setPageCount] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
 
     const loadUserGuideRequest = async () => {
     try {
       await UserGuideRequestService.getData(
           itemPerPage,
-          (currentPage * itemPerPage) - itemPerPage + 1,
           currentPage
       ).then(
         (res) => {
           setPostData(res.data.data);
           setTotalItems(res.data.total);
           setPageCount(res.data.pageCount);
-            //TODO: Fix add this field to Guided-API - setPageCount(res.data.pageCount);
-            //TODO: Fix add this field to Guided-API - setTotalItems(res.data.total);
-        },
+          },
         (error) => {
           console.log(error);
         }

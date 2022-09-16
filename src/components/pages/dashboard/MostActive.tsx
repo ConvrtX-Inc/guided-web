@@ -5,7 +5,7 @@ import Image from "react-bootstrap/Image";
 const MostActive = (props: any) => {
   return props.mostactive.map((mostactive: any) => (
     <Col className="col-3" key={mostactive.id}>
-      <Card className="most-active">
+      <Card className="most-active my-2">
         <Card.Body>
           <div className="text-center">
             <Image

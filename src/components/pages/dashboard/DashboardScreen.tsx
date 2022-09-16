@@ -301,7 +301,7 @@ const DashboardScreen = () => {
           <h4>Most Recent Post</h4>
         </Col>
         <Col className="col-sm see-all">
-          <Link to="/see-all">See all</Link>
+          <Link to="/post">See all</Link>
         </Col>
       </Row>
       <Row className="mb-5">
@@ -313,7 +313,7 @@ const DashboardScreen = () => {
           <h4>Recent Guides / Outfitters</h4>
         </Col>
         <Col className="mt-5 col-sm see-all">
-          <Link to="/see-all">See all</Link>
+          <Link to="/guides">See all</Link>
         </Col>
       </Row>
       <Row>
@@ -325,10 +325,10 @@ const DashboardScreen = () => {
           <h4>Most Active End-Users</h4>
         </Col>
         <Col className="mt-5 col-sm see-all">
-          <Link to="/see-all">See all</Link>
+          <Link to="/end-users">See all</Link>
         </Col>
       </Row>
-      <Row>
+      <Row className={'pb-4'}>
         {!activeUsersLoading && <MostActive mostactive={activeUsers} />}
         {activeUsersLoading && <Spinner />}
       </Row>

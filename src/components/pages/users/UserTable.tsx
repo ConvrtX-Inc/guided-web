@@ -1,15 +1,25 @@
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Image from "react-bootstrap/Image";
+import {useState} from "react";
+import UserService from "../../../services/users/User.Service";
 
-interface Props {
-    PaginatorComponent: JSX.Element;
-    items: any[];
-}
+const UserItem = (props: {user: any}) => {
+    const user: any = props.user;
 
-const UserTable = (props: Props) => {
+    const [isActive, setIsActive] = useState(user.is_active);
 
-    const displayUser = props.items.map((user: any) => (
+    const toggleUserActiveStatus = async (event: any) => {
+        const isActive: boolean = event.target.checked;
+        await UserService.updateUserActiveStatus(user.id, isActive);
+        if (isActive) {
+            setIsActive(() => true);
+        } else {
+            setIsActive(() => false);
+        }
+    };
+
+    return (
         <tr key={user.id}>
             <td className="p-4">{user.full_name}</td>
             <td className="p-4">
@@ -27,12 +37,28 @@ const UserTable = (props: Props) => {
                     <input
                         className="form-check-input me-2"
                         type="checkbox"
-                        defaultChecked={user.is_online}
+                        defaultChecked={isActive}
                         id="flexSwitchCheckDefault"
+                        onChange={(e) => toggleUserActiveStatus(e)}
                     />
                 </div>
             </td>
         </tr>
+    );
+}
+
+interface Props {
+    PaginatorComponent: JSX.Element;
+    items: any[];
+}
+
+const UserTable = (props: Props) => {
+
+    const displayUser = props.items.map((user: any) => (
+        <UserItem
+            key={user.id}
+            user={user}
+        />
     ));
 
     return (

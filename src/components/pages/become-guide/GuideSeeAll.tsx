@@ -114,6 +114,7 @@ const GuideSeeAll = () => {
             <th className="ps-4">Application Name</th>
             <th className="ps-4">Email</th>
             <th className="ps-4">Contact Number</th>
+            <th className="ps-4">Status</th>
             <th className="ps-4">Application</th>
             <th className="ps-4">Action</th>
           </tr>

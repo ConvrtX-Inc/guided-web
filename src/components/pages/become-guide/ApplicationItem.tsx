@@ -58,6 +58,9 @@ const ApplicationItem = (props: any) => {
       <td className="p-4">{appItem.email}</td>
       <td className="p-4">{appItem.phone_no}</td>
       <td className="p-4">
+          {appItem.is_approved ? 'Approved' : 'Rejected'}
+      </td>
+      <td className="p-4">
         <Link
           to={{
             pathname: "/become-guide/viewapplication",
@@ -69,10 +72,14 @@ const ApplicationItem = (props: any) => {
         </Link>
       </td>
       <td className="p-4">
-        <button onClick={() => updateApproved(appItem.id)} className="btn btn-approve me-1">
-          <Image className="check-image me-1" src={check} alt="" /> Approve
-        </button>
-        <button onClick={() => updateReject(appItem.id)} className="m-1 btn btn-reject">Reject</button>
+          {
+              !appItem.is_approved ?
+                  <button onClick={() => updateApproved(appItem.id)} className="btn btn-approve me-1">
+                      <Image className="check-image me-1" src={check} alt="" /> Approve
+                  </button>
+                  :
+                  <button onClick={() => updateReject(appItem.id)} className="m-1 btn btn-reject">Reject</button>
+          }
       </td>
     </tr>
   ));

@@ -12,6 +12,7 @@ import right from "../../../assets/admin/right.png";
 import left from "../../../assets/admin/left2.png";
 
 import UserGuideRequestService from "../../../services/user-guide-request/UserGuideRequest.Service";
+import {Paginator} from "../../helper/Paginator";
 
 // TODO: remove soon its use for testing
 // const DUMMY_DATA = [
@@ -76,12 +77,22 @@ import UserGuideRequestService from "../../../services/user-guide-request/UserGu
 const GuideSeeAll = () => {
   const [postData, setPostData] = useState([] as any[]);
 
-  const loadUserGuideRequest = async () => {
+    const [itemPerPage, setItemPerPage] = useState(5);
+    const [currentPage, setCurentPage] = useState(1);
+    const [pageCount, setPageCount] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
+
+    const loadUserGuideRequest = async () => {
     try {
-      await UserGuideRequestService.getData().then(
+      await UserGuideRequestService.getData(
+          itemPerPage,
+          currentPage
+      ).then(
         (res) => {
-          setPostData(res.data);
-        },
+          setPostData(res.data.data);
+          setTotalItems(res.data.total);
+          setPageCount(res.data.pageCount);
+          },
         (error) => {
           console.log(error);
         }
@@ -93,7 +104,7 @@ const GuideSeeAll = () => {
 
   useEffect(() => {
     loadUserGuideRequest();
-  }, []);
+  }, [itemPerPage, currentPage]);
 
   return (
     <Col>
@@ -103,6 +114,7 @@ const GuideSeeAll = () => {
             <th className="ps-4">Application Name</th>
             <th className="ps-4">Email</th>
             <th className="ps-4">Contact Number</th>
+            <th className="ps-4">Status</th>
             <th className="ps-4">Application</th>
             <th className="ps-4">Action</th>
           </tr>
@@ -111,19 +123,14 @@ const GuideSeeAll = () => {
           <ApplicationItem application={postData} />
         </tbody>
       </Table>
-      <Navbar className="navigation justify-content-end">
-        <Form.Label className="me-2 mt-2">Rows per page:</Form.Label>
-        <Form.Select className="me-5">
-          <option>8</option>
-        </Form.Select>
-        <Form.Label className="ms-5 mt-2 me-2">1-8 of 150:</Form.Label>
-        <Button className="btn btn-light me-1">
-          <Image src={left} alt="" />
-        </Button>
-        <Button className="btn btn-light me-4">
-          <Image src={right} alt="" />
-        </Button>
-      </Navbar>
+        <Paginator
+            itemPerPage={itemPerPage}
+            currentPage={currentPage}
+            pageCount={pageCount}
+            totalItems={totalItems}
+            setItemPerPage={setItemPerPage}
+            setCurentPage={setCurentPage}
+        />
     </Col>
   );
 };

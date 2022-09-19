@@ -10,9 +10,9 @@ const config = {
     params: {},
 };
 
-const getData = () => {
+const getData = (limit: number = 5, page: number = 1) => {
     return axios
-        .get(API_URL + `api/v1/user-guide-request?sort=created_date,DESC`, config)
+        .get(API_URL + `api/v1/user-guide-request?limit=${limit}&page=${page}&sort=created_date,DESC`, config)
         .then((response) => {
             return response;
         });

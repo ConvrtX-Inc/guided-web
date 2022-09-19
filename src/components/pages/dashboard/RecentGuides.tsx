@@ -5,7 +5,7 @@ import Image from "react-bootstrap/Image";
 const RecentGuides = (props: any) => {
   return props.recentguide.map((recentguideItem: any) => (
     <Col className="col-3" key={recentguideItem.User_id}>
-      <Card className="recent-guides">
+      <Card className="recent-guides my-2">
         <Card.Body>
           <div className="text-center">
             <Image className="mb-2 mt-1" style={{borderRadius: 50}} src={recentguideItem.User_profile_photo_firebase_url} alt="" />
